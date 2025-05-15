@@ -1,6 +1,8 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+import { Button } from "@/components/ui/button"
+import { Trash2, Pencil,  CircleEllipsis, ArrowUpDown} from 'lucide-react';
 
 // Define the shape of the data
 export type Content = {
@@ -21,14 +23,44 @@ export const columns: ColumnDef<Content>[] = [
   {
     accessorKey: "title",
     header: "Judul Konten",
+    cell: ({ row }) => (
+      <div
+        className="truncate overflow-hidden whitespace-nowrap max-w-[120px] sm:max-w-[200px] lg:max-w-[300px]"
+        title={row.getValue("title")}
+      >
+        {row.getValue("title")}
+      </div>
+    ),
   },
   {
     accessorKey: "contents_type",
-    header: "Jenis Konten",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Jenis Konten
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "published_date",
-    header: "Tanggal Rilis",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Tanggal Rilis
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     id: "actions",  // kolom custom harus punya id unik
@@ -42,21 +74,21 @@ export const columns: ColumnDef<Content>[] = [
             className="btn-view flex items-center gap-1"
             onClick={() => alert(`View konten ID: ${content.contents_id}`)}
           >
-            <img src="/icon/more-circle.png" alt="view Icon" className="w-4 h-4" />
+            <CircleEllipsis className="w-4 h-4" />
             View
           </button>
           <button
             className="btn-edit flex items-center gap-1"
             onClick={() => alert(`Edit konten ID: ${content.contents_id}`)}
           >
-            <img src="/icon/edit-2.png" alt="Edit Icon" className="w-4 h-4" />
+            <Pencil className="w-4 h-4" />
             Edit
           </button>
           <button
             className="btn-delete flex items-center gap-1"
             onClick={() => alert(`Hapus konten ID: ${content.contents_id}`)}
           >
-            <img src="/icon/trash.png" alt="delete Icon" className="w-4 h-4" />
+            <Trash2 className="w-4 h-4" />
             Hapus
           </button>
         </div>

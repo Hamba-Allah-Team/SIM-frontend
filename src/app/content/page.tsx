@@ -8,7 +8,7 @@ async function getData(): Promise<Content[]> {
     {
       contents_id: 1,
       mosque_id: 10,
-      title: "Sejarah Masjid Agung",
+      title: "Sejarah Masjid Agung ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
       content_description: "Artikel tentang sejarah Masjid Agung...",
       image: "https://example.com/image1.jpg",
       published_date: "2024-05-01",
