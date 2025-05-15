@@ -1,13 +1,16 @@
 "use client"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { ChevronLeftIcon, ChevronRightIcon, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import * as React from "react"
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -32,7 +35,9 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
   const table = useReactTable({
     data,
     columns,
@@ -40,13 +45,29 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
-    sorting,
+      sorting,
+      columnFilters,
     },
   })
 
   return (
     <div>
+      <div className="flex items-center py-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Pencarian berdasarkan Judul Konten"
+            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("title")?.setFilterValue(event.target.value)
+            }
+            className="pl-9 w-full"
+          />
+        </div>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
