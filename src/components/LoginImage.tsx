@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function LoginImage() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div
+      className={`flex-1 relative w-full h-full transition-opacity duration-1000 ${
+        loaded ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <Image
-        src="/masjid-icon.png"
+        src="/masjid-image.webp"
         alt="Login Image"
-        width={1000}
-        height={1000}
+        fill
+        style={{ objectFit: "cover" }}
+        priority
       />
     </div>
   );

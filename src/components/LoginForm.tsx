@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
@@ -12,6 +17,12 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false); // Untuk animasi awal
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const togglePassword = () => setShowPassword((prev) => !prev);
 
@@ -45,16 +56,24 @@ export default function LoginForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
-      <Card className="w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-md">
-        <CardHeader className="pb-4 flex flex-col items-start justify-center text-center">
-          <div className="flex items-center gap-2">
-            <img src="/sima-icon.png" alt="Logo SIMA" className="w-10 h-10" />
+      <Card
+        className={`w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
+          loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+        }`}
+      >
+        <CardHeader className="pb-4 flex flex-col items-center justify-center text-center">
+          <div className="flex items-center justify-start gap-2 my-10">
+            <img
+              src="/sima-icon.png"
+              alt="Logo SIMA"
+              className="w-10 h-10 transition-transform duration-300 hover:scale-110"
+            />
             <span className="text-3xl font-semibold">SIMA</span>
           </div>
           <CardTitle className="text-3xl pt-3">Login</CardTitle>
         </CardHeader>
 
-        <CardContent className=" pb-6">
+        <CardContent className="pb-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="relative">
               <Mail
@@ -62,7 +81,7 @@ export default function LoginForm() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl"
+                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
                 id="email"
                 type="email"
                 placeholder="Email"
@@ -78,7 +97,7 @@ export default function LoginForm() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl"
+                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -100,13 +119,13 @@ export default function LoginForm() {
                 href="/reset-password"
                 className="text-primary hover:underline"
               >
-                Lupa password?
+                Lupa password
               </Link>
             </div>
 
             <Button
               type="submit"
-              className="w-full rounded-2xl"
+              className="w-full rounded-2xl mt-10"
               disabled={loading}
             >
               {loading ? "Logging in..." : "Masuk"}

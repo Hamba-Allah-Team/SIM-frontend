@@ -3,8 +3,8 @@ import LoginImage from "@/components/LoginImage"
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex flex-col" style={{ backgroundColor: "#FF9357" }}>
-      <div className="flex-3 flex flex-col md:flex-row">
+    <main className="flex h-screen w-screen overflow-hidden">
+      <div className="flex w-full flex-col md:flex-row">
         <div className="flex-1 flex items-center justify-center p-12">
           <LoginForm />
         </div>
@@ -13,5 +13,5 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }
