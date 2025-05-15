@@ -24,6 +24,8 @@ const buttonVariants = cva(
         // Menambahkan variant orange
         orange:
           "bg-orange-500 text-white shadow-xs hover:bg-orange-600 focus-visible:ring-orange-300",
+        white: "bg-white text-black border border-gray-300 hover:bg-gray-100",
+
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

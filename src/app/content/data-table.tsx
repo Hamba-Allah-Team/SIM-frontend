@@ -103,9 +103,9 @@ export function DataTable<TData, TValue>({
         {Array.from({ length: table.getPageCount() }).map((_, i) => {
           const isActive = i === table.getState().pagination.pageIndex
           return (
-            <Button
+            <Button 
               key={i}
-              variant={isActive ? "outline" : "default"}
+              variant={isActive ? "outline" : "white"}
               size="sm"
               onClick={() => table.setPageIndex(i)}
               className="min-w-[2rem] px-2"
