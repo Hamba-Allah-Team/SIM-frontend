@@ -1,5 +1,5 @@
-import LoginForm from "@/components/LoginForm"
-import LoginImage from "@/components/LoginImage"
+import LoginForm from "@/components/LoginForm";
+import MosqueImage from "@/components/MosqueImage";
 
 export default function LoginPage() {
   return (
@@ -9,7 +9,7 @@ export default function LoginPage() {
           <LoginForm />
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <LoginImage />
+          <MosqueImage />
         </div>
       </div>
     </main>

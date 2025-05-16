@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function LoginImage() {
+export default function MosqueImage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
