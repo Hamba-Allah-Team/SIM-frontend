@@ -209,23 +209,14 @@ export default async function DemoPage() {
     <div className="w-screen h-screen p-8 bg-[#F5F6F8] rounded-none">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-[28px] font-bold font-poppins">Konten Masjid</h1>
-        <ButtonTambahClient />
+        <ButtonTambahClient href="/content/create" label="Tambah" />
       </div>
 
       <div className="p-8 bg-white rounded-xl shadow-sm">
         <DataTable columns={columns} data={data} />
       </div>
     </div>
-
-
-
-    // <div className="container mx-auto py-10">
-    //   <div className="flex items-center justify-between mb-6">
-    //     <h1 className="text-2xl font-bold text-[#1A1A3D]">Konten Masjid</h1>
-    //     <ButtonTambahClient />
-    //   </div>
-    //   <DataTable columns={columns} data={data} />
-    // </div>
   )
 }
+
 
