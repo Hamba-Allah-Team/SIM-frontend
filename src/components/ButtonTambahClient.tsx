@@ -13,7 +13,7 @@ export default function ButtonTambahClient() {
       onClick={handleTambah}
       className="flex items-center gap-2 px-4 py-2 rounded-xl transition"
       style={{
-        backgroundColor: 'rgba(255, 147, 87, 0.1)', 
+        backgroundColor: 'rgba(255, 147, 87, 0.25)', 
         color: 'var(--color-custom-orange)',
       }}
     >
