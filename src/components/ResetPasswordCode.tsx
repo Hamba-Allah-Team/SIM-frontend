@@ -9,11 +9,102 @@ import Link from "next/link";
 
 export default function ResetPasswordCode() {
   const [loaded, setLoaded] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  const [code, setCode] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("resetEmail");
+    if (!savedEmail) {
+      window.location.href = "/reset-password";
+    } else {
+      setEmail(savedEmail);
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [countdown]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/reset-password/verify-reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, resetCode: code }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("resetVerified", "true");
+        localStorage.setItem("resetCode", code);
+        window.location.href = "/reset-password/new-password";
+      } else {
+        alert(data.message || "Verifikasi gagal, coba lagi.");
+      }
+    } catch (err) {
+      console.error("Error verifying code:", err);
+      alert("Terjadi kesalahan saat verifikasi kode.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!email) {
+      alert("Email tidak ditemukan.");
+      return;
+    }
+
+    setResending(true);
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/reset-password/send-reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Kode baru telah dikirim ke email.");
+        setCountdown(60);
+      } else {
+        alert(data.message || "Gagal mengirim ulang kode.");
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan saat mengirim ulang kode.");
+      console.error(error);
+    } finally {
+      setResending(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full relative">
@@ -42,10 +133,17 @@ export default function ResetPasswordCode() {
             <span className="text-3xl font-semibold">SIMA</span>
           </div>
           <CardTitle className="text-3xl pt-3">Masukkan Kode</CardTitle>
+          {countdown > 0 ? (
+            <p className="text-sm text-gray-500 mt-2">
+              Kode akan kedaluwarsa dalam {countdown} detik
+            </p>
+          ) : (
+            <p className="text-sm text-red-500 mt-2">Kode sudah kedaluwarsa.</p>
+          )}
         </CardHeader>
 
         <CardContent className="pb-6">
-          <form className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="relative">
               <Lock
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
@@ -55,13 +153,31 @@ export default function ResetPasswordCode() {
                 className="pl-10 w-full border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
                 type="text"
                 placeholder="Masukkan Kode"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
 
-            <Button type="submit" className="w-full rounded-2xl mt-2">
-              Selanjutnya
-            </Button>
+            {countdown > 0 ? (
+              <Button
+                type="submit"
+                className="w-full rounded-2xl"
+                disabled={loading}
+              >
+                {loading ? "Memverifikasi..." : "Selanjutnya"}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={handleResendCode}
+                className="w-full rounded-2xl"
+                disabled={resending}
+              >
+                {resending ? "Mengirim ulang..." : "Kirim Ulang Kode"}
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
