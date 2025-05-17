@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function ResetPasswordCode() {
   const [loaded, setLoaded] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(60);
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
