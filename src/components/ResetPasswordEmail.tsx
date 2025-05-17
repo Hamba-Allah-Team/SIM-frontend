@@ -4,25 +4,68 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Mail } from "lucide-react";
 
 export default function ResetPasswordEmail() {
   const [loaded, setLoaded] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false); // untuk tombol kirim ulang
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
     return () => clearTimeout(timer);
   }, []);
 
+  const sendResetEmail = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:8080/api/reset-password/send-reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("resetEmail", email);
+        if (data.resetCode) {
+          localStorage.setItem("resetCode", data.resetCode); // Simpan kode jika dikembalikan
+        }
+        alert("Kode reset password berhasil dikirim ke email Anda.");
+        setEmailSent(true);
+        window.location.href = "/reset-password/verify"; // redirect
+      } else {
+        if (data.message?.toLowerCase().includes("email tidak ditemukan")) {
+          alert("Email salah atau tidak terdaftar.");
+        } else {
+          alert(data.message || "Gagal mengirim kode reset password.");
+        }
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat mengirim kode reset password.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendResetEmail();
+  };
+
+  const handleResend = async () => {
+    await sendResetEmail();
+    window.location.reload();
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen w-full relative">
-
       <Link
         href="/login"
         className={`absolute top-6 left-6 flex items-center text-lg text-black hover:text-primary transition-all duration-500 ease-out transform ${
@@ -51,7 +94,7 @@ export default function ResetPasswordEmail() {
         </CardHeader>
 
         <CardContent className="pb-6">
-          <form className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="relative">
               <Mail
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
@@ -61,13 +104,31 @@ export default function ResetPasswordEmail() {
                 className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
                 type="email"
                 placeholder="Masukkan Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
 
-            <Button type="submit" className="w-full rounded-2xl mt-2">
-              Kirim
+            <Button
+              type="submit"
+              className="w-full rounded-2xl mt-2"
+              disabled={loading}
+            >
+              {loading ? "Mengirim..." : "Kirim"}
             </Button>
+
+            {emailSent && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full rounded-2xl mt-2"
+                onClick={handleResend}
+                disabled={loading}
+              >
+                Kirim Ulang Email
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>

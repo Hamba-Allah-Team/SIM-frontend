@@ -45,7 +45,7 @@ export default function LoginForm() {
       } else if (data.role === "superadmin") {
         window.location.href = "/superadmin/dashboard";
       } else {
-        alert("Role tidak dikenali");
+        alert("Email atau password salah.");
       }
     } catch (error) {
       console.error("Login error:", error);
