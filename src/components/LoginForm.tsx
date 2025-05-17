@@ -17,7 +17,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false); // Untuk animasi awal
+  const [loaded, setLoaded] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -31,7 +32,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/signin", {
+      const res = await fetch(`${API}/api/auth/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
