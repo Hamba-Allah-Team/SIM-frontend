@@ -36,53 +36,90 @@ export const columns: ColumnDef<Content>[] = [
     accessorKey: "contents_type",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="font-semibold"
-        >
-          Jenis Konten
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="text-center w-full">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold mx-auto"
+          >
+            Jenis Konten
+            <ArrowUpDown className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
       )
     },
+    cell: ({ row }) => (
+      <div className="text-center w-full">
+        {row.getValue("contents_type")}
+      </div>
+    ),
   },
+
+  
   {
     accessorKey: "published_date",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="font-semibold"
-        >
-          Tanggal Rilis
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="text-center w-full">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold mx-auto"
+          >
+            Tanggal Rilis
+            <ArrowUpDown className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
       )
     },
+    cell: ({ row }) => (
+      <div className="text-center w-full">
+        {row.getValue("published_date")}
+      </div>
+    ),
   },
+
+    
+  //   accessorKey: "published_date",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //         className="font-semibold "
+  //       >
+  //         Tanggal Rilis
+  //         <ArrowUpDown className="ml-1 h-4 w-4" />
+  //       </Button>
+  //     )
+  //   },
+  // },
   {
     id: "actions",  // kolom custom harus punya id unik
-    header: "Aksi",
+    header: () => (
+      <div className="text-center font-semibold">
+        Aksi
+      </div>
+    ),
+
     cell: ({ row }) => {
       const content = row.original
 
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <button
             className="btn-view flex items-center gap-1"
             onClick={() => alert(`View konten ID: ${content.contents_id}`)}
           >
             <CircleEllipsis className="w-4 h-4" />
-            View
+            Detail
           </button>
           <button
             className="btn-edit flex items-center gap-1"
             onClick={() => alert(`Edit konten ID: ${content.contents_id}`)}
           >
             <Pencil className="w-4 h-4" />
-            Edit
+            Ubah
           </button>
           <button
             className="btn-delete flex items-center gap-1"
