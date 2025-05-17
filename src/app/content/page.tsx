@@ -1,6 +1,7 @@
+import ButtonTambahClient from "@/components/ButtonTambahClient"
 import { Content, columns } from "./columns"
 import { DataTable } from "./data-table"
-// import { DataTable } from "@/components/ui/table"
+
 
 async function getData(): Promise<Content[]> {
   // Contoh data dummy yang sesuai dengan tipe Content
@@ -205,8 +206,23 @@ export default async function DemoPage() {
   const data = await getData()
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="p-8 bg-white rounded-xl shadow-sm">
+      <div className="flex items-center justify-between ">
+        <h1 className="text-[28px] font-bold font-poppins">Konten Masjid</h1>
+        <ButtonTambahClient />
+      </div>
+
       <DataTable columns={columns} data={data} />
+
     </div>
+
+    // <div className="container mx-auto py-10">
+    //   <div className="flex items-center justify-between mb-6">
+    //     <h1 className="text-2xl font-bold text-[#1A1A3D]">Konten Masjid</h1>
+    //     <ButtonTambahClient />
+    //   </div>
+    //   <DataTable columns={columns} data={data} />
+    // </div>
   )
 }
+

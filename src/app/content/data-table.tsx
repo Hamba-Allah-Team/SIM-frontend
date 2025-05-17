@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <div className="relative w-full max-w-sm">
+        {/* <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder="Pencarian berdasarkan Judul Konten"
@@ -66,7 +66,7 @@ export function DataTable<TData, TValue>({
             }
             className="pl-9 w-full"
           />
-        </div>
+        </div> */}
       </div>
       <div className="rounded-md border">
         <Table>
@@ -139,10 +139,12 @@ export function DataTable<TData, TValue>({
               variant={isActive ? "outline" : "white"}
               size="sm"
               onClick={() => table.setPageIndex(i)}
-              className="min-w-[2rem] px-2"
+              className={`min-w-[2rem] px-2 ${!isActive ? "text-muted-foreground" : ""}`}
               aria-current={isActive ? "page" : undefined}
             >
-              {i + 1}
+              <span className={!isActive ? "text-gray-500" : "text-black"}>
+                {i + 1}
+              </span>
             </Button>
           )
         })}
