@@ -247,23 +247,21 @@ export function ContentForm() {
           }}
         />
 
-<div className="flex gap-4 mt-6">
-  <button
-    type="button"
-    onClick={() => router.push("/content")}
-    className="flex-1 h-9 justify-center items-center px-4 py-2 border rounded-md text-[16px] font-bold text-[#F97316] border-[#F97316] bg-white hover:bg-orange-50"
-  >
-    Batal
-  </button>
-  <Button
-    type="submit"
-    className="flex-1 h-9 px-4 py-2 text-[16px] font-bold bg-orange-500 text-white shadow-xs hover:bg-orange-600 focus-visible:ring-orange-300"
-  >
-    Simpan
-  </Button>
-</div>
-
-
+        <div className="flex gap-4 mt-6">
+          <button
+            type="button"
+            onClick={() => router.push("/content")}
+            className="flex-1 h-9 justify-center items-center px-4 py-2 border rounded-md text-[16px] font-bold text-[#F97316] border-[#F97316] bg-white hover:bg-orange-50"
+          >
+            Batal
+          </button>
+          <Button
+            type="submit"
+            className="flex-1 h-9 px-4 py-2 text-[16px] font-bold bg-orange-500 text-white shadow-xs hover:bg-orange-600 focus-visible:ring-orange-300"
+          >
+            Simpan
+          </Button>
+        </div>
       </form>
     </Form>
   )
