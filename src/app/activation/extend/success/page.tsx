@@ -1,4 +1,4 @@
-import ActivationExtendSuccess from "@/components/ActivationExtentionSucces";
+import ActivationExtendSuccess from "@/components/ActivationExtendSucces";
 
 export default function ActivationExtendSuccesssPage() {
   return (
