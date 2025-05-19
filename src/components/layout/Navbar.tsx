@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-const menu = [
+const NAV_ITEMS = [
     { label: "Home", href: "/" },
     { label: "Tentang", href: "/tentang" },
     { label: "Berita", href: "/berita" },
@@ -14,12 +14,12 @@ const menu = [
 
 export default function Navbar() {
     return (
-        <header className="w-full bg-[#c9d7df] py-4">
-            <div className="bg-white rounded-2xl shadow-lg px-6 py-3 flex items-center justify-between max-w-7xl mx-auto">
-                {/* Logo dan Judul */}
+        <header className="w-full py-6">
+            <div className="bg-white rounded-2xl shadow-lg h-[72px] px-8 grid grid-cols-3 flex items-center max-w-7xl mx-auto">
+                {/* Logo + Judul */}
                 <div className="flex items-center gap-2">
                     <Image
-                        src="/logo.svg"
+                        src="/sima-icon.png"
                         alt="Logo SIMA"
                         width={32}
                         height={32}
@@ -28,8 +28,8 @@ export default function Navbar() {
                 </div>
 
                 {/* Menu Navigasi */}
-                <nav className="hidden md:flex gap-6">
-                    {menu.map((item) => (
+                <nav className="flex justify-center gap-6">
+                    {NAV_ITEMS.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
