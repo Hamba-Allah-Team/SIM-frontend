@@ -1,62 +1,64 @@
-// src/components/layout/Footer.tsx
-import { Facebook, Instagram, Mail, Phone, Youtube } from "lucide-react";
-import Image from "next/image";
+// components/layout/Footer.tsx
+import { Facebook, Instagram, Mail, PhoneCall } from "lucide-react"
+import Image from "next/image"
 
 export default function Footer() {
     return (
-        <footer className="bg-[#0C0839] text-white px-6 py-10 mt-16">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Info Masjid */}
-                <div>
-                    <h3 className="text-lg font-semibold">Masjid xxx</h3>
-                    <p className="text-sm mt-2">
-                        Jl. Melati No. 10, RT 02/RW 03, Kel. Cempaka Putih,<br />
-                        Kec. Kemayoran, Jakarta Pusat
-                    </p>
+        <footer className="bg-[#1E1B4B] text-white py-10 px-6 md:px-12">
+            <div className="max-w-7xl mx-auto flex flex-col gap-10">
+                {/* Section Kontak dan Map */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    {/* Kontak */}
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="text-lg font-semibold">Masjid xxx</h3>
+                            <p className="text-sm">
+                                Jl. Melati No. 10, RT 02/RW 03, Kel. Cempaka Putih, Kec. Kemayoran, Jakarta Pusat
+                            </p>
+                        </div>
 
-                    <div className="mt-6">
-                        <h4 className="font-medium mb-2">Kontak</h4>
-                        <div className="flex space-x-3 text-orange-400">
-                            <a href="#"><Phone size={18} /></a>
-                            <a href=""><Mail size={18} /></a>
-                            <a href=""><Facebook size={18} /></a>
-                            <a href=""><Instagram size={18} /></a>
-                            <a href=""><Youtube size={18} /></a>
+                        <div>
+                            <h4 className="font-semibold mb-2">Kontak</h4>
+                            <div className="flex gap-3 text-orange-400">
+                                <PhoneCall size={20} />
+                                <Mail size={20} />
+                                <Facebook size={20} />
+                                <Instagram size={20} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Peta */}
+                    <div className="flex justify-center md:justify-end">
+                        <div className="w-full max-w-sm md:aspect-square aspect-video rounded-md overflow-hidden relative">
+                            <h4 className="font-semibold mb-2 absolute -top-6 left-0 md:static md:mb-2">Maps</h4>
+                            <iframe
+                                src="https://maps.google.com/maps?q=birmingham&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                                className="absolute top-0 left-0 w-full h-full border-0"
+                                loading="lazy"
+                                allowFullScreen
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* Kosong sebagai pemisah di tengah */}
-                <div />
+                {/* Garis */}
+                <hr className="border-white/20" />
 
-                {/* Google Maps */}
-                <div>
-                    <h4 className="font-medium mb-2">Maps</h4>
-                    <iframe
-                        title="Google Maps"
-                        className="w-full h-40 rounded-md"
-                        src="https://maps.google.com/maps?q=birmingham&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                        loading="lazy"
-                    />
+                {/* Bagian bawah */}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                    {/* Logo */}
+                    <div className="flex items-center gap-2">
+                        <Image src="/sima-icon.png" alt="Logo" width={28} height={28} />
+                        <span className="font-bold text-lg text-white">SIMA</span>
+                    </div>
+
+                    {/* Hak Cipta */}
+                    <p className="text-sm text-white/70 text-center md:text-right">
+                        © Copyright All Rights Reserved 2024
+                    </p>
                 </div>
-            </div>
-
-            {/* Divider */}
-            <hr className="border-t border-white/20 my-8" />
-
-            {/* Footer Bottom */}
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
-                {/* Logo SIMA */}
-                <div className="flex items-center space-x-2">
-                    <Image src="/sima-icon.png" alt="Logo SIMA" width={30} height={30} />
-                    <span className="text-lg font-semibold text-white">SIMA</span>
-                </div>
-
-                {/* Copyright */}
-                <p className="text-sm text-white/70 mt-4 md:mt-0">
-                    © Copyright All Rights Reserved 2024
-                </p>
             </div>
         </footer>
-    );
+    )
 }
