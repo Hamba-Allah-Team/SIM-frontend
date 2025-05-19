@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-const NAV_ITEMS = [
+const menu = [
     { label: "Home", href: "/" },
     { label: "Tentang", href: "/tentang" },
     { label: "Berita", href: "/berita" },
@@ -29,7 +29,7 @@ export default function Navbar() {
 
                 {/* Menu Navigasi */}
                 <nav className="flex justify-center gap-6">
-                    {NAV_ITEMS.map((item) => (
+                    {menu.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
