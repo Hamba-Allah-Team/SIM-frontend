@@ -107,7 +107,7 @@ export default function ResetPasswordCode() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full relative">
+    <div className="flex items-center justify-center min-h-screen w-full relative ">
       <Link
         href="/reset-password"
         className={`absolute top-6 left-6 flex items-center text-lg text-black hover:text-primary transition-all duration-500 ease-out transform ${
@@ -119,7 +119,7 @@ export default function ResetPasswordCode() {
       </Link>
 
       <Card
-        className={`w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
+        className={`w-full max-w-xl shadow-none min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
           loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >
@@ -130,9 +130,9 @@ export default function ResetPasswordCode() {
               alt="Logo SIMA"
               className="w-10 h-10 transition-transform duration-300 hover:scale-110"
             />
-            <span className="text-3xl font-semibold">SIMA</span>
+            <span className="text-3xl font-semibold text-black">SIMA</span>
           </div>
-          <CardTitle className="text-3xl pt-3">Masukkan Kode</CardTitle>
+          <CardTitle className="text-3xl pt-3 text-black">Masukkan Kode</CardTitle>
           {countdown > 0 ? (
             <p className="text-sm text-gray-500 mt-2">
               Kode akan kedaluwarsa dalam {countdown} detik
@@ -150,7 +150,7 @@ export default function ResetPasswordCode() {
                 size={18}
               />
               <Input
-                className="pl-10 w-full border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="pl-10 w-full border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 placeholder:text-gray-500 transition-colors duration-300 text-gray-700"
                 type="text"
                 placeholder="Masukkan Kode"
                 value={code}
