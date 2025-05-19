@@ -55,7 +55,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 3,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -67,7 +67,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id: 4,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",
@@ -79,7 +79,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 5,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -91,7 +91,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id: 6,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",
@@ -103,7 +103,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 7,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -115,7 +115,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id: 8,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",
@@ -127,7 +127,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 9,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -139,7 +139,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id: 10,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",
@@ -151,7 +151,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 11,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -163,7 +163,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id: 12,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",
@@ -175,7 +175,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-12T11:00:00Z",
     },
     {
-      contents_id: 1,
+      contents_id: 13,
       mosque_id: 10,
       title: "Sejarah Masjid Agung",
       content_description: "Artikel tentang sejarah Masjid Agung...",
@@ -187,7 +187,7 @@ async function getData(): Promise<Content[]> {
       updated_at: "2024-04-26T10:00:00Z",
     },
     {
-      contents_id: 2,
+      contents_id:14,
       mosque_id: 10,
       title: "Kegiatan Ramadhan 2024",
       content_description: "Berita kegiatan Ramadhan di masjid...",

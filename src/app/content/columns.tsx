@@ -3,6 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Trash2, Pencil,  CircleEllipsis, ArrowUpDown} from 'lucide-react';
+import React, { useState } from "react"
+import { DeleteDialog } from "./delete/deleteDialog" // sesuaikan path-nya
 
 // Define the shape of the data
 export type Content = {
@@ -17,6 +19,8 @@ export type Content = {
   created_at: string
   updated_at: string
 }
+
+
 
 // Define the table columns
 export const columns: ColumnDef<Content>[] = [

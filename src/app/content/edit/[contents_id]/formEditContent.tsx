@@ -65,12 +65,22 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
           name="title"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Judul Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Judul Konten
+              </FormLabel>
               <FormControl>
                 <Input
-                  {...field}
-                  placeholder="Judul konten"
-                  className={fieldState.error ? "border-red-500" : ""}
+                  placeholder={fieldState.error ? fieldState.error.message : "Judul konten di sini"}
+                    {...field}
+                    className={`
+                      bg-white 
+                      text-black 
+                      ${fieldState.error 
+                        ? "border border-red-500 placeholder-red-600" 
+                        : "border border-gray-300 placeholder-gray-400"}
+                      pr-10
+                    `}
+                    aria-invalid={fieldState.error ? "true" : "false"}
                 />
               </FormControl>
               <FormMessage />
@@ -84,12 +94,22 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
           name="content_description"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Isi Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Isi Konten
+              </FormLabel>
               <FormControl>
                 <Textarea
-                  {...field}
-                  placeholder="Penjelasan tentang konten"
-                  className={fieldState.error ? "border-red-500" : ""}
+                  placeholder={fieldState.error ? fieldState.error.message : "Penjelasan tentang konten di sini"}
+                    {...field}
+                    className={`
+                      bg-white 
+                      text-black 
+                      ${fieldState.error 
+                        ? "border border-red-500 placeholder-red-600" 
+                        : "border border-gray-300 placeholder-gray-400"}
+                      pr-10
+                    `}
+                    aria-invalid={fieldState.error ? "true" : "false"}
                 />
               </FormControl>
               <FormMessage />
@@ -103,15 +123,17 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
           name="contents_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Jenis Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Jenis Konten
+              </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white w-full">
                     <SelectValue placeholder="Pilih jenis konten" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="artikel">Artikel</SelectItem>
-                    <SelectItem value="berita">Berita</SelectItem>
+                  <SelectContent className="bg-white z-10">
+                    <SelectItem value="artikel" className="hover:bg-gray-100 aria-selected:bg-white">Artikel</SelectItem>
+                    <SelectItem value="berita" className="hover:bg-gray-100 aria-selected:bg-white">Berita</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -126,14 +148,21 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
           name="published_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tanggal Rilis</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                  Tanggal Rilis
+              </FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  {...field}
-                  readOnly
-                  className="cursor-not-allowed"
-                />
+                <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
+                      <CalendarDays className="h-5 w-5 text-black" />
+                    </span>
+                    <Input
+                      type="date"
+                      {...field}
+                      readOnly
+                      className="pl-10 placeholder-black-400 text-black-700 bg-white border border-gray-300 w-full font-poppins cursor-not-allowed"
+                    />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -167,7 +196,9 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
 
             return (
               <FormItem>
-                <FormLabel>Foto Cover Konten</FormLabel>
+                <FormLabel className="text-[14px] font-semibold font-poppins text-black">
+                  Foto Cover Konten
+                </FormLabel>
                 <FormControl>
                   {previewUrl ? (
                     <div className="space-y-2">
