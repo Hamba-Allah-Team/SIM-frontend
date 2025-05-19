@@ -17,11 +17,11 @@ export default function Footer() {
                     <div className="mt-6">
                         <h4 className="font-medium mb-2">Kontak</h4>
                         <div className="flex space-x-3 text-orange-400">
-                            <Phone size={18} />
-                            <Mail size={18} />
-                            <Facebook size={18} />
-                            <Instagram size={18} />
-                            <Youtube size={18} />
+                            <a href="#"><Phone size={18} /></a>
+                            <a href=""><Mail size={18} /></a>
+                            <a href=""><Facebook size={18} /></a>
+                            <a href=""><Instagram size={18} /></a>
+                            <a href=""><Youtube size={18} /></a>
                         </div>
                     </div>
                 </div>
