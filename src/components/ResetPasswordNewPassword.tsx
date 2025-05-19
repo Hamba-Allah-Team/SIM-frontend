@@ -25,7 +25,6 @@ export default function ResetPasswordNewPassword() {
   useEffect(() => {
     const savedEmail = localStorage.getItem("resetEmail");
     const savedCode = localStorage.getItem("resetCode");
-
     if (!savedEmail || !savedCode) {
       window.location.href = "/reset-password/verify";
     } else {
@@ -94,7 +93,7 @@ export default function ResetPasswordNewPassword() {
       </Link>
 
       <Card
-        className={`w-full max-w-xl min-h-[500px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
+        className={`w-full max-w-xl shadow-none min-h-[500px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
           loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >
@@ -105,9 +104,11 @@ export default function ResetPasswordNewPassword() {
               alt="Logo SIMA"
               className="w-10 h-10 transition-transform duration-300 hover:scale-110"
             />
-            <span className="text-3xl font-semibold">SIMA</span>
+            <span className="text-3xl font-semibold text-black">SIMA</span>
           </div>
-          <CardTitle className="text-3xl pt-3">Reset Password Baru</CardTitle>
+          <CardTitle className="text-3xl pt-3 text-black">
+            Reset Password Baru
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="pb-6">
@@ -118,7 +119,7 @@ export default function ResetPasswordNewPassword() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password Baru"
                 value={newPassword}
@@ -140,11 +141,11 @@ export default function ResetPasswordNewPassword() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 type={showPassword ? "text" : "password"}
-                placeholder="Konfirmasi Password Baru"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                placeholder="Password Baru"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
               <button

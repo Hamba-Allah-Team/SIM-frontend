@@ -35,11 +35,11 @@ export default function ResetPasswordEmail() {
       if (res.ok) {
         localStorage.setItem("resetEmail", email);
         if (data.resetCode) {
-          localStorage.setItem("resetCode", data.resetCode); // Simpan kode jika dikembalikan
+          localStorage.setItem("resetCode", data.resetCode);
         }
         alert("Kode reset password berhasil dikirim ke email Anda.");
         setEmailSent(true);
-        window.location.href = "/reset-password/verify"; // redirect
+        window.location.href = "/reset-password/verify";
       } else {
         if (data.message?.toLowerCase().includes("email tidak ditemukan")) {
           alert("Email salah atau tidak terdaftar.");
@@ -65,7 +65,7 @@ export default function ResetPasswordEmail() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full relative">
+    <div className="flex items-center justify-center min-h-screen w-full relative bg-white">
       <Link
         href="/login"
         className={`absolute top-6 left-6 flex items-center text-lg text-black hover:text-primary transition-all duration-500 ease-out transform ${
@@ -77,7 +77,7 @@ export default function ResetPasswordEmail() {
       </Link>
 
       <Card
-        className={`w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
+        className={`shadow-none w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
           loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >
@@ -88,9 +88,9 @@ export default function ResetPasswordEmail() {
               alt="Logo SIMA"
               className="w-10 h-10 transition-transform duration-300 hover:scale-110"
             />
-            <span className="text-3xl font-semibold">SIMA</span>
+            <span className="text-3xl font-semibold text-black">SIMA</span>
           </div>
-          <CardTitle className="text-3xl pt-3">Lupa Password</CardTitle>
+          <CardTitle className="text-3xl pt-3 text-black">Lupa Password</CardTitle>
         </CardHeader>
 
         <CardContent className="pb-6">
@@ -101,7 +101,7 @@ export default function ResetPasswordEmail() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 type="email"
                 placeholder="Masukkan Email"
                 value={email}

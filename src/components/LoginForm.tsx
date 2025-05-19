@@ -58,7 +58,7 @@ export default function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
       <Card
-        className={`w-full max-w-xl min-h-[400px] bg-white border-0 rounded-3xl shadow-background transform transition-all duration-700 ease-out ${
+        className={`w-full max-w-xl min-h-[400px] bg-white border-none shadow-none rounded-3xl transform transition-all duration-700 ease-out ${
           loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
         }`}
       >
@@ -69,9 +69,9 @@ export default function LoginForm() {
               alt="Logo SIMA"
               className="w-10 h-10 transition-transform duration-300 hover:scale-110"
             />
-            <span className="text-3xl font-semibold">SIMA</span>
+            <span className="text-3xl font-semibold text-black">SIMA</span>
           </div>
-          <CardTitle className="text-3xl pt-3">Login</CardTitle>
+          <CardTitle className="text-3xl pt-3 text-black">Login</CardTitle>
         </CardHeader>
 
         <CardContent className="pb-6">
@@ -82,7 +82,7 @@ export default function LoginForm() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="w-full pl-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 placeholder="Email"
@@ -98,7 +98,7 @@ export default function LoginForm() {
                 size={18}
               />
               <Input
-                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300"
+                className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -118,7 +118,7 @@ export default function LoginForm() {
             <div className="text-left text-sm">
               <Link
                 href="/reset-password"
-                className="text-primary hover:underline"
+                className="text-primary hover:underline text-custom-orange"
               >
                 Lupa password
               </Link>

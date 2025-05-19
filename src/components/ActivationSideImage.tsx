@@ -39,7 +39,7 @@ export default function ActivationSideImage() {
             alt="Logo SIMA"
             className="w-16 h-16 transition-transform duration-300 hover:scale-110"
           />
-          <span className="text-4xl font-extrabold">SIMA</span>
+          <span className="text-4xl font-extrabold text-black">SIMA</span>
         </div>
         <p className="text-4xl font-bold text-black mt-6 w-full max-w-2xl mb-24">
           Nikmati seluruh akses untuk semua fitur selama 1 Bulan
