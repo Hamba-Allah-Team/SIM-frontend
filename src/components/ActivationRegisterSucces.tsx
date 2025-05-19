@@ -20,7 +20,7 @@ export default function ActivationRegisterSuccess() {
           visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
-        <CheckCircle className="text-green-500 w-16 h-16 animate-bounce blac" />
+        <CheckCircle className="text-custom-orange w-16 h-16 animate-bounce blac" />
         <h1 className="text-2xl font-semibold text-center text-black">
           Permintaan Aktivasi Akun Berhasil Dikirim!
         </h1>
