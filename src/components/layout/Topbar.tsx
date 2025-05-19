@@ -13,13 +13,13 @@ export default function AdminTopbar() {
                 <Input
                     type="text"
                     placeholder="Pencarian"
-                    className="pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm border-none focus:outline-none focus:ring-2 focus:ring-orange-200"
+                    className="pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm text-gray-400 border-none focus:outline-none focus:ring-2 focus:ring-orange-200"
                 />
             </div>
 
             {/* User Greeting */}
             <div className="text-sm text-right">
-                <div className="text-gray-400">Howdy</div>
+                <div className="text-gray-400">Halo</div>
                 <div className="font-semibold text-[#1B1B3A]">Ariana Xian</div>
             </div>
         </header>
