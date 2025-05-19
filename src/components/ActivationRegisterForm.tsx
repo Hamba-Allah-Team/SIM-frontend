@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,6 @@ import {
   Hash,
   Building,
   MapPin,
-  Info,
   Phone,
   Facebook,
   Instagram,
@@ -21,6 +20,7 @@ export default function ActivationRegisterForm() {
   const [loaded, setLoaded] = useState(false);
   const [selectedFile, setSelectedFile] = useState("Unggah gambar");
   const [preview, setPreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -32,6 +32,63 @@ export default function ActivationRegisterForm() {
     "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none";
   const inputWithIconClass =
     "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-gray-400 placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
+
+  const inputs = [
+    { name: "username", icon: <User size={20} className={iconClass} />, placeholder: "Username", required: true },
+    { name: "email", icon: <Mail size={20} className={iconClass} />, placeholder: "Email", required: true },
+    { name: "proof_number", icon: <Hash size={20} className={iconClass} />, placeholder: "Nomor Bukti Transfer", required: true },
+    { name: "mosque_name", icon: <Building size={20} className={iconClass} />, placeholder: "Nama Masjid", required: true },
+    { name: "mosque_address", icon: <MapPin size={20} className={iconClass} />, placeholder: "Alamat Masjid", required: true },
+    { name: "mosque_email", icon: <Mail size={20} className={iconClass} />, placeholder: "Email Masjid (opsional)", required: false },
+    { name: "mosque_phone_whatsapp", icon: <Phone size={20} className={iconClass} />, placeholder: "No. WhatsApp (opsional)", required: false },
+    { name: "mosque_facebook", icon: <Facebook size={20} className={iconClass} />, placeholder: "Tautan Facebook (opsional)", required: false },
+    { name: "mosque_instagram", icon: <Instagram size={20} className={iconClass} />, placeholder: "Tautan Instagram (opsional)", required: false },
+  ];
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    if (!formData.get("proof_image")) {
+      alert("Upload Bukti Transfer wajib diisi!");
+      setSubmitting(false);
+      return;
+    }
+
+    const requiredFields = ["username", "email", "proof_number", "mosque_name", "mosque_address"];
+    for (const field of requiredFields) {
+      if (!formData.get(field) || String(formData.get(field)).trim() === "") {
+        alert(`Field ${field.replace(/_/g, " ")} wajib diisi!`);
+        setSubmitting(false);
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/activations/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        alert(`Gagal mengirim permintaan. Server jawab: ${text}`);
+      } else {
+        form.reset();
+        setPreview(null);
+        setSelectedFile("Unggah gambar");
+        window.location.href = "/activation/register/success";
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan saat mengirim permintaan.");
+      console.error(error);
+    }
+
+    setSubmitting(false);
+  }
 
   return (
     <div className="w-full h-screen px-4 pt-4 pb-4 bg-custom-orange overflow-auto flex flex-col items-center">
@@ -61,52 +118,32 @@ export default function ActivationRegisterForm() {
         </CardHeader>
 
         <CardContent className="pb-4 flex flex-col items-center text-left bg-custom-orange rounded-t-3xl">
-          <form className="space-y-5 text-white w-full">
-            {/* Username */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Username
-              </label>
-              <div className={inputWrapperClass}>
-                <User size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Username"
-                  required
-                  className={inputWithIconClass}
-                />
+          <form
+            className="space-y-5 text-white w-full"
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+          >
+            {inputs.map(({ name, icon, placeholder, required }) => (
+              <div key={name}>
+                <label className="block mb-1 font-medium text-white capitalize">
+                  {placeholder}
+                </label>
+                <div className={inputWrapperClass}>
+                  {icon}
+                  <Input
+                    type={name.includes("email") ? "email" : "text"}
+                    name={name}
+                    placeholder={placeholder}
+                    required={required}
+                    className={inputWithIconClass}
+                    disabled={submitting}
+                  />
+                </div>
               </div>
-            </div>
+            ))}
 
-            {/* Email */}
-            <div>
-              <label className="block mb-1 font-medium text-white">Email</label>
-              <div className={inputWrapperClass}>
-                <Mail size={20} className={iconClass} />
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  required
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
-            {/* Nomor Bukti Transfer */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Nomor Bukti Transfer
-              </label>
-              <div className={inputWrapperClass}>
-                <Hash size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Nomor Bukti Transfer"
-                  required
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
+            {/* Input hidden type */}
+            <input type="hidden" name="type" value="activation" />
 
             {/* Upload Bukti Transfer */}
             <div>
@@ -118,6 +155,7 @@ export default function ActivationRegisterForm() {
                 <input
                   id="fileUpload"
                   type="file"
+                  name="proof_image"
                   accept="image/*"
                   required
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -135,6 +173,7 @@ export default function ActivationRegisterForm() {
                       setPreview(null);
                     }
                   }}
+                  disabled={submitting}
                 />
 
                 {preview ? (
@@ -155,90 +194,13 @@ export default function ActivationRegisterForm() {
               </div>
             </div>
 
-            {/* Nama Masjid */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Nama Masjid
-              </label>
-              <div className={inputWrapperClass}>
-                <Building size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Nama Masjid (opsional)"
-                  required
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
-            {/* Alamat Masjid */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Alamat Masjid
-              </label>
-              <div className={inputWrapperClass}>
-                <MapPin size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Alamat Masjid (opsional)"
-                  required
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
-            {/* WhatsApp Masjid */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                WhatsApp Masjid
-              </label>
-              <div className={inputWrapperClass}>
-                <Phone size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="No. WhatsApp (opsional)"
-                  required
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
-            {/* Facebook Masjid */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Facebook Masjid
-              </label>
-              <div className={inputWrapperClass}>
-                <Facebook size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Tautan Facebook (opsional)"
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
-            {/* Instagram Masjid */}
-            <div>
-              <label className="block mb-1 font-medium text-white">
-                Instagram Masjid
-              </label>
-              <div className={inputWrapperClass}>
-                <Instagram size={20} className={iconClass} />
-                <Input
-                  type="text"
-                  placeholder="Tautan Instagram (opsional)"
-                  className={inputWithIconClass}
-                />
-              </div>
-            </div>
-
             {/* Tombol Submit */}
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-2xl mt-4"
+              disabled={submitting}
             >
-              Kirim
+              {submitting ? "Mengirim..." : "Kirim"}
             </Button>
           </form>
         </CardContent>
