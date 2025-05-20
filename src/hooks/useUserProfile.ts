@@ -1,22 +1,17 @@
+// hooks/services/useUserProfile.ts
 import { useEffect, useState } from "react"
 import api from "@/lib/api"
+import axios from "axios"
 
-interface Mosque {
-    id: number
-    name: string
-    // tambahkan properti lain sesuai struktur di backend
-}
-
-export interface UserProfile {
+interface UserProfile {
     id: number
     name: string
     email: string
     role: "admin" | "superadmin"
-    mosque?: Mosque
-    // tambahkan properti lain jika ada
+    // tambahkan properti lain sesuai data dari backend
 }
 
-export default function useUserProfile() {
+export function useUserProfile() {
     const [profile, setProfile] = useState<UserProfile | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -26,8 +21,13 @@ export default function useUserProfile() {
             try {
                 const response = await api.get<UserProfile>("/api/users/profile")
                 setProfile(response.data)
-            } catch (err: any) {
-                setError(err?.response?.data?.message || "Gagal mengambil profil")
+            } catch (err) {
+                if (axios.isAxiosError(err)) {
+                    const serverMsg = err.response?.data?.message
+                    setError(serverMsg || "Gagal mengambil profil pengguna.")
+                } else {
+                    setError("Terjadi kesalahan tak terduga.")
+                }
             } finally {
                 setLoading(false)
             }
