@@ -14,14 +14,14 @@ export default function ActivationExtendSuccess() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white">
+    <div className="w-full flex items-center justify-center h-screen bg-white">
       <div
         className={`flex flex-col items-center gap-6 p-10 rounded-3xl transition-all duration-700 ease-out transform ${
           visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
-        <CheckCircle className="text-green-500 w-16 h-16 animate-bounce" />
-        <h1 className="text-2xl font-semibold text-center">
+        <CheckCircle className="text-custom-orange w-16 h-16 animate-bounce text" />
+        <h1 className="text-2xl font-semibold text-center text-black">
           Permintaan Perpanjangan Akun Berhasil Dikirim!
         </h1>
         <Link href="/">

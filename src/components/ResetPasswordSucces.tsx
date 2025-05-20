@@ -14,14 +14,14 @@ export default function ResetPasswordSucces() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white ">
+    <div className="w-screen flex items-center justify-center h-screen bg-white ">
       <div
-        className={`flex flex-col items-center gap-6 p-10 rounded-3xl transition-all duration-700 ease-out transform ${
+        className={`w-full flex flex-col items-center gap-6 p-10 rounded-3xl transition-all duration-700 ease-out transform ${
           visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
         <CheckCircle className="text-green-500 w-16 h-16 animate-bounce" />
-        <h1 className="text-2xl font-semibold text-center">Reset Password Berhasil!</h1>
+        <h1 className="text-2xl font-semibold text-center text-black">Reset Password Berhasil!</h1>
         <p className="text-gray-600 text-center">
           Silakan login dengan password baru Anda.
         </p>

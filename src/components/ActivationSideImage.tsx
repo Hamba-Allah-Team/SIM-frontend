@@ -19,7 +19,7 @@ export default function ActivationSideImage() {
       }`}
     >
       {/* Tombol Kembali */}
-      <div className="pl-24 pt-16">
+      <div className="pl-12 pt-8">
         <Link
           href="/"
           className={`flex items-center gap-2 text-lg font-bold text-black hover:text-primary transition-all duration-500 ease-out transform ${
@@ -32,14 +32,14 @@ export default function ActivationSideImage() {
       </div>
 
       {/* Logo dan Deskripsi */}
-      <div className="flex flex-col items-start justify-start gap-4 mt-12 pl-24 pr-6">
+      <div className="flex flex-col items-start justify-start gap-4 mt-12 pl-12 pr-6">
         <div className="flex items-center gap-4">
           <img
             src="/sima-icon.png"
             alt="Logo SIMA"
             className="w-16 h-16 transition-transform duration-300 hover:scale-110"
           />
-          <span className="text-4xl font-extrabold">SIMA</span>
+          <span className="text-4xl font-extrabold text-black">SIMA</span>
         </div>
         <p className="text-4xl font-bold text-black mt-6 w-full max-w-2xl mb-24">
           Nikmati seluruh akses untuk semua fitur selama 1 Bulan
