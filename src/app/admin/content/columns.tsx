@@ -29,7 +29,7 @@ export const columns: ColumnDef<Content>[] = [
     header: "Judul Konten",
     cell: ({ row }) => (
       <div
-        className="truncate overflow-hidden whitespace-nowrap max-w-[120px] sm:max-w-[200px] lg:max-w-[300px]"
+        className="truncate overflow-hidden whitespace-nowrap w-[200px] sm:w-[300px] lg:w-[400px]"
         title={row.getValue("title")}
       >
         {row.getValue("title")}

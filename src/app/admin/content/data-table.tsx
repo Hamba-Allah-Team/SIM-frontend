@@ -54,8 +54,9 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       <div className="flex items-center py-4">
+        {/* Uncomment ini kalau butuh search */}
         {/* <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
@@ -68,13 +69,15 @@ export function DataTable<TData, TValue>({
           />
         </div> */}
       </div>
-      <div className="rounded-md border">
-        <Table>
+
+      {/* Container dengan scroll horizontal jika tabel terlalu lebar */}
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="w-full min-w-[400px] table-auto">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="font-bold">
+                  <TableHead key={header.id} className="font-bold whitespace-nowrap">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -94,7 +97,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -118,8 +121,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end space-x-1 py-4">
-        {/* Previous Button */}
+      <div className="flex items-center justify-end space-x-1 py-4 flex-wrap gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -130,11 +132,10 @@ export function DataTable<TData, TValue>({
           <ChevronLeftIcon className="h-4 w-4" />
         </Button>
 
-        {/* Page Number Buttons */}
         {Array.from({ length: table.getPageCount() }).map((_, i) => {
           const isActive = i === table.getState().pagination.pageIndex
           return (
-            <Button 
+            <Button
               key={i}
               variant={isActive ? "outline" : "white"}
               size="sm"
@@ -149,7 +150,6 @@ export function DataTable<TData, TValue>({
           )
         })}
 
-        {/* Next Button */}
         <Button
           variant="outline"
           size="sm"

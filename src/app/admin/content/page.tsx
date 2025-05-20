@@ -209,12 +209,13 @@ export default async function DemoPage() {
     <div className="w-screen h-screen p-8 bg-[#F5F6F8] rounded-none">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-[28px] font-bold font-poppins">Konten Masjid</h1>
-        <ButtonTambahClient href="/content/create" label="Tambah" />
+        <ButtonTambahClient href="/admin/content/create" label="Tambah" />
       </div>
 
-      <div className="p-8 bg-white rounded-xl shadow-sm">
+      <div className="p-8 bg-white rounded-xl shadow-sm overflow-x-auto">
         <DataTable columns={columns} data={data} />
       </div>
+
     </div>
   )
 }

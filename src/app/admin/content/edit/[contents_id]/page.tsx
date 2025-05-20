@@ -1,6 +1,6 @@
 // app/content/[id]/edit/page.tsx
 import { EditContentForm } from "./formEditContent"
-import { Content } from "@/app/content/columns"
+import { Content } from "@/app/admin/content/columns"
 
 export default function EditContentPage() {
   const dummyContent: Content = {
