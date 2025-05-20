@@ -13,12 +13,13 @@ import {
   Phone,
   Facebook,
   Instagram,
-  Image,
+  Upload,
+  Landmark,
 } from "lucide-react";
 
 export default function ActivationRegisterForm() {
   const [loaded, setLoaded] = useState(false);
-  const [selectedFile, setSelectedFile] = useState("Unggah gambar");
+  const [selectedFile, setSelectedFile] = useState("Maksimal 2 MB");
   const [preview, setPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -35,15 +36,60 @@ export default function ActivationRegisterForm() {
     "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-gray-400 placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
 
   const inputs = [
-    { name: "username", icon: <User size={20} className={iconClass} />, placeholder: "Username", required: true },
-    { name: "email", icon: <Mail size={20} className={iconClass} />, placeholder: "Email", required: true },
-    { name: "proof_number", icon: <Hash size={20} className={iconClass} />, placeholder: "Nomor Bukti Transfer", required: true },
-    { name: "mosque_name", icon: <Building size={20} className={iconClass} />, placeholder: "Nama Masjid", required: true },
-    { name: "mosque_address", icon: <MapPin size={20} className={iconClass} />, placeholder: "Alamat Masjid", required: true },
-    { name: "mosque_email", icon: <Mail size={20} className={iconClass} />, placeholder: "Email Masjid (opsional)", required: false },
-    { name: "mosque_phone_whatsapp", icon: <Phone size={20} className={iconClass} />, placeholder: "No. WhatsApp (opsional)", required: false },
-    { name: "mosque_facebook", icon: <Facebook size={20} className={iconClass} />, placeholder: "Tautan Facebook (opsional)", required: false },
-    { name: "mosque_instagram", icon: <Instagram size={20} className={iconClass} />, placeholder: "Tautan Instagram (opsional)", required: false },
+    {
+      name: "username",
+      icon: <User size={20} className={iconClass} />,
+      placeholder: "Username",
+      required: true,
+    },
+    {
+      name: "email",
+      icon: <Mail size={20} className={iconClass} />,
+      placeholder: "Email",
+      required: true,
+    },
+    {
+      name: "proof_number",
+      icon: <Hash size={20} className={iconClass} />,
+      placeholder: "Nomor Bukti Transfer",
+      required: true,
+    },
+    {
+      name: "mosque_name",
+      icon: <Building size={20} className={iconClass} />,
+      placeholder: "Nama Masjid",
+      required: true,
+    },
+    {
+      name: "mosque_address",
+      icon: <MapPin size={20} className={iconClass} />,
+      placeholder: "Alamat Masjid",
+      required: true,
+    },
+    {
+      name: "mosque_email",
+      icon: <Mail size={20} className={iconClass} />,
+      placeholder: "Email Masjid (opsional)",
+      required: false,
+    },
+    {
+      name: "mosque_phone_whatsapp",
+      icon: <Phone size={20} className={iconClass} />,
+      placeholder: "No. WhatsApp (opsional)",
+      required: false,
+    },
+    {
+      name: "mosque_facebook",
+      icon: <Facebook size={20} className={iconClass} />,
+      placeholder: "Tautan Facebook (opsional)",
+      required: false,
+    },
+    {
+      name: "mosque_instagram",
+      icon: <Instagram size={20} className={iconClass} />,
+      placeholder: "Tautan Instagram (opsional)",
+      required: false,
+    },
   ];
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -59,7 +105,13 @@ export default function ActivationRegisterForm() {
       return;
     }
 
-    const requiredFields = ["username", "email", "proof_number", "mosque_name", "mosque_address"];
+    const requiredFields = [
+      "username",
+      "email",
+      "proof_number",
+      "mosque_name",
+      "mosque_address",
+    ];
     for (const field of requiredFields) {
       if (!formData.get(field) || String(formData.get(field)).trim() === "") {
         alert(`Field ${field.replace(/_/g, " ")} wajib diisi!`);
@@ -106,13 +158,10 @@ export default function ActivationRegisterForm() {
           {/* Card rekening */}
           <div className="bg-white text-black w-full mt-6 p-4 rounded-2xl border border-custom-orange max-w-3xl mx-auto">
             <div className="flex flex-col items-center gap-3 text-center">
-              <div>
-                <p className="font-semibold text-black">
-                  Transfer ke rekening:
-                </p>
-                <p className="text-black">
-                  BANK BRI - 1234567890 <br /> a.n. SIMA
-                </p>
+              <p className="text-black font-bold">Rekening BCA</p>
+              <div className="flex items-center gap-2">
+                <Landmark className="text-black" size={20} />
+                <span className="text-black font-semibold">78806350373</span>
               </div>
             </div>
           </div>
@@ -185,7 +234,10 @@ export default function ActivationRegisterForm() {
                   />
                 ) : (
                   <div className="text-center z-0">
-                    <Image size={28} className="mx-auto mb-2 text-custom-orange" />
+                    <Upload
+                      size={28}
+                      className="mx-auto mb-2 text-gray-400"
+                    />
                     <p className="text-sm text-gray-400">
                       Klik atau seret gambar ke sini
                     </p>
