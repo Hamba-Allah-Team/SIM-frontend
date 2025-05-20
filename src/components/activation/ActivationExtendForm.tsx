@@ -4,7 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, User, Hash, Image } from "lucide-react";
+import { Mail, User, Hash, Upload, Landmark } from "lucide-react";
 
 export default function ExtensionForm() {
   const [loaded, setLoaded] = useState(false);
@@ -14,6 +14,7 @@ export default function ExtensionForm() {
   const [email, setEmail] = useState("");
   const [proofNumber, setProofNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -27,14 +28,19 @@ export default function ExtensionForm() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    if (!formData.get("username") || !formData.get("email") || !formData.get("proof_number") || !formData.get("proof_image")) {
+    if (
+      !formData.get("username") ||
+      !formData.get("email") ||
+      !formData.get("proof_number") ||
+      !formData.get("proof_image")
+    ) {
       alert("Semua field wajib diisi!");
       setSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/extensions/submit", {
+      const response = await fetch(`${API}/api/extensions/submit`, {
         method: "POST",
         body: formData,
       });
@@ -57,7 +63,8 @@ export default function ExtensionForm() {
   }
 
   const inputWrapperClass = "relative w-full";
-  const iconClass = "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none";
+  const iconClass =
+    "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none";
   const inputWithIconClass =
     "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-gray-400 placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
 
@@ -69,14 +76,28 @@ export default function ExtensionForm() {
         }`}
       >
         <CardHeader className="pb-4 flex flex-col items-center text-center bg-custom-orange rounded-t-3xl">
-          <CardTitle className="text-3xl pt-2 text-white">Form Perpanjangan Akun</CardTitle>
+          <CardTitle className="text-3xl pt-2 text-white">
+            Form Perpanjangan Akun
+          </CardTitle>
+          {/* Card rekening */}
+          <div className="bg-white text-black w-full mt-6 p-4 rounded-2xl border border-custom-orange max-w-3xl mx-auto">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <p className="text-black font-bold">Rekening BCA</p>
+              <div className="flex items-center gap-2">
+                <Landmark className="text-black" size={20} />
+                <span className="text-black font-semibold">78806350373</span>
+              </div>
+            </div>
+          </div>
         </CardHeader>
 
         <CardContent className="pb-4 flex flex-col items-center bg-custom-orange rounded-b-3xl">
           <form onSubmit={handleSubmit} className="space-y-5 text-white w-full">
             {/* Username */}
             <div>
-              <label className="block mb-1 font-medium text-white">Username</label>
+              <label className="block mb-1 font-medium text-white">
+                Username
+              </label>
               <div className={inputWrapperClass}>
                 <User size={20} className={iconClass} />
                 <Input
@@ -110,7 +131,9 @@ export default function ExtensionForm() {
 
             {/* Nomor Bukti Transfer */}
             <div>
-              <label className="block mb-1 font-medium text-white">Nomor Bukti Transfer</label>
+              <label className="block mb-1 font-medium text-white">
+                Nomor Bukti Transfer
+              </label>
               <div className={inputWrapperClass}>
                 <Hash size={20} className={iconClass} />
                 <Input
@@ -130,7 +153,9 @@ export default function ExtensionForm() {
 
             {/* Upload Bukti */}
             <div>
-              <label className="block mb-1 font-medium text-white">Upload Bukti Transfer</label>
+              <label className="block mb-1 font-medium text-white">
+                Upload Bukti Transfer
+              </label>
               <div className="relative w-full h-48 bg-white rounded-2xl overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-orange-400 transition-colors">
                 <input
                   id="fileUpload"
@@ -153,13 +178,24 @@ export default function ExtensionForm() {
                   }}
                 />
                 {preview ? (
-                  <img src={preview} alt="Preview" className="object-contain w-full h-full" />
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="object-contain w-full h-full"
+                  />
                 ) : (
                   <div className="text-center z-0">
-                    <Image size={28} className="mx-auto mb-2 text-custom-orange" />
-                    <p className="text-sm text-gray-400">Klik atau seret gambar ke sini</p>
+                    <Upload
+                      size={28}
+                      className="mx-auto mb-2 text-gray-400"
+                    />
+                    <p className="text-sm text-gray-400">
+                      Klik atau seret gambar ke sini
+                    </p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {selectedFile instanceof File ? selectedFile.name : "Unggah gambar"}
+                      {selectedFile instanceof File
+                        ? selectedFile.name
+                        : "Maksimal 2 MB"}
                     </p>
                   </div>
                 )}

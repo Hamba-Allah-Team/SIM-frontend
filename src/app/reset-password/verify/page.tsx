@@ -1,5 +1,5 @@
-import ResetPasswordCode from "@/components/ResetPasswordCode";
-import MosqueImage from "@/components/MosqueImage";
+import ResetPasswordCode from "@/components/reset-password/ResetPasswordCode";
+import MosqueImage from "@/components/login/MosqueImage";
 
 export default function ResetPasswordCodePage() {
   return (
