@@ -145,8 +145,8 @@ export default function ResetPasswordNewPassword() {
                 className="w-full pl-10 pr-10 border-0 bg-gray-200 rounded-2xl hover:bg-gray-300 transition-colors duration-300 text-gray-700 placeholder:text-gray-500"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password Baru"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
                 required
               />
               <button
