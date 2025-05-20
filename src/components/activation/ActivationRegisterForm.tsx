@@ -21,6 +21,7 @@ export default function ActivationRegisterForm() {
   const [selectedFile, setSelectedFile] = useState("Unggah gambar");
   const [preview, setPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -68,7 +69,7 @@ export default function ActivationRegisterForm() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/activations/submit", {
+      const response = await fetch(`${API}/api/activations/submit`, {
         method: "POST",
         body: formData,
       });

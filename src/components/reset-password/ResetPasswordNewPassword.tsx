@@ -16,6 +16,7 @@ export default function ResetPasswordNewPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -47,7 +48,7 @@ export default function ResetPasswordNewPassword() {
 
     try {
       const res = await fetch(
-        "http://localhost:8080/api/reset-password/change-password",
+        `${API}/api/reset-password/change-password`,
         {
           method: "PUT",
           headers: {

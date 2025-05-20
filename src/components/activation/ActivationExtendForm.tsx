@@ -14,6 +14,7 @@ export default function ExtensionForm() {
   const [email, setEmail] = useState("");
   const [proofNumber, setProofNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -34,7 +35,7 @@ export default function ExtensionForm() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/extensions/submit", {
+      const response = await fetch(`${API}/api/extensions/submit`, {
         method: "POST",
         body: formData,
       });

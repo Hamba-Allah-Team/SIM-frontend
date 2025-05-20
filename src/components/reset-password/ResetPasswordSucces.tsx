@@ -20,7 +20,7 @@ export default function ResetPasswordSucces() {
           visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
-        <CheckCircle className="text-green-500 w-16 h-16 animate-bounce" />
+        <CheckCircle className="text-custom-orange w-16 h-16 animate-bounce" />
         <h1 className="text-2xl font-semibold text-center text-black">Reset Password Berhasil!</h1>
         <p className="text-gray-600 text-center">
           Silakan login dengan password baru Anda.

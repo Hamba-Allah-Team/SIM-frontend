@@ -1,5 +1,5 @@
-import LoginForm from "@/components/LoginForm";
-import MosqueImage from "@/components/MosqueImage";
+import LoginForm from "@/components/login/LoginForm";
+import MosqueImage from "@/components/login/MosqueImage";
 
 export default function LoginPage() {
   return (
