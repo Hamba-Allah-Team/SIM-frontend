@@ -167,6 +167,14 @@ export default function ExtensionForm() {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
+                      const maxSize = 2 * 1024 * 1024;
+                      if (file.size > maxSize) {
+                        alert("Ukuran file tidak boleh lebih dari 2MB.");
+                        e.target.value = "";
+                        setSelectedFile(null);
+                        setPreview(null);
+                        return;
+                      }
                       setSelectedFile(file);
                       const reader = new FileReader();
                       reader.onload = () => setPreview(reader.result as string);
@@ -185,10 +193,7 @@ export default function ExtensionForm() {
                   />
                 ) : (
                   <div className="text-center z-0">
-                    <Upload
-                      size={28}
-                      className="mx-auto mb-2 text-gray-400"
-                    />
+                    <Upload size={28} className="mx-auto mb-2 text-gray-400" />
                     <p className="text-sm text-gray-400">
                       Klik atau seret gambar ke sini
                     </p>
