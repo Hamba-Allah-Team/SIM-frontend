@@ -202,22 +202,21 @@ async function getData(): Promise<Content[]> {
   ]
 }
 
-export default async function DemoPage() {
-  const data = await getData()
+  export default async function DemoPage() {
+    const data = await getData()
 
-  return (
-    <div className="w-screen h-screen p-8 bg-[#F5F6F8] rounded-none">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-[28px] font-bold font-poppins">Konten Masjid</h1>
-        <ButtonTambahClient href="/admin/content/create" label="Tambah" />
+    return (
+      <div className="w-full max-w-screen-xl min-h-screen px-4 sm:px-8 py-8 mx-auto">
+        <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
+          <h1 className="text-[28px] font-bold font-poppins">Konten Masjid</h1>
+          <ButtonTambahClient href="/admin/content/create" label="Tambah" />
+        </div>
+
+        <div className="p-4 bg-white rounded-xl shadow-sm overflow-x-auto">
+          <DataTable columns={columns} data={data} />
+        </div>
       </div>
-
-      <div className="p-8 bg-white rounded-xl shadow-sm overflow-x-auto">
-        <DataTable columns={columns} data={data} />
-      </div>
-
-    </div>
-  )
+    )
 }
 
 

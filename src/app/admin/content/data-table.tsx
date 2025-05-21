@@ -1,4 +1,5 @@
 "use client"
+
 import { ChevronLeftIcon, ChevronRightIcon, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,9 +36,8 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+
   const table = useReactTable({
     data,
     columns,
@@ -54,70 +54,66 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="flex items-center py-4">
-        {/* Uncomment ini kalau butuh search */}
-        {/* <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Pencarian berdasarkan Judul Konten"
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
-            }
-            className="pl-9 w-full"
-          />
-        </div> */}
-      </div>
+    <div className="container mx-auto px-4 max-w-full">
 
-      {/* Container dengan scroll horizontal jika tabel terlalu lebar */}
-      <div className="rounded-md border overflow-x-auto">
-        <Table className="w-full min-w-[400px] table-auto">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="font-bold whitespace-nowrap">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
+      {/* Tabel scroll horizontal */}
+      <div className="w-full overflow-x-auto">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden border rounded-md">
+            <Table className="table-auto">
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className="font-bold whitespace-nowrap max-w-[100px] truncate"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : undefined}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="whitespace-nowrap">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() ? "selected" : undefined}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className="whitespace-nowrap max-w-[100px] truncate"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      Tidak ada data.
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
 
       {/* Pagination */}
@@ -137,10 +133,12 @@ export function DataTable<TData, TValue>({
           return (
             <Button
               key={i}
-              variant={isActive ? "outline" : "white"}
+              variant={isActive ? "outline" : "ghost"}
               size="sm"
               onClick={() => table.setPageIndex(i)}
-              className={`min-w-[2rem] px-2 ${!isActive ? "text-muted-foreground" : ""}`}
+              className={`min-w-[2rem] px-2 ${
+                !isActive ? "text-muted-foreground" : ""
+              }`}
               aria-current={isActive ? "page" : undefined}
             >
               <span className={!isActive ? "text-gray-500" : "text-black"}>

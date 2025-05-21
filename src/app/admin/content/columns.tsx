@@ -40,7 +40,7 @@ export const columns: ColumnDef<Content>[] = [
     accessorKey: "contents_type",
     header: ({ column }) => {
       return (
-        <div className="text-center w-full">
+        <div className="text-center w-full max-w-[120px] truncate mx-auto">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -64,7 +64,7 @@ export const columns: ColumnDef<Content>[] = [
     accessorKey: "published_date",
     header: ({ column }) => {
       return (
-        <div className="text-center w-full">
+        <div className="text-center w-full max-w-[120px] truncate mx-auto">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
