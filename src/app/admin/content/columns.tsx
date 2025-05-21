@@ -30,6 +30,7 @@ export const columns: ColumnDef<Content>[] = [
     cell: ({ row }) => (
       <div
         className="truncate overflow-hidden whitespace-nowrap w-[200px] sm:w-[300px] lg:w-[400px]"
+        // // className="text-[16px] font-semibold font-poppins text-black
         title={row.getValue("title")}
       >
         {row.getValue("title")}

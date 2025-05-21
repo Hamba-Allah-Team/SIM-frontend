@@ -54,11 +54,11 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="container mx-auto px-4 max-w-full">
+    <div className="container mx-auto px-4 text-black">
 
       {/* Tabel scroll horizontal */}
-      <div className="w-full overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
+      <div className="w-full overflow-x-auto text-black">
+        <div className="inline-block min-w-full align-middle text-black">
           <div className="overflow-hidden border rounded-md">
             <Table className="table-auto">
               <TableHeader>
@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="font-bold whitespace-nowrap max-w-[100px] truncate"
+                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black"
                       >
                         {header.isPlaceholder
                           ? null
@@ -125,27 +125,25 @@ export function DataTable<TData, TValue>({
           disabled={!table.getCanPreviousPage()}
           aria-label="Previous page"
         >
-          <ChevronLeftIcon className="h-4 w-4" />
+          <ChevronLeftIcon className="h-4 w-4 text-black dark:text-white" />
         </Button>
 
         {Array.from({ length: table.getPageCount() }).map((_, i) => {
-          const isActive = i === table.getState().pagination.pageIndex
+          const isActive = i === table.getState().pagination.pageIndex;
           return (
             <Button
               key={i}
               variant={isActive ? "outline" : "ghost"}
               size="sm"
               onClick={() => table.setPageIndex(i)}
-              className={`min-w-[2rem] px-2 ${
-                !isActive ? "text-muted-foreground" : ""
-              }`}
+              className="min-w-[2rem] px-2"
               aria-current={isActive ? "page" : undefined}
             >
-              <span className={!isActive ? "text-gray-500" : "text-black"}>
+              <span className={isActive ? "text-black dark:text-white font-semibold" : "text-gray-500 dark:text-gray-400"}>
                 {i + 1}
               </span>
             </Button>
-          )
+          );
         })}
 
         <Button
@@ -155,9 +153,10 @@ export function DataTable<TData, TValue>({
           disabled={!table.getCanNextPage()}
           aria-label="Next page"
         >
-          <ChevronRightIcon className="h-4 w-4" />
+          <ChevronRightIcon className="h-4 w-4 text-black dark:text-white" />
         </Button>
       </div>
+
     </div>
   )
 }
