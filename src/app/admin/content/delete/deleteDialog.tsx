@@ -2,35 +2,52 @@
 
 import React from "react"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog"
 
 type DeleteDialogProps = {
-  isOpen: boolean
-  onClose: () => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
   onConfirm: () => void
-  title: string
 }
 
-export function DeleteDialog({ isOpen, onClose, onConfirm, title }: DeleteDialogProps) {
-  if (!isOpen) return null
-
+export function DeleteDialog({ open, onOpenChange, onConfirm }: DeleteDialogProps) {
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white p-6 rounded shadow-lg max-w-sm w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-        <p className="mb-6">Apakah Anda yakin ingin menghapus konten &quot;{title}&quot;?</p>
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>Batal</Button>
-          <Button variant="destructive" onClick={() => { onConfirm(); onClose() }}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-white text-black">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold text-black">
+            Apakah Anda Berniat Menghapus Konten Ini?
+          </DialogTitle>
+          <DialogDescription className="text-sm text-gray-700">
+            Tindakan ini dapat menyebabkan data yang dihapus tidak dapat dikembalikan kembali. Apakah Anda masih ingin melanjutkan?
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            onClick={() => onOpenChange(false)}
+            variant="outline"
+            className="text-[#F97316] border-[#F97316] bg-white hover:bg-orange-50"
+          >
+            Batal
+          </Button>
+          <Button
+            onClick={() => {
+              onConfirm()
+              onOpenChange(false)
+            }}
+            className="bg-orange-500 text-white hover:bg-orange-600 focus-visible:ring-orange-300"
+          >
             Hapus
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
