@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { PenLine, CircleEllipsis } from "lucide-react";
+import { PenLine, CircleEllipsis, Trash2 } from "lucide-react";
 
 export type Mosque = {
   name: string;
@@ -21,7 +21,8 @@ export type User = {
 
 export const columns = (
   onDetail?: (user: User) => void,
-  handleShowEdit?: (user: User) => void
+  handleShowEdit?: (user: User) => void,
+  handleConfirmDelete?: (user: User) => void
 ): ColumnDef<User>[] => [
   {
     accessorKey: "username",
@@ -69,6 +70,15 @@ export const columns = (
           >
             <CircleEllipsis size={16} />
             <span>Ubah</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="flex items-center gap-1 p-1"
+            onClick={() => handleConfirmDelete?.(user)}
+          >
+            <Trash2 size={16} />
+            <span>Hapus</span>
           </Button>
         </div>
       );

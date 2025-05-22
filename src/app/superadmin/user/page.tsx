@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { columns, User } from "@/components/columns/userColumns";
+import {
+  columns as createColumns,
+  User,
+} from "@/components/columns/userColumns";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
@@ -108,6 +111,11 @@ export default function UserPage() {
   // State konfirmasi update
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  // State konfirmasi hapus
+  const [deleteUser, setDeleteUser] = useState<User | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -133,7 +141,7 @@ export default function UserPage() {
         (user: User) => user.role === "admin"
       );
       setData(adminUsers);
-      setTotal(adminUsers.length);
+      setTotal(json.total || adminUsers.length);
       setPage(json.page || 1);
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -153,6 +161,17 @@ export default function UserPage() {
 
   const handleShowEdit = (user: User) => setEditUser(user);
   const handleCloseEditModal = () => setEditUser(null);
+
+  // Buka modal hapus
+  const handleShowDelete = (user: User) => {
+    setDeleteUser(user);
+    setConfirmDeleteOpen(true);
+  };
+  // Tutup modal hapus
+  const handleCloseDeleteModal = () => {
+    setConfirmDeleteOpen(false);
+    setDeleteUser(null);
+  };
 
   const [form, setForm] = useState({
     name: "",
@@ -188,6 +207,7 @@ export default function UserPage() {
     }
 
     setUpdateLoading(true);
+    setConfirmOpen(false); // tutup modal konfirmasi sebelum update
 
     try {
       const res = await fetch(
@@ -224,14 +244,55 @@ export default function UserPage() {
     }
   };
 
+  // Fungsi hapus user
+  const handleConfirmDelete = async () => {
+    if (!deleteUser) return;
+
+    setDeleteLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/users/${deleteUser.user_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.message || "Gagal menghapus user");
+      }
+
+      setAlertTitle("Sukses");
+      setAlertMessage(`User "${deleteUser.username}" berhasil dihapus.`);
+      setAlertType("success");
+      setAlertOpen(true);
+
+      handleCloseDeleteModal();
+      fetchUsers(page);
+    } catch (error: any) {
+      setAlertTitle("Error");
+      setAlertMessage("Gagal hapus user: " + error.message);
+      setAlertType("error");
+      setAlertOpen(true);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Ambil kolom dengan handler hapus
+  const columns = createColumns(
+    handleShowDetail,
+    handleShowEdit,
+    handleShowDelete
+  );
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-black">User Admin</h1>
-      <DataTable
-        columns={columns(handleShowDetail, handleShowEdit)}
-        data={data}
-        loading={loading}
-      />
+      <DataTable columns={columns} data={data} loading={loading} />
 
       {/* Modal Detail */}
       <Dialog open={!!selectedUser} onOpenChange={handleCloseModal}>
@@ -267,7 +328,7 @@ export default function UserPage() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                setConfirmOpen(true); // buka konfirmasi
+                setConfirmOpen(true); // buka modal konfirmasi update
               }}
               className="space-y-4 mt-4"
             >
@@ -316,7 +377,7 @@ export default function UserPage() {
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
                   <option value="active">Aktif</option>
-                  <option value="inactive">Nonaktif</option>
+                  <option value="inactive">Tidak Aktif</option>
                 </select>
               </div>
 
@@ -338,33 +399,69 @@ export default function UserPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal Konfirmasi */}
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+      {/* Modal Konfirmasi Update */}
+      <Dialog open={confirmOpen} onOpenChange={(open) => setConfirmOpen(open)}>
         <DialogContent className="bg-white text-black max-w-md">
           <DialogHeader>
             <DialogTitle>Konfirmasi Update</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-gray-700">
-              Apakah Anda yakin ingin menyimpan perubahan pada user ini?
-            </p>
+
+          <div className="py-2">
+            Apakah Anda yakin ingin menyimpan perubahan data user ini?
           </div>
-          <DialogFooter className="mt-4 flex justify-between">
+
+          <DialogFooter className="flex justify-between">
             <Button
-              variant="outline"
               className="text-custom-orange border-custom-orange bg-white"
+              variant="outline"
               onClick={() => setConfirmOpen(false)}
+              disabled={updateLoading}
             >
               Batal
             </Button>
             <Button
-              onClick={() => {
-                setConfirmOpen(false);
-                handleUpdateUser();
-              }}
+              type="button" // pastikan bukan submit
+              onClick={handleUpdateUser}
               disabled={updateLoading}
             >
-              {updateLoading ? "Menyimpan..." : "Konfirmasi"}
+              {updateLoading ? "Menyimpan..." : "Ya, Simpan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal Konfirmasi Hapus */}
+      <Dialog
+        open={confirmDeleteOpen}
+        onOpenChange={(open) => {
+          if (!open) handleCloseDeleteModal();
+        }}
+      >
+        <DialogContent className="bg-white text-black max-w-md">
+          <DialogHeader>
+            <DialogTitle>Konfirmasi Hapus</DialogTitle>
+          </DialogHeader>
+
+          <div className="py-2">
+            Apakah Anda yakin ingin menghapus user admin{" "}
+            <strong>{deleteUser?.username}</strong>?
+          </div>
+
+          <DialogFooter className="flex justify-between">
+            <Button
+              className="text-custom-orange border-custom-orange bg-white"
+              variant="outline"
+              onClick={handleCloseDeleteModal}
+              disabled={deleteLoading}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmDelete}
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? "Menghapus..." : "Ya, Hapus"}
             </Button>
           </DialogFooter>
         </DialogContent>
