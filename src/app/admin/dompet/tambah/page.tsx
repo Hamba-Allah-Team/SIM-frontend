@@ -67,6 +67,7 @@ export default function CreateWalletPage() {
                     <Input
                         type="number"
                         value={balance}
+                        disabled
                         onChange={(e) => setBalance(e.target.value)}
                         placeholder="Masukkan nominal saldo awal (jika ada saldo)"
                         className="bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
