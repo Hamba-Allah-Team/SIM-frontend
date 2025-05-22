@@ -89,9 +89,10 @@ function AlertModal({
 export default function UserPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [search, setSearch] = useState("");  // dihapus sesuai request
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const [form, setForm] = useState({
     name: "",
     username: "",
@@ -115,10 +116,23 @@ export default function UserPage() {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
+  // Listen untuk search dari topbar
+  useEffect(() => {
+    const handleSearch = (event: CustomEvent) => {
+      setSearchTerm(event.detail.searchTerm);
+    };
+
+    window.addEventListener('globalSearch', handleSearch as EventListener);
+    
+    return () => {
+      window.removeEventListener('globalSearch', handleSearch as EventListener);
+    };
+  }, []);
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/users?limit=100", {
+      const res = await fetch(`${API}/api/users?limit=100`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
@@ -142,7 +156,17 @@ export default function UserPage() {
     fetchData();
   }, []);
 
-  const filtered = users;
+  // Filter users berdasarkan search term
+  const filtered = users.filter((user) => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(searchLower) ||
+      user.username.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower)
+    );
+  });
 
   const handleShowDetail = (user: User) => setSelectedUser(user);
   const handleCloseDetail = () => setSelectedUser(null);
@@ -169,7 +193,7 @@ export default function UserPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/users/${editUser.user_id}`,
+        `${API}/api/users/${editUser.user_id}`,
         {
           method: "PUT",
           headers: {
@@ -219,7 +243,7 @@ export default function UserPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/users/${confirmDeleteUser.user_id}`,
+        `${API}/api/users/${confirmDeleteUser.user_id}`,
         {
           method: "DELETE",
           headers: {

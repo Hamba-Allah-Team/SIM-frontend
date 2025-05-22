@@ -11,12 +11,24 @@ export default function AdminTopbar() {
     const { profile } = useUserProfile()
     const router = useRouter()
     const [open, setOpen] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("")
 
     console.log("Ini Data Profile:", profile)
 
     const handleLogout = () => {
         localStorage.removeItem("token")
-        router.push("/login") // arahkan ke halaman login
+        router.push("/login")
+    }
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        
+        // Dispatch custom event untuk mengirim search term ke halaman lain
+        const searchEvent = new CustomEvent('globalSearch', {
+            detail: { searchTerm: value }
+        });
+        window.dispatchEvent(searchEvent);
     }
 
     return (
@@ -27,6 +39,8 @@ export default function AdminTopbar() {
                 <Input
                     type="text"
                     placeholder="Pencarian"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                     className="pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm text-gray-500 border-none focus:outline-none focus:ring-2 focus:ring-orange-200 placeholder:text-gray-500"
                 />
             </div>
