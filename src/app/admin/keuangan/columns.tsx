@@ -4,19 +4,19 @@ import { Button } from "@/components/ui/button"
 
 export const columns: ColumnDef<Keuangan>[] = [
     {
-        accessorKey: "transaction_date",
+        accessorKey: "tanggal",
         header: () => <div className="min-w-[120px]">Tanggal</div>,
         cell: ({ row }) =>
-            new Date(row.getValue("transaction_date")).toLocaleDateString("id-ID"),
+            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
     },
     {
-        accessorKey: "transaction_type",
+        accessorKey: "jenis",
         header: () => <div className="min-w-[100px]">Jenis</div>,
     },
     {
-        accessorKey: "wallet_type",
+        accessorKey: "dompet",
         header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.getValue("wallet_type") ?? "-",
+        cell: ({ row }) => row.getValue("dompet") ?? "-",
     },
     {
         accessorKey: "amount",
