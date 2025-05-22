@@ -6,21 +6,24 @@ export const columns: ColumnDef<Keuangan>[] = [
     {
         accessorKey: "transaction_date",
         header: () => <div className="min-w-[120px]">Tanggal</div>,
+        cell: ({ row }) =>
+            new Date(row.getValue("transaction_date")).toLocaleDateString("id-ID"),
     },
     {
-        accessorKey: "jenis",
+        accessorKey: "transaction_type",
         header: () => <div className="min-w-[100px]">Jenis</div>,
     },
     {
-        accessorKey: "dompet",
+        accessorKey: "wallet_type",
         header: () => <div className="min-w-[100px]">Dompet</div>,
+        cell: ({ row }) => row.getValue("wallet_type") ?? "-",
     },
     {
-        accessorKey: "nominal",
+        accessorKey: "amount",
         header: () => <div className="min-w-[140px]">Nominal</div>,
         cell: ({ row }) => {
-            const nominal = row.getValue("nominal") as number
-            return `Rp ${nominal.toLocaleString("id-ID")}`
+            const value = row.getValue("amount") as number;
+            return `Rp ${value.toLocaleString("id-ID")}`;
         },
     },
     {

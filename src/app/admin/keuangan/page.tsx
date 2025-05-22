@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { ListPlus } from "lucide-react"
-import { columns } from "./columns"
-import { DataTable } from "./data-table"
-import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react"
-import { fetchTransactions } from "./utils";
-// import { Keuangan } from "./types";
+import { useRouter } from "next/navigation";
+import { ListPlus } from "lucide-react";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { fetchTransactions, mapApiToKeuangan } from "./utils";
+import { Keuangan } from "./types";
 
 export default function KeuanganPage() {
     const router = useRouter();
-    const [transactions, setTransactions] = useState<any[]>([]); // Sesuaikan dengan tipe data transaksi yang diterima
+    const [transactions, setTransactions] = useState<Keuangan[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const data = await fetchTransactions(); // Ambil data transaksi
-                setTransactions(data);
+                const data = await fetchTransactions(); // Ambil dari API
+                const mapped = mapApiToKeuangan(data);  // Ubah ke format Keuangan
+                setTransactions(mapped);
             } catch (error) {
                 console.error("Gagal mengambil transaksi:", error);
             } finally {
@@ -28,11 +29,11 @@ export default function KeuanganPage() {
         };
 
         fetchData();
-    }, []); // Kosongkan dependensi untuk memanggil sekali ketika komponen di-mount
+    }, []); // Panggil sekali saat komponen dimount
 
     const handleAddKeuangan = () => {
-        router.push("/admin/keuangan/tambah")
-    }
+        router.push("/admin/keuangan/tambah");
+    };
 
     return (
         <div className="p-4">
@@ -47,7 +48,7 @@ export default function KeuanganPage() {
                 </Button>
             </div>
 
-            <DataTable columns={columns} data={data} isLoading={false} />
+            <DataTable columns={columns} data={transactions} isLoading={isLoading} />
         </div>
-    )
+    );
 }
