@@ -1,4 +1,4 @@
-import ResetPasswordSucces from "@/components/ResetPasswordSucces";
+import ResetPasswordSucces from "@/components/reset-password/ResetPasswordSucces";
 
 export default function ResetPasswordSuccessPage() {
   return (

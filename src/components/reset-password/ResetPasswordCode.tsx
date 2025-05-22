@@ -14,6 +14,7 @@ export default function ResetPasswordCode() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("resetEmail");
@@ -43,8 +44,8 @@ export default function ResetPasswordCode() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "http://localhost:8080/api/reset-password/verify-reset-password",
+      const res = await fetch(`
+        ${API}/api/reset-password/verify-reset-password`,
         {
           method: "POST",
           headers: {
