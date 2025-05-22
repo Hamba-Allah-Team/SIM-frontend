@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { columns, Dompet } from "./columns"
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
+import { ListPlus } from 'lucide-react'
 
 export default function DompetPage() {
     const [data, setData] = useState<Dompet[]>([])
@@ -31,8 +32,13 @@ export default function DompetPage() {
         <div className="p-4">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold">Data Dompet</h1>
-                <Button onClick={handleAddDompet} disabled={disableAddButton}>
-                    Tambah Dompet
+                <Button
+                    onClick={handleAddDompet}
+                    disabled={disableAddButton}
+                    className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition disabled:opacity-50"
+                >
+                    <ListPlus size={16} />
+                    Tambah
                 </Button>
             </div>
             <DataTable columns={columns} data={data} />
