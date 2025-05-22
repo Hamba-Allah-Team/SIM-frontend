@@ -35,8 +35,8 @@ function getMenuByRole(role: string): MenuItem[] {
         ? [
             { label: "Dashboard", icon: <LayoutDashboard size={18} />, href: "/superadmin/dashboard" },
             { label: "User", icon: <Users size={18} />, href: "/superadmin/user" },
-            { label: "Aktivasi", icon: <KeySquare size={18} />, href: "/superadmin/aktivasi" },
-            { label: "Perpanjang", icon: <Clock size={18} />, href: "/superadmin/perpanjang" },
+            { label: "Aktivasi", icon: <KeySquare size={18} />, href: "/superadmin/activation" },
+            { label: "Perpanjang", icon: <Clock size={18} />, href: "/superadmin/extend" },
         ]
         : [
             { label: "Dashboard", icon: <LayoutDashboard size={18} />, href: "/admin/dashboard" },
@@ -77,7 +77,7 @@ export default function Sidebar() {
         <div className="relative h-screen">
             <button
                 onClick={() => setCollapsed(!collapsed)}
-                className="absolute -right-3 top-6 z-10 bg-white border rounded-full p-1 shadow-md hover:bg-gray-50 transition"
+                className="absolute -right-3 top-6 z-10 bg-white border rounded-full p-1 shadow-md hover:bg-gray-50 transition text-black"
             >
                 {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             </button>
