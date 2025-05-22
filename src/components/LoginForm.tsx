@@ -40,6 +40,10 @@ export default function LoginForm() {
 
       const data = await res.json();
 
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
       if (data.role === "admin") {
         window.location.href = "/admin/dashboard";
       } else if (data.role === "superadmin") {
@@ -58,9 +62,8 @@ export default function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
       <Card
-        className={`w-full max-w-xl min-h-[400px] bg-white border-none shadow-none rounded-3xl transform transition-all duration-700 ease-out ${
-          loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-        }`}
+        className={`w-full max-w-xl min-h-[400px] bg-white border-none shadow-none rounded-3xl transform transition-all duration-700 ease-out ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+          }`}
       >
         <CardHeader className="pb-4 flex flex-col items-center justify-center text-center">
           <div className="flex items-center justify-start gap-2 my-10">
