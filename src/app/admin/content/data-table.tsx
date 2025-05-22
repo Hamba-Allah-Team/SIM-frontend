@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black"
+                        className="font-bold whitespace-nowrap max-w-[300px] truncate text-black"
                       >
                         {header.isPlaceholder
                           ? null
@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className="whitespace-nowrap max-w-[100px] truncate"
+                          className="whitespace-nowrap max-w-[300px] truncate"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,

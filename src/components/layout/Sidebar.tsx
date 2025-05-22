@@ -41,7 +41,7 @@ function getMenuByRole(role: string): MenuItem[] {
         : [
             { label: "Dashboard", icon: <LayoutDashboard size={18} />, href: "/admin/dashboard" },
             { label: "Informasi", icon: <FileText size={18} />, href: "/admin/informasi" },
-            { label: "Konten", icon: <Monitor size={18} />, href: "/admin/konten" },
+            { label: "Konten", icon: <Monitor size={18} />, href: "/admin/content" },
             { label: "Kegiatan", icon: <Dumbbell size={18} />, href: "/admin/kegiatan" },
             { label: "Ruangan", icon: <Box size={18} />, href: "/admin/ruangan" },
             { label: "Reservasi", icon: <CalendarCheck size={18} />, href: "/admin/reservasi" },
