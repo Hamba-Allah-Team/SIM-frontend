@@ -8,8 +8,10 @@ export type Mosque = {
 };
 
 export type User = {
-  name: unknown;
-  mosque_id: unknown;
+  user_id: any;
+  role: "admin" | "superadmin";
+  name: string;
+  mosque_id?: string | null;
   email: string;
   id: string;
   username: string;
@@ -17,9 +19,9 @@ export type User = {
   mosque?: Mosque | null;
 };
 
-// Fungsi untuk menghasilkan kolom dengan aksi yang memanggil handler
 export const columns = (
-  onDetail?: (user: User) => void
+  onDetail?: (user: User) => void,
+  handleShowEdit?: (user: User) => void
 ): ColumnDef<User>[] => [
   {
     accessorKey: "username",
@@ -37,11 +39,7 @@ export const columns = (
       const status = row.getValue("status") as string;
       const displayText = status === "active" ? "Aktif" : "Nonaktif";
       return (
-        <span
-          className={`${
-            status === "active" ? "aktif text-black" : "text-black"
-          }`}
-        >
+        <span className={`${status === "active" ? "aktif text-black" : "text-black"}`}>
           {displayText}
         </span>
       );
@@ -67,7 +65,7 @@ export const columns = (
             size="sm"
             variant="ghost"
             className="flex items-center gap-1 p-1"
-            onClick={() => alert(`Ubah user ${user.id}`)}
+            onClick={() => handleShowEdit?.(user)}
           >
             <CircleEllipsis size={16} />
             <span>Ubah</span>

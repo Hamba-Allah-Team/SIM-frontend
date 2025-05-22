@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -28,7 +29,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading?: boolean;
-  onRowDetail?: (row: TData) => void; // opsional
+  onRowDetail?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,7 +39,9 @@ export function DataTable<TData, TValue>({
   onRowDetail,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
@@ -74,14 +77,31 @@ export function DataTable<TData, TValue>({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black border-0"
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black border-0 cursor-pointer select-none"
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
+                        {!header.isPlaceholder && (
+                          <div className="flex items-center gap-1">
+                            {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
+                            {header.column.getCanSort() && (
+                              <span className="text-xs">
+                                {
+                                  {
+                                    asc: "↑",
+                                    desc: "↓",
+                                    false: "⇅",
+                                  }[
+                                    (header.column.getIsSorted() as string) ||
+                                      "false"
+                                  ]
+                                }
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </TableHead>
                     ))}
                   </TableRow>
