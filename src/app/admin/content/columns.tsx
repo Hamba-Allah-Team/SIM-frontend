@@ -77,14 +77,18 @@ export const columns: ColumnDef<Content>[] = [
         </div>
       )
     },
-    cell: ({ row }) => (
-      <div className="text-center w-full">
-        {row.getValue("published_date")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const value = row.getValue("published_date") as string;
+      const date = new Date(value);
+      const formatted = date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      return <div className="text-center w-full">{formatted}</div>;
+    },
   },
 
-    
   //   accessorKey: "published_date",
   //   header: ({ column }) => {
   //     return (
