@@ -19,8 +19,8 @@ export default function EditAboutPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
-      <h1 className="text-xl font-semibold mb-6">Edit Profil Masjid</h1>
+    <div className="max-w-2xl mx-auto py-10 text-black">
+      <h1 className="text-xl font-semibold mb-6">Informasi Masjid</h1>
       <EditAboutForm initialData={fakeInitialData} onSubmitForm={handleUpdate} />
     </div>
   )
