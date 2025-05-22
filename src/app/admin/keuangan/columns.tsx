@@ -1,70 +1,50 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Transaksi } from "./your-types"; // kalau terpisah
+import { ColumnDef } from "@tanstack/react-table"
+import { Keuangan } from "./types";
+import { Button } from "@/components/ui/button"
 
-export const columns: ColumnDef<Transaksi>[] = [
+export const columns: ColumnDef<Keuangan>[] = [
     {
         accessorKey: "tanggal",
-        header: "Tanggal",
-        cell: ({ row }) => {
-            const date = new Date(row.getValue("tanggal"));
-            return date.toLocaleDateString("id-ID", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            });
-        },
+        header: () => <div className="min-w-[120px]">Tanggal</div>,
+        cell: ({ row }) =>
+            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
     },
     {
         accessorKey: "jenis",
-        header: "Jenis Transaksi",
-        cell: ({ row }) => {
-            const jenis = row.getValue("jenis") as string;
-            return (
-                <span className={jenis === "Pemasukan" ? "text-green-600" : "text-red-600"}>
-                    {jenis}
-                </span>
-            );
-        },
+        header: () => <div className="min-w-[100px]">Jenis</div>,
     },
     {
         accessorKey: "dompet",
-        header: "Dompet",
+        header: () => <div className="min-w-[100px]">Dompet</div>,
+        cell: ({ row }) => row.getValue("dompet") ?? "-",
     },
     {
-        accessorKey: "nominal",
-        header: "Nominal",
+        accessorKey: "amount",
+        header: () => <div className="min-w-[140px]">Nominal</div>,
         cell: ({ row }) => {
-            const nominal = row.getValue("nominal") as number;
-            return `Rp ${nominal.toLocaleString("id-ID")}`;
+            const value = row.getValue("amount") as number;
+            return `Rp ${value.toLocaleString("id-ID")}`;
         },
     },
     {
-        id: "aksi",
-        header: "Aksi",
+        id: "actions",
+        header: () => <div className="min-w-[200px]">Aksi</div>,
         cell: ({ row }) => {
-            const transaksi = row.original;
+            const transaksi = row.original
+
             return (
                 <div className="flex gap-2">
-                    <button
-                        onClick={() => handleLihatDetail(transaksi)}
-                        className="text-blue-500 hover:underline"
-                    >
-                        Lihat
-                    </button>
-                    <button
-                        onClick={() => handleEdit(transaksi)}
-                        className="text-yellow-500 hover:underline"
-                    >
-                        Ubah
-                    </button>
-                    <button
-                        onClick={() => handleHapus(transaksi.id)}
-                        className="text-red-500 hover:underline"
-                    >
+                    <Button variant="outline" size="sm" onClick={() => alert(`Detail ID ${transaksi.id}`)}>
+                        Detail
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => alert(`Edit ID ${transaksi.id}`)}>
+                        Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => alert(`Hapus ID ${transaksi.id}`)}>
                         Hapus
-                    </button>
+                    </Button>
                 </div>
-            );
+            )
         },
     },
-];
+]
