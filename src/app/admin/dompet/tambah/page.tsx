@@ -1,57 +1,77 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation"
+import api from "@/lib/api"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useUserProfile } from "@/hooks/useUserProfile"
+import { AxiosError } from "axios"
 
-export default function TambahDompetPage() {
-    const [jenis, setJenis] = useState("")
+
+export default function CreateWalletPage() {
+    const [walletType, setWalletType] = useState("")
     const [balance, setBalance] = useState("")
     const router = useRouter()
+    const { profile } = useUserProfile()
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // TODO: Kirim ke backend
-        console.log({ jenis, balance })
 
-        // Selesai, arahkan kembali ke halaman dompet
-        router.push("/admin/dompet")
+        try {
+            if (!profile?.mosque_id) {
+                alert("Gagal mendapatkan ID masjid dari profil.")
+                return
+            }
+
+            const response = await api.post("/api/wallets", {
+                mosque_id: profile.mosque_id,
+                wallet_type: walletType,
+                // balance tidak dikirim karena belum dibutuhkan backend
+            })
+
+            console.log("Wallet created:", response.data)
+            router.push("/admin/dompet")
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            console.error("Error creating wallet:", error.response?.data || error.message)
+            alert(error.response?.data?.message || "Gagal membuat dompet")
+        }
+
     }
 
     return (
-        <div className="p-6 max-w-lg mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Tambah Dompet</h1>
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="p-6 max-w-xl mx-auto">
+            <h1 className="text-2xl font-bold mb-4">Tambah Dompet</h1>
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <Label>Jenis Dompet</Label>
-                    <Select onValueChange={setJenis}>
-                        <SelectTrigger className="mt-2">
+                    <label className="block mb-1 text-sm font-medium">Jenis Dompet</label>
+                    <Select onValueChange={(value) => setWalletType(value)}>
+                        <SelectTrigger>
                             <SelectValue placeholder="Pilih jenis dompet" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Cash">Cash</SelectItem>
-                            <SelectItem value="Bank">Bank</SelectItem>
+                            <SelectItem value="cash">Cash</SelectItem>
+                            <SelectItem value="bank">Bank</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 <div>
-                    <Label>Saldo Awal</Label>
+                    <label className="block mb-1 text-sm font-medium text-gray-400">Saldo Awal (disabled)</label>
                     <Input
                         type="number"
                         value={balance}
+                        disabled
                         onChange={(e) => setBalance(e.target.value)}
-                        placeholder="Masukkan saldo awal"
-                        className="mt-2"
-                        required
+                        placeholder="Input ini dinonaktifkan"
+                        className="bg-gray-100 cursor-not-allowed"
                     />
                 </div>
 
-                <div className="flex justify-end gap-4">
-                    <Button type="button" variant="outline" onClick={() => router.back()}>
+                <div className="flex justify-end gap-2">
+                    <Button type="button" variant="outline" onClick={() => router.push("/admin/dompet")}>
                         Batal
                     </Button>
                     <Button type="submit">Simpan</Button>
