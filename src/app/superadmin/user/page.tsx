@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCircle, AlertTriangle, XCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-// Komponen kecil untuk label + value, supaya rapi dan reuseable
 function InfoRow({ label, value }: { label: string; value: any }) {
   return (
     <div>
@@ -28,7 +28,6 @@ function InfoRow({ label, value }: { label: string; value: any }) {
   );
 }
 
-// Modal alert custom
 type AlertType = "success" | "error" | "info";
 
 function AlertModal({
@@ -44,22 +43,21 @@ function AlertModal({
   message: string;
   type?: AlertType;
 }) {
-  let messageColor = "";
-  let IconComponent: React.ElementType = Info;
+  let color = "";
+  let Icon: React.ElementType = Info;
 
   switch (type) {
     case "success":
-      messageColor = "text-green-600";
-      IconComponent = CheckCircle;
+      color = "text-green-600";
+      Icon = CheckCircle;
       break;
     case "error":
-      messageColor = "text-red-600";
-      IconComponent = XCircle;
+      color = "text-red-600";
+      Icon = XCircle;
       break;
-    case "info":
     default:
-      messageColor = "text-orange-600";
-      IconComponent = AlertTriangle;
+      color = "text-orange-600";
+      Icon = AlertTriangle;
       break;
   }
 
@@ -67,14 +65,12 @@ function AlertModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-white text-black [&>button]:hidden">
         <DialogHeader>
-          <DialogTitle className="font-semibold text-lg text-center">
-            {title}
-          </DialogTitle>
+          <DialogTitle className="text-center">{title}</DialogTitle>
         </DialogHeader>
 
         <div className="py-4 text-center flex flex-col items-center gap-3">
-          <IconComponent className={`w-12 h-12 ${messageColor}`} />
-          <p className={`text-lg font-medium ${messageColor}`}>{message}</p>
+          <Icon className={`w-12 h-12 ${color}`} />
+          <p className={`text-lg font-medium ${color}`}>{message}</p>
         </div>
 
         <DialogFooter>
@@ -91,123 +87,85 @@ function AlertModal({
 }
 
 export default function UserPage() {
-  const [data, setData] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [limit] = useState(10);
+  // const [search, setSearch] = useState("");  // dihapus sesuai request
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
-  const [updateLoading, setUpdateLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    username: "",
+    email: "",
+    status: "active" as "active" | "inactive",
+  });
 
-  // State untuk modal alert custom
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState<"success" | "error" | "info">(
-    "info"
-  );
-  const [alertTitle, setAlertTitle] = useState("Pemberitahuan");
+  const [alert, setAlert] = useState({
+    open: false,
+    title: "",
+    message: "",
+    type: "info" as AlertType,
+  });
 
-  // State konfirmasi update
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  // Modal konfirmasi hapus
+  const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
 
-  // State konfirmasi hapus
-  const [deleteUser, setDeleteUser] = useState<User | null>(null);
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  // Modal konfirmasi edit
+  const [confirmEditOpen, setConfirmEditOpen] = useState(false);
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  const fetchUsers = async (pageNumber: number) => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/users?limit=${limit}&page=${pageNumber}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
+      const res = await fetch("http://localhost:8080/api/users?limit=100", {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
       const json = await res.json();
-      const adminUsers = (json.users || []).filter(
-        (user: User) => user.role === "admin"
-      );
-      setData(adminUsers);
-      setTotal(json.total || adminUsers.length);
-      setPage(json.page || 1);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-      setData([]);
-      setTotal(0);
+      const admins = json.users.filter((u: User) => u.role === "admin");
+      setUsers(admins);
+    } catch (err) {
+      setAlert({
+        open: true,
+        title: "Error",
+        message: "Gagal memuat data admin.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers(page);
-  }, [page]);
+    fetchData();
+  }, []);
+
+  const filtered = users;
 
   const handleShowDetail = (user: User) => setSelectedUser(user);
-  const handleCloseModal = () => setSelectedUser(null);
+  const handleCloseDetail = () => setSelectedUser(null);
 
-  const handleShowEdit = (user: User) => setEditUser(user);
-  const handleCloseEditModal = () => setEditUser(null);
-
-  // Buka modal hapus
-  const handleShowDelete = (user: User) => {
-    setDeleteUser(user);
-    setConfirmDeleteOpen(true);
-  };
-  // Tutup modal hapus
-  const handleCloseDeleteModal = () => {
-    setConfirmDeleteOpen(false);
-    setDeleteUser(null);
+  const handleEdit = (user: User) => {
+    setEditUser(user);
+    setForm({
+      name: user.name || "",
+      username: user.username,
+      email: user.email,
+      status: user.status,
+    });
   };
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    username: "",
-    status: "active" as "active" | "inactive",
-  });
-
-  useEffect(() => {
-    if (editUser) {
-      setForm({
-        name: editUser.name || "",
-        email: editUser.email,
-        username: editUser.username,
-        status: editUser.status,
-      });
-    }
-  }, [editUser]);
-
-  const handleChange = (
+  const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleUpdateUser = async () => {
-    if (!editUser) {
-      setAlertTitle("Error");
-      setAlertMessage("User ID tidak ditemukan, tidak dapat update.");
-      setAlertType("error");
-      setAlertOpen(true);
-      return;
-    }
-
-    setUpdateLoading(true);
-    setConfirmOpen(false); // tutup modal konfirmasi sebelum update
+  // Fungsi untuk update user yang dipanggil saat konfirmasi edit YA
+  const handleUpdate = async () => {
+    if (!editUser) return;
 
     try {
       const res = await fetch(
@@ -222,36 +180,46 @@ export default function UserPage() {
         }
       );
 
-      if (!res.ok) {
-        const errJson = await res.json();
-        throw new Error(errJson.message || "Update gagal");
-      }
+      if (!res.ok) throw new Error("Gagal update data.");
 
-      setAlertTitle("Sukses");
-      setAlertMessage("User berhasil diperbarui");
-      setAlertType("success");
-      setAlertOpen(true);
+      setAlert({
+        open: true,
+        title: "Sukses",
+        message: "Data admin berhasil diperbarui.",
+        type: "success",
+      });
 
-      handleCloseEditModal();
-      fetchUsers(page);
-    } catch (error: any) {
-      setAlertTitle("Error");
-      setAlertMessage("Gagal update user: " + error.message);
-      setAlertType("error");
-      setAlertOpen(true);
-    } finally {
-      setUpdateLoading(false);
+      setConfirmEditOpen(false);
+      setEditUser(null);
+      fetchData();
+    } catch (err) {
+      setAlert({
+        open: true,
+        title: "Error",
+        message: "Terjadi kesalahan saat update.",
+        type: "error",
+      });
+      setConfirmEditOpen(false);
     }
   };
 
-  // Fungsi hapus user
-  const handleConfirmDelete = async () => {
-    if (!deleteUser) return;
+  // Saat klik tombol Update di modal edit: buka modal konfirmasi edit
+  const handleClickUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setConfirmEditOpen(true);
+  };
 
-    setDeleteLoading(true);
+  // Handle konfirmasi hapus user
+  const handleConfirmDelete = (user: User) => {
+    setConfirmDeleteUser(user);
+  };
+
+  const handleDelete = async () => {
+    if (!confirmDeleteUser) return;
+
     try {
       const res = await fetch(
-        `http://localhost:8080/api/users/${deleteUser.user_id}`,
+        `http://localhost:8080/api/users/${confirmDeleteUser.user_id}`,
         {
           method: "DELETE",
           headers: {
@@ -260,47 +228,54 @@ export default function UserPage() {
         }
       );
 
-      if (!res.ok) {
-        const errJson = await res.json();
-        throw new Error(errJson.message || "Gagal menghapus user");
-      }
+      if (!res.ok) throw new Error();
 
-      setAlertTitle("Sukses");
-      setAlertMessage(`User "${deleteUser.username}" berhasil dihapus.`);
-      setAlertType("success");
-      setAlertOpen(true);
+      setAlert({
+        open: true,
+        title: "Sukses",
+        message: `User ${confirmDeleteUser.username} telah dihapus.`,
+        type: "success",
+      });
 
-      handleCloseDeleteModal();
-      fetchUsers(page);
-    } catch (error: any) {
-      setAlertTitle("Error");
-      setAlertMessage("Gagal hapus user: " + error.message);
-      setAlertType("error");
-      setAlertOpen(true);
-    } finally {
-      setDeleteLoading(false);
+      setConfirmDeleteUser(null);
+      fetchData();
+    } catch {
+      setAlert({
+        open: true,
+        title: "Error",
+        message: "Gagal menghapus user.",
+        type: "error",
+      });
     }
   };
 
-  // Ambil kolom dengan handler hapus
+  const handleCancelDelete = () => {
+    setConfirmDeleteUser(null);
+  };
+
+  // Batalkan modal konfirmasi edit
+  const handleCancelEditConfirm = () => {
+    setConfirmEditOpen(false);
+  };
+
   const columns = createColumns(
     handleShowDetail,
-    handleShowEdit,
-    handleShowDelete
+    handleEdit,
+    handleConfirmDelete
   );
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-black">User Admin</h1>
-      <DataTable columns={columns} data={data} loading={loading} />
+
+      <DataTable columns={columns} data={filtered} loading={loading} />
 
       {/* Modal Detail */}
-      <Dialog open={!!selectedUser} onOpenChange={handleCloseModal}>
-        <DialogContent className="bg-white text-black max-w-xl overflow-auto max-h-[80vh]">
+      <Dialog open={!!selectedUser} onOpenChange={handleCloseDetail}>
+        <DialogContent className="bg-white text-black max-w-xl">
           <DialogHeader>
-            <DialogTitle>Detail User Admin</DialogTitle>
+            <DialogTitle>Detail User</DialogTitle>
           </DialogHeader>
-
           {selectedUser && (
             <div className="space-y-4 mt-4 text-sm">
               <InfoRow label="Nama" value={selectedUser.name} />
@@ -308,7 +283,10 @@ export default function UserPage() {
               <InfoRow label="Email" value={selectedUser.email} />
               {selectedUser.mosque && (
                 <>
-                  <InfoRow label="Nama Masjid" value={selectedUser.mosque.name} />
+                  <InfoRow
+                    label="Nama Masjid"
+                    value={selectedUser.mosque.name}
+                  />
                   <InfoRow label="Alamat" value={selectedUser.mosque.address} />
                 </>
               )}
@@ -317,151 +295,119 @@ export default function UserPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal Update */}
-      <Dialog open={!!editUser} onOpenChange={handleCloseEditModal}>
-        <DialogContent className="bg-white text-black max-w-xl overflow-auto max-h-[80vh] [&>button]:hidden">
+      {/* Modal Edit */}
+      <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
+        <DialogContent className="bg-white text-black max-w-xl [&>button:last-child]:hidden">
           <DialogHeader>
-            <DialogTitle>Update User</DialogTitle>
+            <DialogTitle>Edit User</DialogTitle>
           </DialogHeader>
 
-          {editUser && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setConfirmOpen(true); // buka modal konfirmasi update
-              }}
-              className="space-y-4 mt-4"
-            >
-              <div>
-                <label className="block mb-1 font-semibold">Nama</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  required
-                />
-              </div>
+          <form onSubmit={handleClickUpdate} className="space-y-4 mt-4">
+            <div>
+              <label>Nama</label>
+              <Input
+                name="name"
+                value={form.name}
+                onChange={handleFormChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Username</label>
+              <Input
+                name="username"
+                value={form.username}
+                onChange={handleFormChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Email</label>
+              <Input
+                name="email"
+                value={form.email}
+                onChange={handleFormChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Status</label>
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleFormChange}
+                className="w-full rounded border border-gray-300 px-3 py-2"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block mb-1 font-semibold">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={form.username}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 font-semibold">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 font-semibold">Status</label>
-                <select
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                >
-                  <option value="active">Aktif</option>
-                  <option value="inactive">Tidak Aktif</option>
-                </select>
-              </div>
-
-              <DialogFooter className="mt-4 flex justify-between">
-                <Button
-                  className="text-custom-orange border-custom-orange bg-white"
-                  variant="outline"
-                  onClick={handleCloseEditModal}
-                  disabled={updateLoading}
-                >
-                  Batal
-                </Button>
-                <Button type="submit" disabled={updateLoading}>
-                  {updateLoading ? "Menyimpan..." : "Simpan"}
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
+            <DialogFooter className="flex justify-between">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setEditUser(null)}
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                className="bg-custom-orange text-white hover:bg-orange-600"
+              >
+                Ubah
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 
-      {/* Modal Konfirmasi Update */}
-      <Dialog open={confirmOpen} onOpenChange={(open) => setConfirmOpen(open)}>
-        <DialogContent className="bg-white text-black max-w-md">
-          <DialogHeader>
-            <DialogTitle>Konfirmasi Update</DialogTitle>
+      {/* Modal Konfirmasi Hapus */}
+      <Dialog open={!!confirmDeleteUser} onOpenChange={handleCancelDelete}>
+        <DialogContent className="max-w-md bg-white text-black [&>button:last-child]:hidden">
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-center">Konfirmasi Hapus User</DialogTitle>
           </DialogHeader>
-
-          <div className="py-2">
-            Apakah Anda yakin ingin menyimpan perubahan data user ini?
+          <div className="py-4 text-center flex flex-col items-center gap-3">
+            <AlertTriangle className="w-12 h-12 text-custom-orange" />
+            <p>
+              Apakah Anda yakin ingin menghapus user{" "}
+              <strong>{confirmDeleteUser?.username}</strong>?
+            </p>
           </div>
-
           <DialogFooter className="flex justify-between">
-            <Button
-              className="text-custom-orange border-custom-orange bg-white"
-              variant="outline"
-              onClick={() => setConfirmOpen(false)}
-              disabled={updateLoading}
-            >
+            <Button variant="secondary" onClick={handleCancelDelete}>
               Batal
             </Button>
             <Button
-              type="button" // pastikan bukan submit
-              onClick={handleUpdateUser}
-              disabled={updateLoading}
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
             >
-              {updateLoading ? "Menyimpan..." : "Ya, Simpan"}
+              Hapus
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Modal Konfirmasi Hapus */}
-      <Dialog
-        open={confirmDeleteOpen}
-        onOpenChange={(open) => {
-          if (!open) handleCloseDeleteModal();
-        }}
-      >
-        <DialogContent className="bg-white text-black max-w-md">
+      {/* Modal Konfirmasi Edit */}
+      <Dialog open={confirmEditOpen} onOpenChange={handleCancelEditConfirm}>
+        <DialogContent className="max-w-md bg-white text-black [&>button:last-child]:hidden">
           <DialogHeader>
-            <DialogTitle>Konfirmasi Hapus</DialogTitle>
+            <DialogTitle className="text-center">Konfirmasi Perubahan</DialogTitle>
           </DialogHeader>
-
-          <div className="py-2">
-            Apakah Anda yakin ingin menghapus user admin{" "}
-            <strong>{deleteUser?.username}</strong>?
+          <div className="py-4 text-center flex flex-col items-center gap-3">
+            <AlertTriangle className="w-12 h-12 text-custom-orange" />
+            <p>Apakah Anda yakin ingin menyimpan perubahan ini?</p>
           </div>
-
           <DialogFooter className="flex justify-between">
-            <Button
-              className="text-custom-orange border-custom-orange bg-white"
-              variant="outline"
-              onClick={handleCloseDeleteModal}
-              disabled={deleteLoading}
-            >
+            <Button className="border-gray-200" variant="secondary" onClick={handleCancelEditConfirm}>
               Batal
             </Button>
             <Button
-              type="button"
-              onClick={handleConfirmDelete}
-              disabled={deleteLoading}
+              onClick={handleUpdate}
+              className="bg-custom-orange text-white hover:bg-orange-600"
             >
-              {deleteLoading ? "Menghapus..." : "Ya, Hapus"}
+              Ya
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -469,11 +415,11 @@ export default function UserPage() {
 
       {/* Modal Alert */}
       <AlertModal
-        open={alertOpen}
-        onClose={() => setAlertOpen(false)}
-        title={alertTitle}
-        message={alertMessage}
-        type={alertType}
+        open={alert.open}
+        onClose={() => setAlert({ ...alert, open: false })}
+        title={alert.title}
+        message={alert.message}
+        type={alert.type}
       />
     </div>
   );
