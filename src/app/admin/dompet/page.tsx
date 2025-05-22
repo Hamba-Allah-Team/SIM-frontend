@@ -1,18 +1,41 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { columns, Dompet } from "./columns"
 import { DataTable } from "./data-table"
-
-const dummyData: Dompet[] = [
-    { id: 1, name: "Kas Masjid", balance: 1500000 },
-    { id: 2, name: "Dana Infaq", balance: 250000 },
-]
+import { Button } from "@/components/ui/button"
 
 export default function DompetPage() {
+    const [data, setData] = useState<Dompet[]>([])
+
+    useEffect(() => {
+        // TODO: Ganti dengan fetch dari API
+        const dummyData = [
+            { id: 1, name: "Cash", balance: 1500000 },
+            { id: 2, name: "Bank", balance: 250000 },
+        ]
+        setData(dummyData)
+    }, [])
+
+    // Cek apakah jenis Cash dan Bank sudah ada
+    const hasCash = data.some((dompet) => dompet.name.toLowerCase() === "cash")
+    const hasBank = data.some((dompet) => dompet.name.toLowerCase() === "bank")
+    const disableAddButton = hasCash && hasBank
+
+    const handleAddDompet = () => {
+        // Logika menampilkan modal atau form tambah dompet
+        alert("Tampilkan form/modal untuk tambah dompet")
+    }
+
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-semibold mb-4">Data Dompet</h1>
-            <DataTable columns={columns} data={dummyData} />
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-semibold">Data Dompet</h1>
+                <Button onClick={handleAddDompet} disabled={disableAddButton}>
+                    Tambah Dompet
+                </Button>
+            </div>
+            <DataTable columns={columns} data={data} />
         </div>
     )
 }
