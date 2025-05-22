@@ -77,7 +77,7 @@ export default function Sidebar() {
         <div className="relative h-screen">
             <button
                 onClick={() => setCollapsed(!collapsed)}
-                className="absolute -right-3 top-6 z-10 bg-white border rounded-full p-1 shadow-md hover:bg-gray-50 transition"
+                className="absolute -right-3 top-6 z-10 bg-white border rounded-full p-1 shadow-md hover:bg-gray-50 transition text-black"
             >
                 {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             </button>
