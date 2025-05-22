@@ -1,23 +1,23 @@
-// app/(superadmin)/layout.tsx
-
-import Sidebar from "@/components/layout/Sidebar"
-import Topbar from "@/components/layout/Topbar"
-import { ReactNode } from "react"
+import Sidebar from "@/components/layout/Sidebar";
+import Topbar from "@/components/layout/Topbar";
+import { ReactNode } from "react";
 
 export default function SuperAdminLayout({ children }: { children: ReactNode }) {
-    return (
-        <div className="flex min-h-screen bg-gray-50 p-4">
-            {/* Floating Sidebar */}
-            <Sidebar />
+  return (
+    <div className="flex min-h-screen bg-gray-50 overflow-hidden">
+      {/* Sidebar tetap */}
+      <Sidebar />
 
-            {/* Main Content */}
-            <main className="flex-1 pl-5">
-                {/* Topbar */}
-                <Topbar />
+      {/* Main Content */}
+      <main className="flex-1 min-h-screen flex flex-col overflow-x-hidden overflow-y-auto">
+        {/* Topbar */}
+        <Topbar />
 
-                {/* Main Content Area */}
-                {children}
-            </main>
+        {/* Main Content Area */}
+        <div className="p-4 flex-1">
+          {children}
         </div>
-    )
+      </main>
+    </div>
+  );
 }
