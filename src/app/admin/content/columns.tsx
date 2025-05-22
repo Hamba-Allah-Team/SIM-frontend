@@ -109,6 +109,7 @@ export const columns: ColumnDef<Content>[] = [
 
     cell: ({ row }) => {
       const content = row.original
+      const [openDialog, setOpenDialog] = useState(false)
 
       return (
         <div className="flex gap-2 justify-center">
@@ -128,11 +129,20 @@ export const columns: ColumnDef<Content>[] = [
           </button>
           <button
             className="btn-delete flex items-center gap-1"
-            onClick={() => alert(`Hapus konten ID: ${content.contents_id}`)}
+            onClick={() => setOpenDialog(true)}
           >
             <Trash2 className="w-4 h-4" />
             Hapus
           </button>
+
+          <DeleteDialog
+            open={openDialog}
+            onOpenChange={setOpenDialog}
+            onConfirm={() => {
+              // Nanti kamu bisa sambungin ke backend di sini
+              //alert(`Konfirmasi hapus konten ID: ${content.contents_id}`)
+            }}
+          />
         </div>
       )
     },
