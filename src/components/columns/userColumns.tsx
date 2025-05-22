@@ -1,7 +1,5 @@
-// components/columns.tsx
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { PenLine, CircleEllipsis } from "lucide-react";
 
 export type Mosque = {
@@ -10,13 +8,19 @@ export type Mosque = {
 };
 
 export type User = {
+  name: unknown;
+  mosque_id: unknown;
+  email: string;
   id: string;
   username: string;
   status: "active" | "inactive";
   mosque?: Mosque | null;
 };
 
-export const columns: ColumnDef<User>[] = [
+// Fungsi untuk menghasilkan kolom dengan aksi yang memanggil handler
+export const columns = (
+  onDetail?: (user: User) => void
+): ColumnDef<User>[] => [
   {
     accessorKey: "username",
     header: "Username",
@@ -47,14 +51,14 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     header: "Aksi",
     cell: ({ row }) => {
-      const userId = row.original.id;
+      const user = row.original;
       return (
         <div className="flex gap-2">
           <Button
             size="sm"
             variant="ghost"
             className="flex items-center gap-1 p-1"
-            onClick={() => alert(`Detail user ${userId}`)}
+            onClick={() => onDetail?.(user)}
           >
             <PenLine size={16} />
             <span>Detail</span>
@@ -63,7 +67,7 @@ export const columns: ColumnDef<User>[] = [
             size="sm"
             variant="ghost"
             className="flex items-center gap-1 p-1"
-            onClick={() => alert(`Ubah user ${userId}`)}
+            onClick={() => alert(`Ubah user ${user.id}`)}
           >
             <CircleEllipsis size={16} />
             <span>Ubah</span>

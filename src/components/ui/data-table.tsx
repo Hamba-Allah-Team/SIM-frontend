@@ -1,9 +1,6 @@
-"use client"
+"use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import * as React from "react"
-
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,7 +11,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -23,25 +20,29 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  loading?: boolean
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  loading?: boolean;
+  onRowDetail?: (row: TData) => void; // opsional
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   loading = false,
+  onRowDetail,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
+  });
 
   const table = useReactTable({
     data,
@@ -59,11 +60,10 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: false,
-  })
+  });
 
   return (
     <div className="container mx-auto px-4 text-black">
-      {/* Tabel scroll horizontal */}
       <div className="w-full overflow-x-auto">
         <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden rounded-md border border-black">
@@ -147,7 +147,7 @@ export function DataTable<TData, TValue>({
         </Button>
 
         {Array.from({ length: table.getPageCount() }).map((_, i) => {
-          const isActive = i === table.getState().pagination.pageIndex
+          const isActive = i === table.getState().pagination.pageIndex;
           return (
             <Button
               key={i}
@@ -161,7 +161,7 @@ export function DataTable<TData, TValue>({
             >
               {i + 1}
             </Button>
-          )
+          );
         })}
 
         <Button
@@ -176,5 +176,5 @@ export function DataTable<TData, TValue>({
         </Button>
       </div>
     </div>
-  )
+  );
 }
