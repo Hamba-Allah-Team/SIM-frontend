@@ -1,4 +1,4 @@
-import ActivationRegisterSuccess  from "@/components/ActivationRegisterSucces";
+import ActivationRegisterSuccess from "@/components/activation/ActivationRegisterSucces";
 
 export default function ActivationRegisterSuccesssPage() {
   return (

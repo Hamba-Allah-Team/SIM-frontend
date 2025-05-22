@@ -30,6 +30,7 @@ export const columns: ColumnDef<Content>[] = [
     cell: ({ row }) => (
       <div
         className="truncate overflow-hidden whitespace-nowrap w-[200px] sm:w-[300px] lg:w-[400px]"
+        // // className="text-[16px] font-semibold font-poppins text-black
         title={row.getValue("title")}
       >
         {row.getValue("title")}
@@ -40,7 +41,7 @@ export const columns: ColumnDef<Content>[] = [
     accessorKey: "contents_type",
     header: ({ column }) => {
       return (
-        <div className="text-center w-full">
+        <div className="text-center w-full max-w-[120px] truncate mx-auto">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -64,7 +65,7 @@ export const columns: ColumnDef<Content>[] = [
     accessorKey: "published_date",
     header: ({ column }) => {
       return (
-        <div className="text-center w-full">
+        <div className="text-center w-full max-w-[120px] truncate mx-auto">
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

@@ -121,17 +121,17 @@ export function ContentForm() {
           name="contents_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
                 Jenis Konten
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="bg-white w-full">
+                  <SelectTrigger className="w-full bg-white text-black">
                     <SelectValue placeholder="Pilih jenis konten" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white z-10">
-                    <SelectItem value="artikel" className="hover:bg-gray-100 aria-selected:bg-white">Artikel</SelectItem>
-                    <SelectItem value="berita" className="hover:bg-gray-100 aria-selected:bg-white">Berita</SelectItem>
+                  <SelectContent className="bg-white text-black">
+                    <SelectItem value="artikel" className="hover:bg-gray-100 aria-selected:bg-white  ">Artikel</SelectItem>
+                    <SelectItem value="berita" className="hover:bg-gray-100 aria-selected:bg-white ">Berita</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -166,7 +166,7 @@ export function ContentForm() {
                       type="date"
                       {...field}
                       readOnly
-                      className="pl-10 placeholder-black-400 text-black-700 bg-white border border-gray-300 w-full font-poppins cursor-not-allowed"
+                      className="pl-10 placeholder-black text-black bg-white border border-gray-300 w-full font-poppins cursor-not-allowed"
                     />
                   </div>
                 </FormControl>

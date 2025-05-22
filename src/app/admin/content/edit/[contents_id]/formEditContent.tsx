@@ -128,10 +128,10 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
               </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="bg-white w-full">
+                  <SelectTrigger className="bg-white w-full text-black">
                     <SelectValue placeholder="Pilih jenis konten" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white z-10">
+                  <SelectContent className="bg-white z-10 text-black">
                     <SelectItem value="artikel" className="hover:bg-gray-100 aria-selected:bg-white">Artikel</SelectItem>
                     <SelectItem value="berita" className="hover:bg-gray-100 aria-selected:bg-white">Berita</SelectItem>
                   </SelectContent>
@@ -160,7 +160,7 @@ export function EditContentForm({ initialData }: EditContentFormProps) {
                       type="date"
                       {...field}
                       readOnly
-                      className="pl-10 placeholder-black-400 text-black-700 bg-white border border-gray-300 w-full font-poppins cursor-not-allowed"
+                      className="pl-10 placeholder-black text-black bg-white border border-gray-300 w-full font-poppins cursor-not-allowed"
                     />
                 </div>
               </FormControl>

@@ -11,7 +11,9 @@ export default function ResetPasswordEmail() {
   const [loaded, setLoaded] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false); // untuk tombol kirim ulang
+  const [emailSent, setEmailSent] = useState(false);
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -22,7 +24,7 @@ export default function ResetPasswordEmail() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/api/reset-password/send-reset-password", {
+      const res = await fetch(`${API}/api/reset-password/send-reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,5 @@
-import ActivationSideImage from "@/components/ActivationSideImage";
-import ActivationExtensionForm from "@/components/ActivationExtendForm";
+import ActivationSideImage from "@/components/activation/ActivationSideImage";
+import ActivationExtensionForm from "@/components/activation/ActivationExtendForm";
 
 export default function ActivationExtensionFormPage() {
   return (
