@@ -8,6 +8,7 @@ interface UserProfile {
     name: string
     email: string
     role: "admin" | "superadmin"
+    mosque_id: number
     // tambahkan properti lain sesuai data dari backend
 }
 

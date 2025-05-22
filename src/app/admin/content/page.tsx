@@ -206,7 +206,7 @@ async function getData(): Promise<Content[]> {
     const data = await getData()
 
     return (
-      <div className="w-full max-w-screen-xl min-h-screen px-4 sm:px-8 py-8 mx-auto">
+      <div className="w-full max-w-screen-xl min-h-screen px-2 sm:px-4 py-4 mx-auto">
         <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
           <h1 className="text-[28px] font-bold font-poppins text-black">Konten Masjid</h1>
           {/* // className="text-[16px] font-semibold font-poppins text-black */}
