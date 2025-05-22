@@ -1,10 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-
-export type Dompet = {
-    id: number
-    name: string
-    balance: number
-}
+import { Dompet } from "./types"
 
 export const columns: ColumnDef<Dompet>[] = [
     {
