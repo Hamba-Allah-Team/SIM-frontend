@@ -16,7 +16,7 @@ export default function AdminTopbar() {
 
     const handleLogout = () => {
         localStorage.removeItem("token")
-        router.push("/login") // arahkan ke halaman login
+        router.replace("/login") // arahkan ke halaman login
     }
 
     return (
