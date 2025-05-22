@@ -67,10 +67,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="container mx-auto px-4 text-black">
+      {/* Wrapper scroll horizontal */}
       <div className="w-full overflow-x-auto">
         <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden rounded-md border border-black">
-            <Table className="table-auto text-black">
+            <Table className="table-auto min-w-full text-black">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="border-0">
@@ -78,7 +79,8 @@ export function DataTable<TData, TValue>({
                       <TableHead
                         key={header.id}
                         onClick={header.column.getToggleSortingHandler()}
-                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black border-0 cursor-pointer select-none"
+                        className="font-bold whitespace-nowrap truncate text-black border-0 cursor-pointer select-none"
+                        style={{ maxWidth: "150px" }} // sesuaikan atau hapus
                       >
                         {!header.isPlaceholder && (
                           <div className="flex items-center gap-1">
@@ -88,16 +90,14 @@ export function DataTable<TData, TValue>({
                             )}
                             {header.column.getCanSort() && (
                               <span className="text-xs">
-                                {
-                                  {
-                                    asc: "↑",
-                                    desc: "↓",
-                                    false: "⇅",
-                                  }[
-                                    (header.column.getIsSorted() as string) ||
-                                      "false"
-                                  ]
-                                }
+                                {{
+                                  asc: "↑",
+                                  desc: "↓",
+                                  false: "⇅",
+                                }[
+                                  (header.column.getIsSorted() as string) ||
+                                    "false"
+                                ]}
                               </span>
                             )}
                           </div>
@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow className="border-0">
+                  <TableRow className="border-b border-black">
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center border-0"
@@ -122,12 +122,13 @@ export function DataTable<TData, TValue>({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() ? "selected" : undefined}
-                      className="border-0"
+                      className="border-b border-black"
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className="whitespace-nowrap max-w-[100px] truncate border-0"
+                          className="whitespace-nowrap truncate border-0"
+                          style={{ maxWidth: "150px" }} // sesuaikan atau hapus maxWidth
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -138,7 +139,7 @@ export function DataTable<TData, TValue>({
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="border-0">
+                  <TableRow className="border-b border-black">
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center border-0"

@@ -36,7 +36,7 @@ function getMenuByRole(role: string): MenuItem[] {
             { label: "Dashboard", icon: <LayoutDashboard size={18} />, href: "/superadmin/dashboard" },
             { label: "User", icon: <Users size={18} />, href: "/superadmin/user" },
             { label: "Aktivasi", icon: <KeySquare size={18} />, href: "/superadmin/activation" },
-            { label: "Perpanjang", icon: <Clock size={18} />, href: "/superadmin/extend" },
+            { label: "Perpanjang", icon: <Clock size={18} />, href: "/superadmin/extension" },
         ]
         : [
             { label: "Dashboard", icon: <LayoutDashboard size={18} />, href: "/admin/dashboard" },
