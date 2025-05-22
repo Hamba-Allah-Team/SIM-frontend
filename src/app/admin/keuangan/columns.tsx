@@ -4,20 +4,20 @@ import { Button } from "@/components/ui/button"
 
 export const columns: ColumnDef<Keuangan>[] = [
     {
-        accessorKey: "tanggal",
-        header: "Tanggal",
+        accessorKey: "transaction_date",
+        header: () => <div className="min-w-[120px]">Tanggal</div>,
     },
     {
         accessorKey: "jenis",
-        header: "Jenis",
+        header: () => <div className="min-w-[100px]">Jenis</div>,
     },
     {
         accessorKey: "dompet",
-        header: "Dompet",
+        header: () => <div className="min-w-[100px]">Dompet</div>,
     },
     {
         accessorKey: "nominal",
-        header: "Nominal",
+        header: () => <div className="min-w-[140px]">Nominal</div>,
         cell: ({ row }) => {
             const nominal = row.getValue("nominal") as number
             return `Rp ${nominal.toLocaleString("id-ID")}`
@@ -25,7 +25,7 @@ export const columns: ColumnDef<Keuangan>[] = [
     },
     {
         id: "actions",
-        header: "Aksi",
+        header: () => <div className="min-w-[200px]">Aksi</div>,
         cell: ({ row }) => {
             const transaksi = row.original
 

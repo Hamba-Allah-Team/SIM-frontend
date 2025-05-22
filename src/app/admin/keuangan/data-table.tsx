@@ -5,6 +5,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    getPaginationRowModel,
 } from "@tanstack/react-table"
 import {
     Table,
@@ -15,6 +16,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -27,11 +30,14 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(), // ✅ Tambahkan ini
+        manualPagination: false,
     })
+
 
     return (
         <div className="rounded-md border">
-            <Table>
+            <Table className="w-full table-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -39,7 +45,10 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder
                                         ? null
-                                        : flexRender(header.column.columnDef.header, header.getContext())}
+                                        : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
                                 </TableHead>
                             ))}
                         </TableRow>
@@ -62,20 +71,79 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                             <TableRow key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
                                     </TableCell>
                                 ))}
                             </TableRow>
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
+                            <TableCell
+                                colSpan={columns.length}
+                                className="text-center"
+                            >
                                 Tidak ada data
                             </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            <div className="flex items-center justify-between px-4 py-4 border-t">
+                {/* Rows per page */}
+                <div className="flex items-center gap-2 text-sm">
+                    <span>Tampilkan</span>
+                    <Select
+                        value={String(table.getState().pagination.pageSize)}
+                        onValueChange={(value) => {
+                            table.setPageSize(Number(value))
+                        }}
+                    >
+                        <SelectTrigger className="w-[80px] h-8">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {[5, 10, 20, 50].map((pageSize) => (
+                                <SelectItem
+                                    key={pageSize}
+                                    value={String(pageSize)}
+                                >
+                                    {pageSize}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <span>data per halaman</span>
+                </div>
+
+                {/* Prev/Next */}
+                <div className="flex items-center space-x-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        Sebelumnya
+                    </Button>
+                    <span className="text-sm">
+                        Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
+                        {table.getPageCount()}
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        Selanjutnya
+                    </Button>
+                </div>
+            </div>
         </div>
     )
 }

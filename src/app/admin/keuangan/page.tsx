@@ -6,33 +6,29 @@ import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
-import { Keuangan } from "./types";
+import { fetchTransactions } from "./utils";
+// import { Keuangan } from "./types";
 
 export default function KeuanganPage() {
-    const router = useRouter()
-    const [data, setData] = useState<Keuangan[]>([])
+    const router = useRouter();
+    const [transactions, setTransactions] = useState<any[]>([]); // Sesuaikan dengan tipe data transaksi yang diterima
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Dummy data untuk keuangan
-        const dummyData: Keuangan[] = [
-            {
-                id: 1,
-                tanggal: "2025-05-21",
-                jenis: "Pemasukan",
-                dompet: "Cash",
-                nominal: 1000000,
-            },
-            {
-                id: 2,
-                tanggal: "2025-05-20",
-                jenis: "Pengeluaran",
-                dompet: "Bank",
-                nominal: 250000,
-            },
-        ]
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                const data = await fetchTransactions(); // Ambil data transaksi
+                setTransactions(data);
+            } catch (error) {
+                console.error("Gagal mengambil transaksi:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-        setData(dummyData)
-    }, [])
+        fetchData();
+    }, []); // Kosongkan dependensi untuk memanggil sekali ketika komponen di-mount
 
     const handleAddKeuangan = () => {
         router.push("/admin/keuangan/tambah")
