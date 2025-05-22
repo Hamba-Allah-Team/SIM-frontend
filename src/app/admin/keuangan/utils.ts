@@ -29,3 +29,11 @@ export function mapApiToKeuangan(data: Transaction[]): Keuangan[] {
         amount: item.amount,
     }));
 }
+
+export function mapTransactionTypeToBackend(type: "Pemasukan" | "Pengeluaran"): "income" | "expense" {
+    return type === "Pemasukan" ? "income" : "expense";
+}
+
+export function mapTransactionTypeToFrontend(type: "income" | "expense"): "Pemasukan" | "Pengeluaran" {
+    return type === "income" ? "Pemasukan" : "Pengeluaran";
+}
