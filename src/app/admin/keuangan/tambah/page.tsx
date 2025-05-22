@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useUserProfile } from "@/hooks/useUserProfile"
+import { mapTransactionTypeToBackend } from "../utils";
 import { AxiosError } from "axios"
 
 interface WalletOption {
@@ -48,11 +49,16 @@ export default function CreateTransactionPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
+        if (!transactionType) {
+            alert("Jenis transaksi harus dipilih")
+            return
+        }
+
         try {
             const response = await api.post("/api/finance/transactions", {
                 wallet_id: Number(walletId),
                 amount,
-                transaction_type: transactionType,
+                transaction_type: mapTransactionTypeToBackend(transactionType), // menggunakan helper function
                 source_or_usage: description,
                 transaction_date: transactionDate,
             })
@@ -64,6 +70,7 @@ export default function CreateTransactionPage() {
             alert(error.response?.data?.message || "Gagal menambahkan transaksi")
         }
     }
+
 
     return (
         <div className="w-full px-4 py-6">
