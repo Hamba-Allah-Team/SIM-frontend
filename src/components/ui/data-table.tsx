@@ -39,9 +39,7 @@ export function DataTable<TData, TValue>({
   onRowDetail,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
@@ -79,8 +77,7 @@ export function DataTable<TData, TValue>({
                       <TableHead
                         key={header.id}
                         onClick={header.column.getToggleSortingHandler()}
-                        className="font-bold whitespace-nowrap truncate text-black border-0 cursor-pointer select-none"
-                        style={{ maxWidth: "150px" }} // sesuaikan atau hapus
+                        className="font-bold whitespace-nowrap text-black border-0 cursor-pointer select-none"
                       >
                         {!header.isPlaceholder && (
                           <div className="flex items-center gap-1">
@@ -96,7 +93,7 @@ export function DataTable<TData, TValue>({
                                   false: "⇅",
                                 }[
                                   (header.column.getIsSorted() as string) ||
-                                    "false"
+                                  "false"
                                 ]}
                               </span>
                             )}
@@ -127,8 +124,7 @@ export function DataTable<TData, TValue>({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className="whitespace-nowrap truncate border-0"
-                          style={{ maxWidth: "150px" }} // sesuaikan atau hapus maxWidth
+                          className="whitespace-nowrap border-0"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
