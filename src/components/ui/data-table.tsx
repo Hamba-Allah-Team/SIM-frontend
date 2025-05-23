@@ -63,13 +63,16 @@ export function DataTable<TData, TValue>({
     manualPagination: false,
   });
 
+  // Hitung lebar per kolom
+  const colWidth = `${100 / columns.length}%`;
+
   return (
-    <div className="container mx-auto px-4 text-black">
+    <div className="w-full text-black">
       {/* Wrapper scroll horizontal */}
       <div className="w-full overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
+        <div className="min-w-full">
           <div className="overflow-hidden rounded-md border border-black">
-            <Table className="table-auto min-w-full text-black">
+            <Table className="table-auto w-full text-black">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="border-0">
@@ -77,6 +80,7 @@ export function DataTable<TData, TValue>({
                       <TableHead
                         key={header.id}
                         onClick={header.column.getToggleSortingHandler()}
+                        style={{ width: colWidth }}
                         className="font-bold whitespace-nowrap text-black border-0 cursor-pointer select-none"
                       >
                         {!header.isPlaceholder && (
@@ -92,8 +96,7 @@ export function DataTable<TData, TValue>({
                                   desc: "↓",
                                   false: "⇅",
                                 }[
-                                  (header.column.getIsSorted() as string) ||
-                                  "false"
+                                  (header.column.getIsSorted() as string) || "false"
                                 ]}
                               </span>
                             )}
@@ -124,12 +127,10 @@ export function DataTable<TData, TValue>({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
+                          style={{ width: colWidth }}
                           className="whitespace-nowrap border-0"
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
                     </TableRow>
@@ -151,7 +152,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end space-x-1 py-4 flex-wrap gap-2">
+      <div className="flex items-center justify-end space-x-1 py-4 flex-wrap gap-2 px-4">
         <Button
           variant="outline"
           size="sm"
