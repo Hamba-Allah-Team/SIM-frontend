@@ -25,6 +25,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Area,
 } from "recharts";
 
 // --- Interface dan Definisi Tipe ---
@@ -83,7 +84,7 @@ export default function DashboardPage() {
   const chartConfig = useMemo(
     () => ({
       active: {
-        label: "Admin Aktif",
+        label: " Admin Aktif",
         color: "hsl(25 95% 53%)",
       },
     }),
@@ -91,33 +92,42 @@ export default function DashboardPage() {
   );
 
   // Format date based on selected time range
-const formatXAxis = (date: string) => {
-  if (selectedTimeRange === "12m") {
-    try {
-      const months = [
-        "Januari", "Februari", "Maret", "April", 
-        "Mei", "Juni", "Juli", "Agustus", 
-        "September", "Oktober", "November", "Desember"
-      ];
-      
-      if (typeof date === 'number' && date >= 0 && date <= 11) {
-        return months[date];
-      }
-      
-      if (typeof date === 'string') {
-        const dateObj = new Date(date);
-        if (!isNaN(dateObj.getTime())) {
-          return months[dateObj.getMonth()];
+  const formatXAxis = (date: string) => {
+    if (selectedTimeRange === "12m") {
+      try {
+        const months = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+
+        if (typeof date === "number" && date >= 0 && date <= 11) {
+          return months[date];
         }
+
+        if (typeof date === "string") {
+          const dateObj = new Date(date);
+          if (!isNaN(dateObj.getTime())) {
+            return months[dateObj.getMonth()];
+          }
+        }
+
+        return date;
+      } catch (e) {
+        return date;
       }
-      
-      return date;  
-    } catch (e) {
-      return date; 
     }
-  }
-  return date; 
-};
+    return date;
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -245,11 +255,9 @@ const formatXAxis = (date: string) => {
         );
 
         if (!response.ok) {
-          const errorData = await response
-            .json()
-            .catch(() => ({
-              message: "Gagal memproses respons error dari server.",
-            }));
+          const errorData = await response.json().catch(() => ({
+            message: "Gagal memproses respons error dari server.",
+          }));
           const errorMessage = `Gagal memuat data aktual (${
             response.status
           }): ${errorData.message || response.statusText}`;
@@ -420,71 +428,106 @@ const formatXAxis = (date: string) => {
               </div>
             ) : adminActivityData.length > 0 ? (
               <div className="h-72 w-full">
-                <ChartContainer config={chartConfig} className="h-full w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={adminActivityData}
-                      margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
-                      accessibilityLayer
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="hsl(var(--border))"
-                        horizontal={true}
-                      />
-                      <XAxis
-                        dataKey="date"
-                        tickLine={false}
-                        axisLine={{
-                          stroke: "hsl(var(--foreground))",
-                          strokeWidth: 0.5,
-                        }}
-                        tickMargin={8}
-                        fontSize={12}
-                        stroke="hsl(var(--muted-foreground))"
-                        tickFormatter={formatXAxis}
-                        interval={selectedTimeRange === "12m" ? 0 : undefined} 
-                      />
-                      <YAxis
-                        axisLine={{
-                          stroke: "hsl(var(--foreground))",
-                          strokeWidth: 0.5,
-                        }}
-                        tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
-                        tickMargin={8}
-                        fontSize={12}
-                        stroke="hsl(var(--muted-foreground))"
-                        allowDecimals={false}
-                        width={40}
-                        domain={["dataMin - 1", "dataMax + 1"]} 
-                      />
-                      <ChartTooltip
-                        cursor={true}
-                        content={
-                          <ChartTooltipContent
-                            indicator="line"
-                            hideLabel
-                            labelClassName="text-sm font-semibold text-gray-900"
-                          />
-                        }
-                      />
-                      <Line
-                        dataKey="active"
-                        type="monotone"
-                        stroke={chartConfig.active.color}
-                        strokeWidth={2.5}
-                        dot={{
-                          r: 4,
-                          fill: chartConfig.active.color,
-                          strokeWidth: 0,
-                        }}
-                        activeDot={{ r: 6, strokeWidth: 0 }}
-                        name={chartConfig.active.label}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
+                            <ChartContainer config={chartConfig} className="h-full w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={adminActivityData}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 10,
+                      bottom: 5,
+                    }}
+                    accessibilityLayer
+                  >
+                    <defs>
+                      <linearGradient id="areaFillGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor={chartConfig.active.color}
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={chartConfig.active.color}
+                          stopOpacity={0.05}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      vertical={false}
+                      stroke="#E5E7EB" // Warna abu-abu sangat terang (Tailwind gray-200)
+                      horizontal={true}
+                    />
+                    <XAxis
+                      dataKey="date"
+                      tickLine={false}
+                      axisLine={{ stroke: "#D1D5DB", strokeWidth: 1 }} // Garis sumbu X abu-abu terang (Tailwind gray-300)
+                      tickMargin={10}
+                      tick={{ fill: "#6B7280", fontSize: 11 }} // Warna dan ukuran font label tick (Tailwind gray-500)
+                      tickFormatter={formatXAxis}
+                      interval={selectedTimeRange === "12m" ? 0 : undefined}
+                    />
+                    <YAxis
+                      axisLine={{ stroke: "#D1D5DB", strokeWidth: 1 }} // Garis sumbu Y abu-abu terang
+                      tickLine={false}
+                      tickMargin={10}
+                      tick={{ fill: "#6B7280", fontSize: 11 }}
+                      allowDecimals={false}
+                      domain={[
+                        0,
+                        (dataMax: number) =>
+                          Math.max(Math.ceil(dataMax * 1), 5),
+                      ]}
+                    />
+                    <ChartTooltip
+                      cursor={{ stroke: chartConfig.active.color, strokeWidth: 1, strokeDasharray: "3 3" }}
+                      content={
+                        <ChartTooltipContent className="bg-white rounded-lg border-none p-4 text-black"
+                          indicator="dot"
+                          nameKey="name"
+                          formatter={(value) => [value, chartConfig.active.label]}
+                          wrapperStyle={{
+                            backgroundColor: "#FFFFFF", 
+                            border: "1px solid #E0E0E0",
+                            borderRadius: "8px",
+                            boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                            padding: "12px 16px", 
+                          }}
+                          labelClassName="text-sm font-semibold text-orange-500"
+                        />
+                      }
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="active"
+                      stroke="none"
+                      fill="url(#areaFillGradient)"
+                      activeDot={false}
+                      dot={false}
+                    />
+                    <Line
+                      dataKey="active"
+                      type="monotone"
+                      stroke={chartConfig.active.color}
+                      strokeWidth={2.5}
+                      dot={{
+                        r: 4,
+                        fill: chartConfig.active.color,
+                        stroke: '#FFFFFF',
+                        strokeWidth: 1.5,
+                      }}
+                      activeDot={{
+                        r: 6,
+                        fill: chartConfig.active.color,
+                        stroke: '#FFFFFF',
+                        strokeWidth: 2,
+                      }}
+                      name={chartConfig.active.label}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
               </div>
             ) : (
               <div className="flex items-center justify-center h-72">
