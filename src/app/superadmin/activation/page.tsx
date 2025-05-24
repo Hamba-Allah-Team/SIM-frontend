@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 
+// Komponen InfoRow tetap sama
 function InfoRow({
   label,
   value,
@@ -32,6 +33,7 @@ function InfoRow({
 
 type AlertType = "success" | "error" | "info";
 
+// Komponen AlertModal tetap sama
 function AlertModal({
   open,
   onClose,
@@ -69,12 +71,10 @@ function AlertModal({
         <DialogHeader>
           <DialogTitle className="text-center">{title}</DialogTitle>
         </DialogHeader>
-
         <div className="py-4 text-center flex flex-col items-center gap-3">
           <Icon className={`w-12 h-12 ${color}`} />
           <p className={`text-lg font-medium ${color}`}>{message}</p>
         </div>
-
         <DialogFooter>
           <Button
             onClick={onClose}
@@ -97,9 +97,10 @@ export type ActivationData = {
   createdAt: string;
   mosque_name?: string | null;
   mosque_address?: string | null;
-  proof_image?: string | null; // path relatif gambar bukti transfer
+  proof_image?: string | null;
 };
 
+// Definisi kolom DataTable tetap sama
 const columns = (
   onDetail: (req: ActivationData) => void,
   onApprove: (req: ActivationData) => void,
@@ -168,6 +169,8 @@ export default function ActivationPage() {
     type: "info" as AlertType,
   });
   const [actionLoading, setActionLoading] = useState(false);
+  // State untuk melacak error saat memuat gambar bukti
+  const [proofImageError, setProofImageError] = useState(false);
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
   const token =
@@ -213,6 +216,12 @@ export default function ActivationPage() {
     if (API) fetchData();
   }, [API]);
 
+  useEffect(() => {
+    if (selectedRequest) {
+      setProofImageError(false);
+    }
+  }, [selectedRequest]);
+
   const filtered = requests.filter((req) => {
     if (!searchTerm) return true;
     const s = searchTerm.toLowerCase();
@@ -222,14 +231,16 @@ export default function ActivationPage() {
     );
   });
 
-  const handleShowDetail = (req: ActivationData) => setSelectedRequest(req);
+  const handleShowDetail = (req: ActivationData) => {
+    setSelectedRequest(req);
+  };
   const handleCloseDetail = () => setSelectedRequest(null);
 
   const handleActionClick = (
     req: ActivationData,
     type: "approve" | "reject"
   ) => {
-    setSelectedRequest(req);
+    setSelectedRequest(req); 
     setActionType(type);
     setConfirmActionOpen(true);
   };
@@ -262,7 +273,7 @@ export default function ActivationPage() {
       });
 
       setConfirmActionOpen(false);
-      setSelectedRequest(null);
+      setSelectedRequest(null); 
       await fetchData();
     } catch {
       setAlert({
@@ -285,7 +296,6 @@ export default function ActivationPage() {
     (req) => handleActionClick(req, "reject")
   );
 
-  // Base URL untuk gambar proof
   const baseURL = API;
 
   return (
@@ -297,14 +307,14 @@ export default function ActivationPage() {
       <DataTable columns={actionColumns} data={filtered} loading={loading} />
 
       {/* Modal Detail Samping */}
-      <Dialog open={!!selectedRequest} onOpenChange={handleCloseDetail}>
+      <Dialog open={!!selectedRequest && !confirmActionOpen} onOpenChange={handleCloseDetail}>
         <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-4xl bg-white text-black rounded shadow-lg p-6">
           <DialogHeader>
             <DialogTitle>Detail Permintaan Aktivasi</DialogTitle>
           </DialogHeader>
 
           {selectedRequest && (
-            <div className="mt-4 flex gap-6">
+            <div className="mt-4 flex flex-col md:flex-row gap-6">
               {/* Kolom kiri: Info teks */}
               <div className="flex-1 space-y-4 text-sm max-w-lg">
                 <InfoRow
@@ -330,50 +340,60 @@ export default function ActivationPage() {
               </div>
 
               {/* Kolom kanan: Gambar proof */}
-              <div className="flex-1 max-w-md flex flex-col items-center justify-center rounded p-4">
-                <label className="block font-semibold mb-2 text-gray-700">
+              <div className="flex-1 max-w-md flex flex-col items-center justify-start pt-2 md:pt-0">
+                <label className="block font-semibold mb-2 text-gray-700 text-center md:text-left w-full">
                   Bukti Transfer
                 </label>
-                {selectedRequest.proof_image ? (
-                  <img
-                    src={`${baseURL}/uploads/${selectedRequest.proof_image}`}
-                    alt="Bukti Transfer"
-                    className="max-w-full max-h-96 rounded border"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "/images/image-not-found.png";
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm text-gray-500 italic">
-                    Bukti transfer tidak tersedia.
-                  </p>
-                )}
+                <div className="w-full h-96 flex items-center justify-center border border-gray-200 rounded bg-gray-50 p-2">
+                  {selectedRequest.proof_image ? (
+                    proofImageError ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-center">
+                        <XCircle className="w-20 h-20 text-red-500" strokeWidth={1.5} /> 
+                        <p className="text-sm text-red-600 mt-2 font-medium">
+                          Gambar tidak dapat dimuat.
+                        </p>
+                      </div>
+                    ) : (
+                      <img
+                        key={selectedRequest.proof_image} 
+                        src={`${baseURL}/uploads/${selectedRequest.proof_image}`}
+                        alt="Bukti Transfer"
+                        className="max-w-full max-h-full rounded object-contain"
+                        onError={() => {
+                          setProofImageError(true);
+                        }}
+                      />
+                    )
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">
+                      Bukti transfer tidak tersedia.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
-          <DialogFooter className="flex justify-between items-center">
-
+          <DialogFooter className="flex justify-between items-center mt-6">
             {selectedRequest?.status === "pending" && (
               <div className="flex gap-2">
                 <Button
-                  onClick={() => handleActionClick(selectedRequest, "reject")}
-                  className="bg-white text-black border border-gray-300 hover:text-white"
+                  onClick={() => {
+                    if(selectedRequest) handleActionClick(selectedRequest, "reject");
+                  }}
+                  className="bg-red-600 text-white hover:bg-red-700"
                   disabled={actionLoading}
                 >
-                  {actionLoading && actionType === "reject"
-                    ? "Memproses..."
-                    : "Tolak"}
+                  Tolak
                 </Button>
                 <Button
-                  onClick={() => handleActionClick(selectedRequest, "approve")}
-                  className="bg-custom-orange text-white border border-gray-300 hover:text-white"
+                  onClick={() => {
+                     if(selectedRequest) handleActionClick(selectedRequest, "approve");
+                  }}
+                  className="bg-custom-orange text-white hover:bg-orange-600"
                   disabled={actionLoading}
                 >
-                  {actionLoading && actionType === "approve"
-                    ? "Memproses..."
-                    : "Setujui"}
+                  Setujui
                 </Button>
               </div>
             )}
@@ -384,7 +404,13 @@ export default function ActivationPage() {
       {/* Modal Konfirmasi Approve/Reject */}
       <Dialog
         open={confirmActionOpen}
-        onOpenChange={() => setConfirmActionOpen(false)}
+        onOpenChange={(isOpen) => {
+          if (actionLoading) return; 
+          setConfirmActionOpen(isOpen);
+          if (!isOpen) {
+            setActionType(null);
+          }
+        }}
       >
         <DialogContent className="max-w-md bg-white text-black [&>button]:hidden">
           <DialogHeader>
@@ -401,12 +427,21 @@ export default function ActivationPage() {
               {actionType === "approve" ? "menyetujui" : "menolak"} permintaan
               ini?
             </p>
+            {selectedRequest && (
+                 <p className="text-sm text-gray-600 mt-2">
+                 No. Transaksi: {selectedRequest.transaction_number} <br/>
+                 Username: {selectedRequest.username ?? "-"}
+               </p>
+            )}
           </div>
 
           <DialogFooter>
             <Button
               className="bg-white text-black border border-gray-300 hover:text-black hover:bg-gray-100"
-              onClick={() => setConfirmActionOpen(false)}
+              onClick={() => {
+                setConfirmActionOpen(false);
+                setActionType(null);
+              }}
               variant="outline"
               disabled={actionLoading}
             >
@@ -414,14 +449,18 @@ export default function ActivationPage() {
             </Button>
             <Button
               onClick={handleConfirmAction}
-              className="bg-custom-orange text-white hover:bg-orange-600"
+              className={`${
+                actionType === "approve"
+                  ? "bg-custom-orange hover:bg-orange-600"
+                  : "bg-red-600 hover:bg-red-700"
+              } text-white`}
               disabled={actionLoading}
             >
               {actionLoading
                 ? "Memproses..."
                 : actionType === "approve"
-                ? "Setujui"
-                : "Tolak"}
+                ? "Ya, Setujui"
+                : "Ya, Tolak"}
             </Button>
           </DialogFooter>
         </DialogContent>
