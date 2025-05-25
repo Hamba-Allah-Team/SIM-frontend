@@ -6,6 +6,7 @@ import { DataTable } from "./data-table";
 import { useEffect, useState, useMemo } from "react";
 import { CircleEllipsis, Pencil, Trash2 } from "lucide-react";
 import { DeleteDialog } from "./delete/deleteDialog";
+import { DetailDialog } from "./detail/detailDialog";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -42,6 +43,16 @@ export default function ContentPage() {
     setData((prev) => prev.filter((item) => item.contents_id !== id));
   };
 
+  // Fungsi Detail
+  const [openDetail, setOpenDetail] = useState(false);
+  const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
+
+  const handleShowDetail = (id: number) => {
+    setSelectedContentId(id);
+    setOpenDetail(true);
+  };
+
+
   // Buat columns dengan modifikasi kolom aksi agar bisa panggil handleDelete
   const columns = useMemo(() => {
     return baseColumns.map((col) => {
@@ -56,11 +67,18 @@ export default function ContentPage() {
               <div className="flex gap-2 justify-center">
                 <button
                   className="btn-view flex items-center gap-1"
-                  onClick={() => alert(`View konten ID: ${content.contents_id}`)}
+                  onClick={() => handleShowDetail(content.contents_id)}
                 >
                   <CircleEllipsis className="w-4 h-4" />
                   Detail
                 </button>
+
+                <DetailDialog
+                  open={openDetail}
+                  onOpenChange={setOpenDetail}
+                  contentId={selectedContentId}
+                />
+
                 <button
                   className="btn-edit flex items-center gap-1"
                   onClick={() => alert(`Edit konten ID: ${content.contents_id}`)}

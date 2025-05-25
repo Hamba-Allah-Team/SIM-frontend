@@ -76,7 +76,7 @@ export const columns: ColumnDef<Content>[] = [
 
   {
     id: "actions",
-    header: "Aksi",
+    header: () => <div className="text-center w-full">Aksi</div>,
     cell: () => null, // Akan dioverride di ContentPage
     enableSorting: false,
   }
