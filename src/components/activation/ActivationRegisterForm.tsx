@@ -15,6 +15,7 @@ import {
   Instagram,
   Upload,
   Landmark,
+  Lock,
 } from "lucide-react";
 
 export default function ActivationRegisterForm() {
@@ -46,6 +47,18 @@ export default function ActivationRegisterForm() {
       name: "email",
       icon: <Mail size={20} className={iconClass} />,
       placeholder: "Email",
+      required: true,
+    },
+    {
+      name: "password",
+      icon: <Lock size={20} className={iconClass} />,
+      placeholder: "Password",
+      required: true,
+    },
+    {
+      name: "confirm_password",
+      icon: <Lock size={20} className={iconClass} />,
+      placeholder: "Konfirmasi Password",
       required: true,
     },
     {
@@ -108,17 +121,38 @@ export default function ActivationRegisterForm() {
     const requiredFields = [
       "username",
       "email",
+      "password", 
+      "confirm_password", 
       "proof_number",
       "mosque_name",
       "mosque_address",
     ];
-    for (const field of requiredFields) {
-      if (!formData.get(field) || String(formData.get(field)).trim() === "") {
-        alert(`Field ${field.replace(/_/g, " ")} wajib diisi!`);
+
+    for (const fieldName of requiredFields) {
+      const inputConfig = inputs.find(input => input.name === fieldName);
+      const placeholderText = inputConfig ? inputConfig.placeholder.replace(" (opsional)","") : fieldName.replace(/_/g, " ");
+
+      if (!formData.get(fieldName) || String(formData.get(fieldName)).trim() === "") {
+        alert(`Field "${placeholderText}" wajib diisi!`);
         setSubmitting(false);
         return;
       }
     }
+
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm_password") as string;
+
+    if (password !== confirmPassword) {
+      alert("Password dan Konfirmasi Password tidak cocok!");
+      setSubmitting(false);
+      const passwordInput = form.elements.namedItem("password") as HTMLInputElement | null;
+      if (passwordInput) {
+        passwordInput.focus();
+      }
+      return;
+    }
+    formData.delete("confirm_password");
+
 
     try {
       const response = await fetch(`${API}/api/activations/submit`, {
@@ -132,7 +166,7 @@ export default function ActivationRegisterForm() {
       } else {
         form.reset();
         setPreview(null);
-        setSelectedFile("Unggah gambar");
+        setSelectedFile("Unggah Gambar");
         window.location.href = "/activation/register/success";
       }
     } catch (error) {
@@ -154,8 +188,6 @@ export default function ActivationRegisterForm() {
           <CardTitle className="text-3xl pt-2 text-white">
             Form Aktivasi Akun
           </CardTitle>
-
-          {/* Card rekening */}
           <div className="bg-white text-black w-full mt-6 p-4 rounded-2xl border border-custom-orange max-w-3xl mx-auto">
             <div className="flex flex-col items-center gap-3 text-center">
               <p className="text-black font-bold">Rekening BCA</p>
@@ -181,7 +213,10 @@ export default function ActivationRegisterForm() {
                 <div className={inputWrapperClass}>
                   {icon}
                   <Input
-                    type={name.includes("email") ? "email" : "text"}
+                    type={
+                      name.includes("email") ? "email" :
+                      name.includes("password") ? "password" : "text"
+                    }
                     name={name}
                     placeholder={placeholder}
                     required={required}
@@ -192,15 +227,12 @@ export default function ActivationRegisterForm() {
               </div>
             ))}
 
-            {/* Input hidden type */}
             <input type="hidden" name="type" value="activation" />
 
-            {/* Upload Bukti Transfer */}
             <div>
               <label className="block mb-1 font-medium text-white">
                 Upload Bukti Transfer
               </label>
-
               <div className="relative w-full h-48 bg-white rounded-2xl overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-orange-400 transition-colors">
                 <input
                   id="fileUpload"
@@ -216,11 +248,10 @@ export default function ActivationRegisterForm() {
                       if (file.size > maxSize) {
                         alert("Ukuran file tidak boleh lebih dari 2MB.");
                         e.target.value = "";
-                        setSelectedFile("Unggah gambar");
+                        setSelectedFile("Unggah gambar"); 
                         setPreview(null);
                         return;
                       }
-
                       setSelectedFile(file.name);
                       const reader = new FileReader();
                       reader.onload = () => {
@@ -234,11 +265,10 @@ export default function ActivationRegisterForm() {
                   }}
                   disabled={submitting}
                 />
-
                 {preview ? (
                   <img
                     src={preview}
-                    alt="Preview"
+                    alt="Preview" 
                     className="object-contain w-full h-full"
                   />
                 ) : (
@@ -253,7 +283,6 @@ export default function ActivationRegisterForm() {
               </div>
             </div>
 
-            {/* Tombol Submit */}
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-2xl mt-4"

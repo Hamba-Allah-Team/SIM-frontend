@@ -92,7 +92,7 @@ export type ActivationData = {
   email: string | number | null | undefined;
   activation_id: number;
   username: string | null;
-  transaction_number: string;
+  proof_number: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
   mosque_name?: string | null;
@@ -107,10 +107,10 @@ const columns = (
   onReject: (req: ActivationData) => void
 ): ColumnDef<ActivationData>[] => [
   {
-    accessorKey: "transaction_number",
+    accessorKey: "proof_number",
     header: "Nomor Transaksi",
     cell: ({ row }) => (
-      <span className="font-medium">{row.original.transaction_number}</span>
+      <span className="font-medium">{row.original.proof_number}</span>
     ),
   },
   {
@@ -227,7 +227,7 @@ export default function ActivationPage() {
     const s = searchTerm.toLowerCase();
     return (
       (req.username?.toLowerCase().includes(s) ?? false) ||
-      req.transaction_number.toLowerCase().includes(s)
+      req.proof_number.toLowerCase().includes(s)
     );
   });
 
@@ -319,7 +319,7 @@ export default function ActivationPage() {
               <div className="flex-1 space-y-4 text-sm max-w-lg">
                 <InfoRow
                   label="Nomor Transaksi"
-                  value={selectedRequest.transaction_number}
+                  value={selectedRequest.proof_number}
                 />
                 <InfoRow label="Username" value={selectedRequest.username} />
                 <InfoRow label="Email" value={selectedRequest.email} />
@@ -429,7 +429,7 @@ export default function ActivationPage() {
             </p>
             {selectedRequest && (
                  <p className="text-sm text-gray-600 mt-2">
-                 No. Transaksi: {selectedRequest.transaction_number} <br/>
+                 No. Transaksi: {selectedRequest.proof_number} <br/>
                  Username: {selectedRequest.username ?? "-"}
                </p>
             )}

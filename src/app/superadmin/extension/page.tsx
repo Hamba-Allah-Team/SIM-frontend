@@ -92,12 +92,12 @@ export type ExtensionData = {
   email: string | number | null | undefined;
   activation_id: number;
   username: string | null;
-  transaction_number: string;
+  proof_number: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
   mosque_name?: string | null;
   mosque_address?: string | null;
-  proof_image?: string | null; // path relatif gambar bukti transfer
+  proof_image?: string | null;
 };
 
 const columns = (
@@ -106,10 +106,10 @@ const columns = (
   onReject: (req: ExtensionData) => void
 ): ColumnDef<ExtensionData>[] => [
   {
-    accessorKey: "transaction_number",
+    accessorKey: "proof_number",
     header: "Nomor Transaksi",
     cell: ({ row }) => (
-      <span className="font-medium">{row.original.transaction_number}</span>
+      <span className="font-medium">{row.original.proof_number}</span>
     ),
   },
   {
@@ -168,8 +168,7 @@ export default function ExtensionPage() {
     type: "info" as AlertType,
   });
   const [actionLoading, setActionLoading] = useState(false);
-  const [imgError, setImgError] = React.useState(false);
-
+  const [proofImageError, setProofImageError] = useState(false);
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
   const token =
@@ -220,7 +219,7 @@ export default function ExtensionPage() {
     const s = searchTerm.toLowerCase();
     return (
       (req.username?.toLowerCase().includes(s) ?? false) ||
-      req.transaction_number.toLowerCase().includes(s) ||
+      req.proof_number.toLowerCase().includes(s) ||
       (req.email?.toString().toLowerCase().includes(s) ?? false)
     );
   });
@@ -312,7 +311,7 @@ export default function ExtensionPage() {
               <div className="flex-1 space-y-4 text-sm max-w-lg">
                 <InfoRow
                   label="Nomor Transaksi"
-                  value={selectedRequest.transaction_number}
+                  value={selectedRequest.proof_number}
                 />
                 <InfoRow label="Username" value={selectedRequest.username} />
                 <InfoRow label="Email" value={selectedRequest.email} />
@@ -322,42 +321,47 @@ export default function ExtensionPage() {
                     "id-ID"
                   )}
                 />
-                <InfoRow
-                  label="Nama Masjid"
-                  value={selectedRequest.mosque_name}
-                />
-                <InfoRow
-                  label="Alamat Masjid"
-                  value={selectedRequest.mosque_address}
-                />
               </div>
 
               {/* Kolom kanan: Gambar proof */}
-              <div className="flex-1 max-w-md flex flex-col items-center justify-center rounded p-4">
-                <label className="block font-semibold mb-2 text-gray-700">
+              <div className="flex-1 max-w-md flex flex-col items-center justify-start pt-2 md:pt-0">
+                <label className="block font-semibold mb-2 text-gray-700 text-center md:text-left w-full">
                   Bukti Transfer
                 </label>
-                {selectedRequest.proof_image ? (
-                  <img
-                    src={`${baseURL}/uploads/${selectedRequest.proof_image}`}
-                    alt="Bukti Transfer"
-                    className="max-w-full max-h-96 rounded border"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "/images/image-not-found.png";
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm text-gray-500 italic">
-                    Bukti transfer tidak tersedia.
-                  </p>
-                )}
+                <div className="w-full h-96 flex items-center justify-center border border-gray-200 rounded bg-gray-50 p-2">
+                  {selectedRequest.proof_image ? (
+                    proofImageError ? (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-center">
+                        <XCircle
+                          className="w-20 h-20 text-red-500"
+                          strokeWidth={1.5}
+                        />
+                        <p className="text-sm text-red-600 mt-2 font-medium">
+                          Gambar tidak dapat dimuat.
+                        </p>
+                      </div>
+                    ) : (
+                      <img
+                        key={selectedRequest.proof_image}
+                        src={`${baseURL}/uploads/${selectedRequest.proof_image}`}
+                        alt="Bukti Transfer"
+                        className="max-w-full max-h-full rounded object-contain"
+                        onError={() => {
+                          setProofImageError(true);
+                        }}
+                      />
+                    )
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">
+                      Bukti transfer tidak tersedia.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           <DialogFooter className="flex justify-between items-center">
-
             {selectedRequest?.status === "pending" && (
               <div className="flex gap-2">
                 <Button
@@ -404,12 +408,21 @@ export default function ExtensionPage() {
               {actionType === "approve" ? "menyetujui" : "menolak"} permintaan
               ini?
             </p>
+            {selectedRequest && (
+              <p className="text-sm text-gray-600 mt-2">
+                No. Transaksi: {selectedRequest.proof_number} <br />
+                Username: {selectedRequest.username ?? "-"}
+              </p>
+            )}
           </div>
 
           <DialogFooter>
             <Button
               className="bg-white text-black border border-gray-300 hover:text-black hover:bg-gray-100"
-              onClick={() => setConfirmActionOpen(false)}
+              onClick={() => {
+                setConfirmActionOpen(false);
+                setActionType(null);
+              }}
               variant="outline"
               disabled={actionLoading}
             >
@@ -417,14 +430,18 @@ export default function ExtensionPage() {
             </Button>
             <Button
               onClick={handleConfirmAction}
-              className="bg-custom-orange text-white hover:bg-orange-600"
+              className={`${
+                actionType === "approve"
+                  ? "bg-custom-orange hover:bg-orange-600"
+                  : "bg-red-600 hover:bg-red-700"
+              } text-white`}
               disabled={actionLoading}
             >
               {actionLoading
                 ? "Memproses..."
                 : actionType === "approve"
-                ? "Setujui"
-                : "Tolak"}
+                ? "Ya, Setujui"
+                : "Ya, Tolak"}
             </Button>
           </DialogFooter>
         </DialogContent>
