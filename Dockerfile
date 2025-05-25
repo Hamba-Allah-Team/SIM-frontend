@@ -4,11 +4,11 @@ FROM node:22-alpine
 # Atur working directory
 WORKDIR /app
 
-# Salin package.json dan install dependencies
+# Copy only built files and dependencies
 COPY package*.json ./
-COPY node_modules/ node_modules/
+COPY node_modules/ ./node_modules/
 COPY .next/ .next/
-COPY public/ public/
+COPY public/ ./public/
 COPY next.config.ts ./
 COPY tsconfig.json ./
 
