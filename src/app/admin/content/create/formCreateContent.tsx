@@ -23,10 +23,12 @@ import ImageDropzone from "@/components/imageDropZone";
 import React from "react";
 import router from "next/router";
 
+const API = process.env.NEXT_PUBLIC_API_URL;
+
 const formSchema = z.object({
   title: z.string().min(1, { message: "Judul konten harus di isi" }),
   content_description: z.string().min(1, { message: "Deskripsi konten harus diisi" }),
-  image: z.string().optional(),
+  image: z.any().optional(),
   published_date: z.string().min(1, { message: "Tanggal rilis konten harus diisi" }),
   contents_type: z.enum(["artikel", "berita"], { required_error: "Jenis konten harus dipilih" }),
 })
@@ -45,10 +47,42 @@ export function ContentForm() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Form submitted:", values)
-    // Lakukan POST ke backend-mu di sini
-  }
+    const formData = new FormData();
 
+    formData.append("title", values.title);
+    formData.append("content_description", values.content_description);
+    formData.append("published_date", values.published_date);
+    formData.append("contents_type", values.contents_type);
+
+    if (values.image && typeof values.image !== "string") {
+      formData.append("image", values.image);
+    }
+
+    const token = localStorage.getItem("token");
+
+    fetch(`${API}/api/content`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token || ""}`, // pakai token jika ada
+      },
+      body: formData,
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.message || "Gagal mengirim data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Berhasil:", data);
+        router.push("/admin/content");
+      })
+      .catch((err) => {
+        console.error("Error submit:", err);
+        alert("Gagal menyimpan konten: " + err.message);
+      });
+  }
 
 
   return (
