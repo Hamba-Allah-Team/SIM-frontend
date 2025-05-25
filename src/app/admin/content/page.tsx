@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import ButtonTambahClient from "@/components/ButtonTambahClient";
 import { Content, columns as baseColumns } from "./columns";
 import { DataTable } from "./data-table";
@@ -11,8 +12,12 @@ import { DetailDialog } from "./detail/detailDialog";
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ContentPage() {
+  const router = useRouter(); // <-- Panggil di sini, bukan di dalam useMemo
+
   const [data, setData] = useState<Content[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -38,22 +43,15 @@ export default function ContentPage() {
     getData();
   }, []);
 
-  // Fungsi hapus data di state berdasarkan contents_id
   const handleDelete = (id: number) => {
     setData((prev) => prev.filter((item) => item.contents_id !== id));
   };
-
-  // Fungsi Detail
-  const [openDetail, setOpenDetail] = useState(false);
-  const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
 
   const handleShowDetail = (id: number) => {
     setSelectedContentId(id);
     setOpenDetail(true);
   };
 
-
-  // Buat columns dengan modifikasi kolom aksi agar bisa panggil handleDelete
   const columns = useMemo(() => {
     return baseColumns.map((col) => {
       if (col.id === "actions") {
@@ -81,11 +79,12 @@ export default function ContentPage() {
 
                 <button
                   className="btn-edit flex items-center gap-1"
-                  onClick={() => alert(`Edit konten ID: ${content.contents_id}`)}
+                  onClick={() => router.push(`/admin/content/edit/${content.contents_id}`)} // <-- pakai router dari level atas komponen
                 >
                   <Pencil className="w-4 h-4" />
                   Ubah
                 </button>
+
                 <button
                   className="btn-delete flex items-center gap-1"
                   onClick={() => setOpenDialog(true)}
@@ -114,7 +113,6 @@ export default function ContentPage() {
                         throw new Error(errMsg || "Gagal menghapus konten");
                       }
 
-                      // Update data langsung setelah delete berhasil
                       handleDelete(id);
                       console.log("Konten berhasil dihapus!");
                     } catch (error: any) {
@@ -130,7 +128,7 @@ export default function ContentPage() {
       }
       return col;
     });
-  }, [handleDelete]);
+  }, [handleDelete, openDetail, selectedContentId, router]);
 
   return (
     <div className="w-full max-w-screen-xl min-h-screen px-2 sm:px-4 py-4 mx-auto">
@@ -140,7 +138,7 @@ export default function ContentPage() {
       </div>
 
       <div className="p-4 bg-white rounded-xl shadow-sm overflow-x-auto">
-        <DataTable columns={columns} data={data}  />
+        <DataTable columns={columns} data={data} />
       </div>
     </div>
   );
