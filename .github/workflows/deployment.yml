@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        repository: Hamba-Allah-Team/SIM-frontend
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: SIM-frontend
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker Images
+      run: |
+        echo "Build Docker image using docker compose"
+        docker compose -f docker-compose.yml build
+      working-directory: SIM-frontend
+
+    - name: Run Docker Containers
+      run: |
+        echo "Start services with docker compose"
+        docker compose -f docker-compose.yml up -d
+      working-directory: SIM-frontend 
+
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          BRANCH=${{ github.ref_name }}
+          
+          echo "Deploying branch $BRANCH ..."
+          cd /var/www/simasjid.raihanproject.my.id
+          git fetch origin
+          git checkout $BRANCH
+          git pull origin $BRANCH
+
+          echo "stopping old container"
+          docker compose down
+
+          echo "Rebuilding and running containers..."
+          docker compose up -d --build
