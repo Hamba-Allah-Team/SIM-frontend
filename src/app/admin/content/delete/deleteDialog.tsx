@@ -1,23 +1,29 @@
-"use client"
+"use client";
 
-import React from "react"
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog"
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type DeleteDialogProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onConfirm: () => void
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (id: string) => void;
+  contents_id: string;
+};
 
-export function DeleteDialog({ open, onOpenChange, onConfirm }: DeleteDialogProps) {
+export function DeleteDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+  contents_id,
+}: DeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-white text-black">
@@ -26,7 +32,8 @@ export function DeleteDialog({ open, onOpenChange, onConfirm }: DeleteDialogProp
             Apakah Anda Berniat Menghapus Konten Ini?
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-700">
-            Tindakan ini dapat menyebabkan data yang dihapus tidak dapat dikembalikan kembali. Apakah Anda masih ingin melanjutkan?
+            Tindakan ini dapat menyebabkan data yang dihapus tidak dapat
+            dikembalikan kembali. Apakah Anda masih ingin melanjutkan?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -39,8 +46,8 @@ export function DeleteDialog({ open, onOpenChange, onConfirm }: DeleteDialogProp
           </Button>
           <Button
             onClick={() => {
-              onConfirm()
-              onOpenChange(false)
+              onConfirm(contents_id);
+              onOpenChange(false);
             }}
             className="bg-orange-500 text-white hover:bg-orange-600 focus-visible:ring-orange-300"
           >
@@ -49,5 +56,5 @@ export function DeleteDialog({ open, onOpenChange, onConfirm }: DeleteDialogProp
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
