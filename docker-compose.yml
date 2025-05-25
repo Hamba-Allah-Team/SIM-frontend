@@ -2,6 +2,7 @@ services:
   nextjs-app:
     build: .
     container_name: nextjs-app
+    restart: unless-stopped
     expose:
       - "3000"
     networks:
@@ -12,6 +13,7 @@ services:
   nginx:
     image: nginx:alpine
     container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:

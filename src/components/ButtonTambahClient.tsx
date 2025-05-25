@@ -1,11 +1,19 @@
-'use client'
+"use client"
 
-import { Grid2x2Plus } from 'lucide-react' 
-import React from 'react'
+import { Grid2x2Plus } from "lucide-react"
+import { useRouter } from "next/navigation"
+import React from "react"
 
-export default function ButtonTambahClient() {
+interface ButtonTambahProps {
+  href: string
+  label?: string
+}
+
+export default function ButtonTambah({ href, label = "Tambah" }: ButtonTambahProps) {
+  const router = useRouter()
+
   const handleTambah = () => {
-    alert('Tambah konten masjid')
+    router.push(href)
   }
 
   return (
@@ -13,12 +21,12 @@ export default function ButtonTambahClient() {
       onClick={handleTambah}
       className="flex items-center gap-2 px-4 py-2 rounded-xl transition"
       style={{
-        backgroundColor: 'rgba(255, 147, 87, 0.25)', 
-        color: 'var(--color-custom-orange)',
+        backgroundColor: "rgba(255, 147, 87, 0.25)",
+        color: "var(--color-custom-orange)",
       }}
     >
       <Grid2x2Plus size={18} />
-      Tambah
+      {label}
     </button>
   )
 }
