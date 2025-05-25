@@ -6,13 +6,11 @@ WORKDIR /app
 
 # Salin package.json dan install dependencies
 COPY package*.json ./
-RUN npm install
-
-# Salin semua file ke dalam container
-COPY . .
-
-# Build Next.js app
-RUN npm run build -- --no-lint
+COPY node_modules/ node_modules/
+COPY .next/ .next/
+COPY public/ public/
+COPY next.config.js ./
+COPY tsconfig.json ./
 
 # Gunakan port 3000
 EXPOSE 3000
