@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY node_modules/ node_modules/
 COPY .next/ .next/
 COPY public/ public/
-COPY next.config.js ./
+COPY next.config.ts ./
 COPY tsconfig.json ./
 
 # Gunakan port 3000
