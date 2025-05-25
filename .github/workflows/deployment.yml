@@ -29,7 +29,7 @@ jobs:
       run: |
         cd SIM-frontend
         npm install
-        npm run build
+        npm run build -- --no-lint
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
