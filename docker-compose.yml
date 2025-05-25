@@ -1,14 +1,14 @@
 services:
   nextjs-app:
-    build: .
+    image: ${USERNAME}/simasjid-frontend:${TAG:-main}
     container_name: nextjs-app
     restart: unless-stopped
     expose:
       - "3000"
-    networks:
-      - webnet
     ports:
       - "3000:3000"
+    networks:
+      - webnet
 
   nginx:
     image: nginx:alpine
