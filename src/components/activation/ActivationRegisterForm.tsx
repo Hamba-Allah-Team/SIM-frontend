@@ -11,8 +11,6 @@ import {
   Building,
   MapPin,
   Phone,
-  Facebook,
-  Instagram,
   Upload,
   Landmark,
   Lock,
@@ -62,12 +60,6 @@ export default function ActivationRegisterForm() {
       required: true,
     },
     {
-      name: "proof_number",
-      icon: <Hash size={20} className={iconClass} />,
-      placeholder: "Nomor Bukti Transfer",
-      required: true,
-    },
-    {
       name: "mosque_name",
       icon: <Building size={20} className={iconClass} />,
       placeholder: "Nama Masjid",
@@ -80,28 +72,10 @@ export default function ActivationRegisterForm() {
       required: true,
     },
     {
-      name: "mosque_email",
-      icon: <Mail size={20} className={iconClass} />,
-      placeholder: "Email Masjid (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_phone_whatsapp",
-      icon: <Phone size={20} className={iconClass} />,
-      placeholder: "No. WhatsApp (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_facebook",
-      icon: <Facebook size={20} className={iconClass} />,
-      placeholder: "Tautan Facebook (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_instagram",
-      icon: <Instagram size={20} className={iconClass} />,
-      placeholder: "Tautan Instagram (opsional)",
-      required: false,
+      name: "proof_number",
+      icon: <Hash size={20} className={iconClass} />,
+      placeholder: "Nomor Bukti Transfer",
+      required: true,
     },
   ];
 
