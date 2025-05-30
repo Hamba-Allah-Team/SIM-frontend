@@ -40,18 +40,12 @@ export default function DompetPage() {
         router.push("/admin/dompet/tambah")
     }
 
-    const walletTypes = data.map((wallet) => wallet.name.toLowerCase())
-    const hasCash = walletTypes.includes("cash")
-    const hasBank = walletTypes.includes("bank")
-    const disableAddButton = hasCash && hasBank
-
     return (
         <div className="p-4">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold">Data Dompet</h1>
                 <Button
                     onClick={handleAddDompet}
-                    disabled={disableAddButton}
                     className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition disabled:opacity-50"
                 >
                     <ListPlus size={16} />
