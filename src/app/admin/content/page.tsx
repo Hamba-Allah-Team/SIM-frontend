@@ -18,6 +18,8 @@ export default function ContentPage() {
   const [loading, setLoading] = useState(true);
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedContentId, setSelectedContentId] = useState<number | null>(null);
+  const [filteredData, setFilteredData] = useState<Content[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -33,6 +35,7 @@ export default function ContentPage() {
 
         const json = await res.json();
         setData(json.data || []);
+        setFilteredData(json.data || []);
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -42,6 +45,36 @@ export default function ContentPage() {
 
     getData();
   }, []);
+
+  // Listener event globalSearch untuk update searchTerm
+  useEffect(() => {
+    const handleGlobalSearch = (e: CustomEvent) => {
+      setSearchTerm(e.detail.searchTerm || "");
+    };
+
+    window.addEventListener("globalSearch", handleGlobalSearch as EventListener);
+
+    return () => {
+      window.removeEventListener("globalSearch", handleGlobalSearch as EventListener);
+    };
+  }, []);
+
+  // Filter data ketika searchTerm berubah
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredData(data);
+    } else {
+      const lowerSearch = searchTerm.toLowerCase();
+
+      // Contoh filter berdasarkan properti tertentu,
+      // misalnya filter berdasarkan title atau name konten
+      const filtered = data.filter(item =>
+        item.title?.toLowerCase().includes(lowerSearch) 
+      );
+
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
 
   const handleDelete = (id: number) => {
     setData((prev) => prev.filter((item) => item.contents_id !== id));
@@ -138,7 +171,7 @@ export default function ContentPage() {
       </div>
 
       <div className="p-4 bg-white rounded-xl shadow-sm overflow-x-auto">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={filteredData} />
       </div>
     </div>
   );
