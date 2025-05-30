@@ -91,6 +91,7 @@ export default function CreateWalletPage() {
                             <SelectContent>
                                 <SelectItem value="cash">Cash</SelectItem>
                                 <SelectItem value="bank">Bank</SelectItem>
+                                <SelectItem value="ewallet">E-wallet</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
