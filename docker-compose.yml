@@ -1,21 +1,22 @@
 services:
   nextjs-app:
-    build: .
+    image: ${USERNAME}/simasjid-frontend:${TAG:-main}  # Gunakan image hasil build
     container_name: nextjs-app
+    restart: unless-stopped
     expose:
       - "3000"
-    networks:
-      - webnet
     ports:
       - "3000:3000"
+    networks:
+      - webnet
 
   nginx:
     image: nginx:alpine
     container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
-      #- ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - nextjs-app
