@@ -5,10 +5,16 @@ export interface WalletApiResponse {
     wallet_name: string
     balance: number
 }
-
 export interface Dompet {
     id: number
     type: string
     name: string
     balance: number
+}
+
+export interface CreateWalletPayload {
+    mosque_id: number
+    wallet_name: string
+    wallet_type: string
+    initial_balance?: number
 }
