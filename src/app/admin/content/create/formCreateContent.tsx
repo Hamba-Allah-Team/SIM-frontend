@@ -250,7 +250,7 @@ export function ContentForm() {
 
             return (
               <FormItem>
-                <FormLabel className="text-[14px] font-semibold font-poppins text-black">
+                <FormLabel className="text-[16px] font-semibold font-poppins text-black">
                   Foto Cover Konten
                 </FormLabel>
                 <FormControl>
@@ -262,7 +262,7 @@ export function ContentForm() {
                           value={typeof fileName === "string" ? fileName : ""}
                           readOnly
                           placeholder="Nama foto"
-                          className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed"
+                          className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed text-gray-600"
                         />
                         <button
                           type="button"
