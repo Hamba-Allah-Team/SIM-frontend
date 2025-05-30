@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState, useEffect } from "react"
 import { useRouter, useParams} from "next/navigation" // useParams ambil id dari route
-
+import { toast } from "sonner"
 import {
   Form,
   FormControl,
@@ -153,10 +153,22 @@ export default function ContentEditForm() {
         const error = await res.json()
         throw new Error(error.message || "Gagal update data")
       }
-
+      toast.success("Konten berhasil diubah", {
+                style: {
+                  background: "white",
+                  color: "black",
+                  border: "2px solid #22c55e", // border hijau
+                },
+              });
       router.push("/admin/content")
     } catch (error: any) {
-      alert("Gagal menyimpan konten: " + error.message)
+       toast.error("Gagal menyimpan konten: " + error.message, {
+                style: {
+                  background: "#white", 
+                  color: "black",
+                  border: "2px solid #ef4444"
+                },
+              });
     }
   }
 

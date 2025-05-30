@@ -6,7 +6,7 @@ import { z } from "zod"
 import { CalendarDays, Link, Trash2} from 'lucide-react';
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'
-
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -75,12 +75,24 @@ export function ContentForm() {
         return res.json();
       })
       .then((data) => {
-        console.log("Berhasil:", data);
+        toast.success("Konten berhasil ditambah", {
+          style: {
+            background: "white",
+            color: "black",
+            border: "2px solid #22c55e", // border hijau
+          },
+        });
         router.push("/admin/content");
       })
       .catch((err) => {
         console.error("Error submit:", err);
-        alert("Gagal menyimpan konten: " + err.message);
+        toast.error("Gagal menyimpan konten: " + err.message, {
+          style: {
+            background: "#white", 
+            color: "black",
+            border: "2px solid #ef4444"
+          },
+        });
       });
   }
 
