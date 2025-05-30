@@ -51,6 +51,8 @@ export function EditAboutForm() {
     },
   })
 
+  const [imageDeleted, setImageDeleted] = useState(false)
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -106,6 +108,9 @@ export function EditAboutForm() {
       if (values.instagram) formData.append("instagram", values.instagram)
       if (values.latitude) formData.append("latitude", values.latitude)
       if (values.longitude) formData.append("longitude", values.longitude)
+      if (imageDeleted) {
+        formData.append("image_deleted", "true")
+      }
       if (values.image && values.image instanceof File) {
         formData.append("image", values.image)
       }
@@ -219,7 +224,20 @@ export function EditAboutForm() {
             />
           </FormControl>
           {previewUrl && (
-            <img src={previewUrl} alt="Preview" className="mt-2 max-h-40 rounded" />
+            <div className="mt-2">
+              <img src={previewUrl} alt="Preview" className="max-h-40 rounded mb-2" />
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewUrl(null)
+                  form.setValue("image", undefined)
+                  setImageDeleted(true)
+                }}
+                className="text-red-600 underline text-sm"
+              >
+                Hapus Gambar
+              </button>
+            </div>
           )}
         </FormItem>
 

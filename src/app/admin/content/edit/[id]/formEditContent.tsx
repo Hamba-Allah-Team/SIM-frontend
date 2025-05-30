@@ -31,9 +31,6 @@ const formSchema = z.object({
   contents_type: z.enum(["artikel", "berita"], { required_error: "Jenis konten harus dipilih" }),
 })
 
-// type Props = {
-//   id: string 
-// }
 
 export default function ContentEditForm() {
   const params = useParams()
@@ -44,6 +41,7 @@ export default function ContentEditForm() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [fileName, setFileName] = useState("")
   const [loading, setLoading] = useState(true)
+  const [deleteImage, setDeleteImage] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -113,6 +111,7 @@ export default function ContentEditForm() {
     form.setValue("image", null)
     setPreviewUrl(null)
     setFileName("")
+    setDeleteImage(true)
   }
 
   // Cleanup preview URL ketika komponen unmount atau previewUrl berubah
@@ -130,6 +129,10 @@ export default function ContentEditForm() {
     formData.append("content_description", values.content_description)
     formData.append("published_date", values.published_date)
     formData.append("contents_type", values.contents_type)
+
+    if (deleteImage) {
+      formData.append("deleteImage", "true")
+    }
 
     if (values.image && typeof values.image !== "string") {
       formData.append("image", values.image)
