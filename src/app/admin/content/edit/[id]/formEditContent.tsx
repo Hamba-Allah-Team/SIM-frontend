@@ -168,7 +168,9 @@ export default function ContentEditForm() {
           name="title"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Judul Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Judul Konten
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder={fieldState.error ? fieldState.error.message : "Judul konten di sini"}
@@ -189,7 +191,9 @@ export default function ContentEditForm() {
           name="content_description"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Isi Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Isi Konten
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder={fieldState.error ? fieldState.error.message : "Penjelasan tentang konten di sini"}
@@ -210,7 +214,9 @@ export default function ContentEditForm() {
           name="contents_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Jenis Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Jenis Konten
+              </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-full bg-white text-black">
@@ -240,7 +246,9 @@ export default function ContentEditForm() {
 
             return (
               <FormItem>
-                <FormLabel>Tanggal Rilis</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Tanggal Rilis
+              </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
@@ -266,7 +274,9 @@ export default function ContentEditForm() {
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Foto Cover Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Foto Cover Konten
+              </FormLabel>
               <FormControl>
                 {previewUrl ? (
                   <div className="flex flex-col gap-3">
@@ -276,7 +286,7 @@ export default function ContentEditForm() {
                         value={fileName}
                         readOnly
                         placeholder="Nama foto"
-                        className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed"
+                        className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed text-gray-600 "
                       />
                       <button
                         type="button"
