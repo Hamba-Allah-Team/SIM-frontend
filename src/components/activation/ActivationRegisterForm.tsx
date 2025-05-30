@@ -66,15 +66,15 @@ export default function ActivationRegisterForm() {
       required: true,
     },
     {
-      name: "mosque_address",
-      icon: <MapPin size={20} className={iconClass} />,
-      placeholder: "Alamat Masjid",
-      required: true,
-    },
-    {
       name: "proof_number",
       icon: <Hash size={20} className={iconClass} />,
       placeholder: "Nomor Bukti Transfer",
+      required: true,
+    },
+    {
+      name: "mosque_address",
+      icon: <MapPin size={20} className={iconClass} />,
+      placeholder: "Alamat Masjid",
       required: true,
     },
   ];
