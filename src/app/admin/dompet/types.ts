@@ -11,7 +11,6 @@ export interface Dompet {
     name: string
     balance: number
 }
-
 export interface CreateWalletPayload {
     mosque_id: number
     wallet_name: string
