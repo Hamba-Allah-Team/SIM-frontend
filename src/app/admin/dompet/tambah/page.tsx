@@ -26,22 +26,28 @@ export default function CreateWalletPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!walletType || !walletName.trim()) {
+            alert("Jenis dompet dan nama dompet wajib diisi.");
+            return;
+        }
+
+        if (!profile?.mosque_id) {
+            alert("Gagal mendapatkan ID masjid dari profil.");
+            return;
+        }
+
+        const payload: CreateWalletPayload = {
+            mosque_id: profile.mosque_id,
+            wallet_name: walletName.trim(),
+            wallet_type: walletType,
+        };
+
+        const parsedBalance = parseFloat(balance);
+        if (!isNaN(parsedBalance) && parsedBalance > 0) {
+            payload.initial_balance = parsedBalance;
+        }
+
         try {
-            if (!profile?.mosque_id) {
-                alert("Gagal mendapatkan ID masjid dari profil.");
-                return;
-            }
-
-            const payload: CreateWalletPayload = {
-                mosque_id: profile.mosque_id,
-                wallet_name: walletName,
-                wallet_type: walletType,
-            };
-
-            if (balance && parseFloat(balance) > 0) {
-                payload.initial_balance = parseFloat(balance);
-            }
-
             const response = await api.post("/api/wallets", payload);
             console.log("Wallet created:", response.data);
             router.push("/admin/dompet");
@@ -51,6 +57,7 @@ export default function CreateWalletPage() {
             alert(error.response?.data?.message || "Gagal membuat dompet");
         }
     };
+
 
     return (
         <div className="w-full px-4 py-6">
