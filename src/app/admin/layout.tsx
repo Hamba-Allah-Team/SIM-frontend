@@ -3,6 +3,7 @@
 import Sidebar from "@/components/layout/Sidebar"
 import Topbar from "@/components/layout/Topbar"
 import { ReactNode } from "react"
+import { Toaster } from "sonner";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (
@@ -15,6 +16,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 {/* Topbar */}
                 <Topbar />
 
+                <Toaster
+                    position="top-right"
+                    richColors
+                    toastOptions={{
+                    duration: 4000,
+                    style: {
+                        fontWeight: "bold",
+                    },
+                    }}
+                />
+                            
                {/* Main Content Area */}
                 <div className="mt-4">
                 {children}

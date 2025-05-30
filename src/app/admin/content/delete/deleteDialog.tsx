@@ -10,11 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 type DeleteDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (id: string) => void;
+  onConfirm: (id: string) => Promise<void>; // ubah jadi async agar bisa await
   contents_id: string;
 };
 
@@ -24,6 +25,29 @@ export function DeleteDialog({
   onConfirm,
   contents_id,
 }: DeleteDialogProps) {
+  const handleConfirm = async () => {
+    try {
+      await onConfirm(contents_id);
+      toast.success("Konten berhasil dihapus", {
+        style: {
+            background: "white",
+            color: "black",
+            border: "2px solid #22c55e"
+        },
+      });
+    } catch (error: any) {
+      toast.error("Gagal menghapus konten: " + error.message, {
+        style: {
+            background: "#white", 
+            color: "black",
+            border: "2px solid #ef4444"
+        },
+      });
+    } finally {
+      onOpenChange(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-white text-black">
@@ -45,10 +69,7 @@ export function DeleteDialog({
             Batal
           </Button>
           <Button
-            onClick={() => {
-              onConfirm(contents_id);
-              onOpenChange(false);
-            }}
+            onClick={handleConfirm}
             className="bg-orange-500 text-white hover:bg-orange-600 focus-visible:ring-orange-300"
           >
             Hapus
