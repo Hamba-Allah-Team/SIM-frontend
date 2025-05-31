@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="font-bold whitespace-nowrap max-w-[100px] truncate text-black"
+                        className="font-bold whitespace-nowrap max-w-[300px] text-black"
                       >
                         {header.isPlaceholder
                           ? null
@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className="whitespace-nowrap max-w-[100px] truncate"
+                          className="whitespace-nowrap max-w-[300px] truncate"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -118,44 +118,46 @@ export function DataTable<TData, TValue>({
 
       {/* Pagination */}
       <div className="flex items-center justify-end space-x-1 py-4 flex-wrap gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          aria-label="Previous page"
-        >
-          <ChevronLeftIcon className="h-4 w-4 text-black dark:text-white" />
-        </Button>
-
-        {Array.from({ length: table.getPageCount() }).map((_, i) => {
-          const isActive = i === table.getState().pagination.pageIndex;
-          return (
-            <Button
-              key={i}
-              variant={isActive ? "outline" : "ghost"}
-              size="sm"
-              onClick={() => table.setPageIndex(i)}
-              className="min-w-[2rem] px-2"
-              aria-current={isActive ? "page" : undefined}
-            >
-              <span className={isActive ? "text-black dark:text-white font-semibold" : "text-gray-500 dark:text-gray-400"}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            aria-label="Previous page"
+            className="bg-white border border-black text-black"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
+  
+          {Array.from({ length: table.getPageCount() }).map((_, i) => {
+            const isActive = i === table.getState().pagination.pageIndex;
+            return (
+              <Button
+                key={i}
+                variant={isActive ? "outline" : "ghost"}
+                size="sm"
+                onClick={() => table.setPageIndex(i)}
+                className={`min-w-[2rem] px-2 bg-white border border-black text-black ${
+                  isActive ? "font-semibold" : "text-gray-500"
+                }`}
+                aria-current={isActive ? "page" : undefined}
+              >
                 {i + 1}
-              </span>
-            </Button>
-          );
-        })}
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          aria-label="Next page"
-        >
-          <ChevronRightIcon className="h-4 w-4 text-black dark:text-white" />
-        </Button>
-      </div>
+              </Button>
+            );
+          })}
+  
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            aria-label="Next page"
+            className="bg-white border border-black text-black"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
+        </div>
 
     </div>
   )
