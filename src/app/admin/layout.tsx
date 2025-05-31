@@ -13,12 +13,25 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Sidebar />
 
             {/* Main Content */}
-            <main className="flex-1 pl-5">
+            <main className="flex-1 min-w-0 p-4 overflow-auto">
                 {/* Topbar */}
                 <Topbar />
 
-                {/* Main Content Area */}
+                <Toaster
+                    position="top-right"
+                    richColors
+                    toastOptions={{
+                    duration: 4000,
+                    style: {
+                        fontWeight: "bold",
+                    },
+                    }}
+                />
+                            
+               {/* Main Content Area */}
+                <div className="mt-4">
                 {children}
+                </div>
             </main>
         </div>
     )

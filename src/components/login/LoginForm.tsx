@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
@@ -40,6 +35,11 @@ export default function LoginForm() {
 
       const data = await res.json();
 
+      if (data.message === "Account Inactive") {
+        alert("Akun Anda tidak aktif. Silakan Lakukan perpanjangan.");
+        return;
+      }
+
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
@@ -62,8 +62,9 @@ export default function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
       <Card
-        className={`w-full max-w-xl min-h-[400px] bg-white border-none shadow-none rounded-3xl transform transition-all duration-700 ease-out ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
+        className={`w-full max-w-xl min-h-[400px] bg-white border-none shadow-none rounded-3xl transform transition-all duration-700 ease-out ${
+          loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+        }`}
       >
         <CardHeader className="pb-4 flex flex-col items-center justify-center text-center">
           <div className="flex items-center justify-start gap-2 my-10">
