@@ -34,6 +34,23 @@ export default function TransactionCategoryPage() {
         fetchData()
     }, [profile?.mosque_id])
 
+    const fetchData = async () => {
+        if (!profile?.mosque_id) return;
+        setIsLoading(true);
+        try {
+            const categories = await getTransactionCategories(profile.mosque_id);
+            setData(categories);
+        } catch (error) {
+            console.error("Gagal fetch kategori transaksi:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [profile?.mosque_id]);
+
     const handleAddCategory = () => {
         router.push("/admin/kategori/tambah")
     }
@@ -51,7 +68,7 @@ export default function TransactionCategoryPage() {
                 </Button>
             </div>
 
-            <DataTable columns={columns} data={data} isLoading={isLoading} />
+            <DataTable columns={columns(fetchData)} data={data} isLoading={isLoading} />
         </div>
     )
 }

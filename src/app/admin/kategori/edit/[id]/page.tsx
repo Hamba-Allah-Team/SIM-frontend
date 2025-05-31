@@ -24,13 +24,25 @@ export default function EditCategoryPage() {
     const [categoryName, setCategoryName] = useState("");
     const [categoryType, setCategoryType] = useState<"income" | "expense" | "">("");
     const [description, setDescription] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchCategory = async () => {
             try {
                 const id = params.id;
                 const res = await api.get(`/api/finance/categories/${id}`);
-                const data: TransactionCategory = res.data;
+                const rawData = res.data;
+
+                const data: TransactionCategory = {
+                    id: rawData.category_id,
+                    name: rawData.category_name,
+                    type: rawData.category_type,
+                    description: rawData.description,
+                    mosque_id: rawData.mosque_id,
+                    created_at: rawData.created_at,
+                    updated_at: rawData.updated_at,
+                    deleted_at: rawData.deleted_at,
+                };
 
                 setCategoryName(data.name);
                 setCategoryType(data.type);
@@ -39,11 +51,14 @@ export default function EditCategoryPage() {
                 console.error("Gagal mengambil data kategori:", err);
                 alert("Gagal mengambil data kategori.");
                 router.push("/admin/kategori");
+            } finally {
+                setIsLoading(false);
             }
         };
 
         if (params.id) fetchCategory();
     }, [params.id, router]);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,17 +68,17 @@ export default function EditCategoryPage() {
             return;
         }
 
+        const payload = {
+            mosque_id: profile.mosque_id,
+            category_name: categoryName.trim(),
+            category_type: categoryType,
+            description: description.trim(),
+        };
+
         try {
-            const payload = {
-                mosque_id: profile.mosque_id,
-                category_name: categoryName.trim(),
-                category_type: categoryType,
-                description: description.trim(),
-            };
-
-            const id = params.id;
-            await api.put(`/api/finance/categories/${id}`, payload);
-
+            // const id = params.id;
+            const res = await api.put(`/api/finance/categories/${params.id}`, payload);
+            console.log("Kategori berhasil diupdate:", res.data);
             router.push("/admin/kategori");
         } catch (err) {
             const error = err as AxiosError<{ message: string }>;
@@ -71,6 +86,18 @@ export default function EditCategoryPage() {
             alert(error.response?.data?.message || "Gagal memperbarui kategori");
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="w-full h-64 flex items-center justify-center">
+                <svg className="animate-spin h-6 w-6 text-orange-500" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                <span className="ml-2 text-sm text-gray-600">Memuat data kategori...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full px-4 py-6">
