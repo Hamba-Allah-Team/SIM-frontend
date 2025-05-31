@@ -35,7 +35,7 @@ export default function TransactionCategoryPage() {
     }, [profile?.mosque_id])
 
     const handleAddCategory = () => {
-        router.push("/admin/kategori-transaksi/tambah")
+        router.push("/admin/kategori/tambah")
     }
 
     return (
