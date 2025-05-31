@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 <Topbar />
 
                 <Toaster
-                    position="top-right"
+                    position="bottom-right"
                     richColors
                     toastOptions={{
                     duration: 4000,
