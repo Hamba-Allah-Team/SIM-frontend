@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ListPlus } from "lucide-react"
 import { columns } from "./columns"
@@ -16,27 +16,28 @@ export default function TransactionCategoryPage() {
     const [data, setData] = useState<TransactionCategory[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!profile?.mosque_id) return
-            setIsLoading(true)
-
-            try {
-                const categories = await getTransactionCategories(profile.mosque_id)
-                setData(categories)
-            } catch (error) {
-                console.error("Gagal fetch kategori transaksi:", error)
-            } finally {
-                setIsLoading(false)
-            }
+    const fetchData = useCallback(async () => {
+        if (!profile?.mosque_id) return;
+        setIsLoading(true);
+        try {
+            const categories = await getTransactionCategories(profile.mosque_id);
+            setData(categories);
+        } catch (error) {
+            console.error("Gagal fetch kategori transaksi:", error);
+        } finally {
+            setIsLoading(false);
         }
+    }, [profile?.mosque_id]);
 
-        fetchData()
-    }, [profile?.mosque_id])
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleAddCategory = () => {
         router.push("/admin/kategori/tambah")
     }
+
+    const tableColumns = useMemo(() => columns(fetchData), [fetchData]);
 
     return (
         <div className="p-4">
@@ -51,7 +52,7 @@ export default function TransactionCategoryPage() {
                 </Button>
             </div>
 
-            <DataTable columns={columns} data={data} isLoading={isLoading} />
+            <DataTable columns={tableColumns} data={data} isLoading={isLoading} />
         </div>
     )
 }

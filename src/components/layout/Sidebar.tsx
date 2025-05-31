@@ -19,6 +19,7 @@ import {
     Clock,
     ChevronLeft,
     ChevronRight,
+    Shapes
 } from "lucide-react"
 
 type MenuItem = {
@@ -46,7 +47,7 @@ function getMenuByRole(role: string): MenuItem[] {
             { label: "Ruangan", icon: <Box size={18} />, href: "/admin/ruangan" },
             { label: "Reservasi", icon: <CalendarCheck size={18} />, href: "/admin/reservasi" },
             { label: "Dompet", icon: <Wallet size={18} />, href: "/admin/dompet" },
-            { label: "Kategori", icon: <Wallet size={18} />, href: "/admin/kategori" },
+            { label: "Kategori", icon: <Shapes size={18} />, href: "/admin/kategori" },
             { label: "Keuangan", icon: <CreditCard size={18} />, href: "/admin/keuangan" },
         ]
 }

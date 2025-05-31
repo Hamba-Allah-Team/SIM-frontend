@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (
         <div className="flex min-h-screen bg-gray-50 p-4">
+            <Toaster />
             {/* Floating Sidebar */}
             <Sidebar />
 
