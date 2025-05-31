@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TransactionCategory } from "@/app/admin/kategori/types";
+import { toast } from "sonner";
 import api from "@/lib/api";
 
 interface Props {
@@ -14,8 +15,7 @@ interface Props {
     onDeleted?: () => void;
 }
 
-
-export default function CategoryActions({ category }: Props) {
+export default function CategoryActions({ category, onDeleted }: Props) {
     const router = useRouter();
     const [showDetail, setShowDetail] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -23,11 +23,11 @@ export default function CategoryActions({ category }: Props) {
     const handleDelete = async () => {
         try {
             await api.delete(`/api/finance/categories/${category.id}`);
-            alert("Kategori berhasil dihapus.");
-            router.refresh();
+            toast.success("Kategori berhasil dihapus.");
+            onDeleted?.();
         } catch (error) {
             console.error("Gagal menghapus kategori:", error);
-            alert("Gagal menghapus kategori.");
+            toast.error("Gagal menghapus kategori.");
         } finally {
             setShowDeleteConfirm(false);
         }
