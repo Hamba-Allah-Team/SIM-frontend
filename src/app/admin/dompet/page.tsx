@@ -48,20 +48,22 @@ export default function DompetPage() {
         <div className="p-4">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold">Data Dompet</h1>
-                <Button
-                    onClick={handleTransferDompet}
-                    className="flex items-center gap-2 bg-[#4F46E5]/20 text-[#4F46E5] px-4 py-2 rounded-md hover:bg-[#4F46E5]/30 transition disabled:opacity-50"
-                >
-                    <HandCoins size={16} />
-                    Transfer
-                </Button>
-                <Button
-                    onClick={handleAddDompet}
-                    className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition disabled:opacity-50"
-                >
-                    <ListPlus size={16} />
-                    Tambah
-                </Button>
+                <div className="flex gap-2">
+                    <Button
+                        onClick={handleTransferDompet}
+                        className="flex items-center gap-2 bg-[#4F46E5]/20 text-[#4F46E5] px-4 py-2 rounded-md hover:bg-[#4F46E5]/30 transition disabled:opacity-50"
+                    >
+                        <HandCoins size={16} />
+                        Transfer
+                    </Button>
+                    <Button
+                        onClick={handleAddDompet}
+                        className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition disabled:opacity-50"
+                    >
+                        <ListPlus size={16} />
+                        Tambah
+                    </Button>
+                </div>
             </div>
 
             <DataTable columns={columns} data={data} isLoading={isLoading} />
