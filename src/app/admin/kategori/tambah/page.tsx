@@ -12,22 +12,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { CreateWalletPayload } from "@/app/admin/dompet/types";
+import { CreateTransactionCategoryPayload } from "@/app/admin/kategori/types";
 import { AxiosError } from "axios";
 
-export default function CreateWalletPage() {
-    const [walletName, setWalletName] = useState("");
-    const [walletType, setWalletType] = useState("");
-    const [balance, setBalance] = useState("");
+export default function CreateCategoryPage() {
+    const [name, setName] = useState("");
+    const [type, setType] = useState("");
+    const [description, setDescription] = useState("");
     const router = useRouter();
     const { profile } = useUserProfile();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!walletType || !walletName.trim()) {
-            alert("Jenis dompet dan nama dompet wajib diisi.");
+        if (!name.trim() || !type) {
+            alert("Nama dan tipe kategori wajib diisi.");
             return;
         }
 
@@ -36,45 +37,40 @@ export default function CreateWalletPage() {
             return;
         }
 
-        const payload: CreateWalletPayload = {
+        const payload: CreateTransactionCategoryPayload = {
             mosque_id: profile.mosque_id,
-            wallet_name: walletName.trim(),
-            wallet_type: walletType,
+            category_name: name.trim(),
+            category_type: type as "income" | "expense",
+            description: description.trim() || null,
         };
 
-        const parsedBalance = parseFloat(balance);
-        if (!isNaN(parsedBalance) && parsedBalance > 0) {
-            payload.initial_balance = parsedBalance;
-        }
-
         try {
-            const response = await api.post("/api/wallets", payload);
-            console.log("Wallet created:", response.data);
-            router.push("/admin/dompet");
+            await api.post("/api/finance/categories", payload);
+
+            router.push("/admin/kategori");
         } catch (err) {
             const error = err as AxiosError<{ message: string }>;
-            console.error("Error creating wallet:", error.response?.data || error.message);
-            alert(error.response?.data?.message || "Gagal membuat dompet");
+            console.error("Error creating category:", error.response?.data || error.message);
+            alert(error.response?.data?.message || "Gagal membuat kategori");
         }
     };
-
 
     return (
         <div className="w-full px-4 py-6">
             <div className="w-full mx-auto">
                 <h1 className="text-2xl font-bold text-[#1C143D] mb-6">
-                    Tambah Dompet Masjid
+                    Tambah Kategori Transaksi
                 </h1>
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
                     <div>
                         <label className="block text-sm font-semibold text-[#1C143D] mb-1">
-                            Nama Dompet
+                            Nama Kategori
                         </label>
                         <Input
                             type="text"
-                            value={walletName}
-                            onChange={(e) => setWalletName(e.target.value)}
-                            placeholder="Contoh: Dompet Operasional"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Contoh: Donasi Jumat"
                             className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
                             required
                         />
@@ -82,38 +78,35 @@ export default function CreateWalletPage() {
 
                     <div>
                         <label className="block text-sm font-semibold text-[#1C143D] mb-1">
-                            Jenis Dompet
+                            Tipe Kategori
                         </label>
-                        <Select onValueChange={setWalletType}>
+                        <Select onValueChange={setType}>
                             <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
-                                <SelectValue placeholder="Pilih jenis dompet" />
+                                <SelectValue placeholder="Pilih tipe kategori" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="cash">Cash</SelectItem>
-                                <SelectItem value="bank">Bank</SelectItem>
-                                <SelectItem value="ewallet">E-wallet</SelectItem>
+                                <SelectItem value="income">Pemasukan</SelectItem>
+                                <SelectItem value="expense">Pengeluaran</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold text-[#1C143D] mb-1">
-                            Masukkan Saldo Awal
+                            Deskripsi (opsional)
                         </label>
-                        <Input
-                            type="number"
-                            value={balance}
-                            onChange={(e) => setBalance(e.target.value)}
-                            placeholder="Masukkan nominal saldo awal (boleh kosong)"
-                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
-                            min={0}
+                        <Textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Keterangan tambahan mengenai kategori ini"
+                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-2 text-sm placeholder:text-gray-400"
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 pt-2">
                         <Button
                             variant="outline"
-                            onClick={() => router.push("/admin/dompet")}
+                            onClick={() => router.push("/admin/kategori")}
                             className="w-full h-12 rounded-full border-[#FF8A4C] text-[#FF8A4C] font-semibold hover:bg-[#FF8A4C]/10"
                         >
                             Batal
