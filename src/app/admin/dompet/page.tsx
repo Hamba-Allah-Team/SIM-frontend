@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ListPlus } from "lucide-react"
+import { ListPlus, HandCoins } from "lucide-react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
@@ -52,7 +52,7 @@ export default function DompetPage() {
                     onClick={handleTransferDompet}
                     className="flex items-center gap-2 bg-[#4F46E5]/20 text-[#4F46E5] px-4 py-2 rounded-md hover:bg-[#4F46E5]/30 transition disabled:opacity-50"
                 >
-                    <ListPlus size={16} />
+                    <HandCoins size={16} />
                     Transfer
                 </Button>
                 <Button
