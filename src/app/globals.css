@@ -6,6 +6,7 @@
 
   /* Tambahkan variabel orange custom */
   --color-custom-orange: #FF9357;
+  --color-custom-blue: #C0D1D9;
 }
 
 @theme inline {
@@ -15,6 +16,7 @@
   --font-mono: var(--font-geist-mono);
 
   --color-custom-orange: var(--color-custom-orange);
+  --color-custom-blue: var(--color-custom-blue);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +25,7 @@
     --foreground: #ededed;
 
     --color-custom-orange: #FF9357;
+    --color-custom-blue: #C0D1D9;
   }
 }
 

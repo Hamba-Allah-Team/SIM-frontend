@@ -6,7 +6,7 @@ export const columns = (
   onDetail: (req: ActivationData) => void,
 ): ColumnDef<ActivationData>[] => [
   {
-    accessorKey: "transaction_number",
+    accessorKey: "proof_number",
     header: "Nomor Transaksi",
   },
   {

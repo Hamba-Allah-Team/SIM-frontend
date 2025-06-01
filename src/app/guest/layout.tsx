@@ -7,10 +7,12 @@ export default function GuestLayout({ children }: { children: ReactNode }) {
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Tambahkan padding-top agar navbar tidak mepet atas */}
-            <Navbar />
+            <nav style={{ backgroundColor: 'var(--color-custom-blue)' }} className="text-white shadow-md">
+                <Navbar />
+            </nav>
 
             {/* Konten halaman */}
-            <main className="max-w-7xl mx-auto px-4 py-10">
+            <main className="w-full pt-0 pb-10">
                 {children}
             </main>
 

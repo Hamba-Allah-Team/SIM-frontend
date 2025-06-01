@@ -62,7 +62,7 @@ export const columns = (
             <PenLine size={16} />
             <span>Detail</span>
           </Button>
-          <Button
+          {/* <Button
             size="sm"
             variant="ghost"
             className="flex items-center gap-1 p-1"
@@ -79,7 +79,7 @@ export const columns = (
           >
             <Trash2 size={16} />
             <span>Hapus</span>
-          </Button>
+          </Button> */}
         </div>
       );
     },

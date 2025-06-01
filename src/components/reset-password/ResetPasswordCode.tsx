@@ -9,7 +9,6 @@ import Link from "next/link";
 
 export default function ResetPasswordCode() {
   const [loaded, setLoaded] = useState(false);
-  const [countdown, setCountdown] = useState(60);
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,22 +29,13 @@ export default function ResetPasswordCode() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    if (countdown > 0) {
-      const interval = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [countdown]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch(`
-        ${API}/api/reset-password/verify-reset-password`,
+      const res = await fetch(
+        `${API}/api/reset-password/verify-reset-password`,
         {
           method: "POST",
           headers: {
@@ -95,7 +85,6 @@ export default function ResetPasswordCode() {
 
       if (res.ok) {
         alert("Kode baru telah dikirim ke email.");
-        setCountdown(60);
       } else {
         alert(data.message || "Gagal mengirim ulang kode.");
       }
@@ -133,14 +122,12 @@ export default function ResetPasswordCode() {
             />
             <span className="text-3xl font-semibold text-black">SIMA</span>
           </div>
-          <CardTitle className="text-3xl pt-3 text-black">Masukkan Kode</CardTitle>
-          {countdown > 0 ? (
-            <p className="text-sm text-gray-500 mt-2">
-              Kode akan kedaluwarsa dalam {countdown} detik
-            </p>
-          ) : (
-            <p className="text-sm text-red-500 mt-2">Kode sudah kedaluwarsa.</p>
-          )}
+          <CardTitle className="text-3xl pt-3 text-black">
+            Masukkan Kode
+          </CardTitle>
+          <p className="text-sm text-gray-500 mt-2">
+            Kode ini berlaku selama 60 detik{" "}
+          </p>
         </CardHeader>
 
         <CardContent className="pb-6">
@@ -161,25 +148,25 @@ export default function ResetPasswordCode() {
               />
             </div>
 
-            {countdown > 0 ? (
-              <Button
-                type="submit"
-                className="w-full rounded-2xl"
-                disabled={loading}
-              >
-                {loading ? "Memverifikasi..." : "Selanjutnya"}
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={handleResendCode}
-                className="w-full rounded-2xl"
-                disabled={resending}
-              >
-                {resending ? "Mengirim ulang..." : "Kirim Ulang Kode"}
-              </Button>
-            )}
+            <Button
+              type="submit"
+              className="w-full rounded-2xl"
+              disabled={loading || resending}
+            >
+              {loading ? "Memverifikasi..." : "Selanjutnya"}
+            </Button>
           </form>
+          <div className="text-center text-sm mt-6">
+            <span className="text-black">Tidak menerima kode? </span>
+            <button
+              type="button"
+              onClick={!resending ? handleResendCode : undefined}
+              disabled={resending || loading}
+              className={`font-medium text-custom-orange hover:text-orange-600 focus:outline-none disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out`}
+            >
+              {resending ? "Mengirim ulang..." : "Kirim Ulang"}
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
