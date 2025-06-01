@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ListPlus } from "lucide-react";
+import { ListPlus, ScrollText } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,13 @@ import { useState, useEffect } from "react";
 import { fetchTransactionsWithWallets } from "./utils";
 import { Keuangan } from "./types";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { ExportReportModal } from "@/app/admin/keuangan/modal/ExportModalReport"; // path disesuaikan
 
 export default function KeuanganPage() {
     const router = useRouter();
     const [transactions, setTransactions] = useState<Keuangan[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [openExportModal, setOpenExportModal] = useState(false);
 
     const { profile, loading: profileLoading, error } = useUserProfile();
 
@@ -57,15 +59,27 @@ export default function KeuanganPage() {
         <div className="p-4">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-semibold">Data Keuangan</h1>
-                <Button
-                    onClick={handleAddKeuangan}
-                    className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition"
-                >
-                    <ListPlus size={16} />
-                    Tambah
-                </Button>
+                <div className="flex gap-2">
+
+                    <Button
+                        onClick={() => setOpenExportModal(true)}
+                        className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition"
+                    >
+                        <ScrollText size={16} />
+                        Cetak Laporan
+                    </Button>
+
+                    <Button
+                        onClick={handleAddKeuangan}
+                        className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition"
+                    >
+                        <ListPlus size={16} />
+                        Tambah
+                    </Button>
+                </div>
             </div>
             <DataTable columns={columns(handleDeleted)} data={transactions} isLoading={isLoading} />
+            <ExportReportModal open={openExportModal} onClose={() => setOpenExportModal(false)} />
         </div>
     );
 }
