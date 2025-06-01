@@ -33,4 +33,10 @@ export interface Transaction {
     amount: number;
     source_or_usage: string;
     category_id: number | null;
+
+    // Tambahan untuk frontend
+    id?: number;
+    wallet_name?: string;
+    category_name?: string;
+    balance?: number;
 }
