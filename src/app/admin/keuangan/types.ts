@@ -2,7 +2,7 @@ export type Keuangan = {
     id: number;
     tanggal: string;
     jenis: "Pemasukan" | "Pengeluaran";
-    dompet: "cash" | "bank" | "ewallet" | "other"; // ✅ ditambah
+    dompet: string; // ✅ ditambah
     amount: number;
     source_or_usage: string;
     kategori: string;
@@ -13,6 +13,12 @@ export interface Wallet {
     wallet_name: string;
     wallet_type: "cash" | "bank" | "ewallet" | "other";
 }
+
+export type TransactionCategory = {
+    category_id: number;
+    category_name: string;
+    mosque_id: number;
+};
 
 export interface Transaction {
     transaction_id: number;

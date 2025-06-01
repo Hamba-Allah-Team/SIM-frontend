@@ -1,4 +1,4 @@
-import { Keuangan, Transaction, Wallet } from "./types";
+import { Keuangan, Transaction, Wallet, TransactionCategory } from "./types";
 import api from "@/lib/api";
 
 export async function fetchWalletsByMosque(mosqueId: number): Promise<Record<number, Wallet>> {
@@ -16,25 +16,34 @@ export async function fetchWalletsByMosque(mosqueId: number): Promise<Record<num
     }
 }
 
-// Mapping dari backend ke frontend untuk tipe transaksi
+export function mapTransactionTypeToBackend(type: "Pemasukan" | "Pengeluaran"): "income" | "expense" {
+    return type === "Pemasukan" ? "income" : "expense"
+}
+
 export function mapTransactionTypeToFrontend(type: "income" | "expense"): "Pemasukan" | "Pengeluaran" {
     return type === "income" ? "Pemasukan" : "Pengeluaran";
 }
 
-// Ambil dan map data transaksi
 export async function fetchTransactionsWithWallets(
     mosqueId: number,
     includeDeleted: boolean = false
 ): Promise<Keuangan[]> {
     try {
-        const [transactionsRes, walletsMap] = await Promise.all([
+        const [transactionsRes, walletsMap, categoriesRes] = await Promise.all([
             api.get("/api/finance/transactions", {
                 params: { includeDeleted: includeDeleted ? "true" : "false" },
             }),
             fetchWalletsByMosque(mosqueId),
+            api.get(`/api/finance/categories/mosque/${mosqueId}`),
         ]);
 
         const transactions: Transaction[] = transactionsRes.data;
+        const categories: TransactionCategory[] = categoriesRes.data;
+
+        const categoryMap: Record<number, string> = {};
+        categories.forEach((category) => {
+            categoryMap[category.category_id] = category.category_name;
+        });
 
         return transactions
             .filter((item) => item.transaction_type === "income" || item.transaction_type === "expense")
@@ -42,10 +51,10 @@ export async function fetchTransactionsWithWallets(
                 id: item.transaction_id,
                 tanggal: item.transaction_date,
                 jenis: mapTransactionTypeToFrontend(item.transaction_type as "income" | "expense"),
-                dompet: walletsMap[item.wallet_id]?.wallet_type ?? "cash", // fallback aman
+                dompet: walletsMap[item.wallet_id]?.wallet_name ?? "-", // tampilkan nama dompet
                 amount: item.amount,
                 source_or_usage: item.source_or_usage,
-                kategori: item.category?.category_name ?? "-",
+                kategori: categoryMap[item.category?.category_id ?? -1] ?? "-",
             }));
     } catch (error) {
         console.error("Gagal mengambil transaksi:", error);

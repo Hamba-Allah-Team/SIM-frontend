@@ -1,55 +1,49 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Keuangan } from "./types";
-import { Button } from "@/components/ui/button"
+import { Transaction } from "./types";
+// import { Button } from "@/components/ui/button"
+import TransactionActions from "@/components/finance/FinanceCategory";
 
-export const columns: ColumnDef<Keuangan>[] = [
+export const columns = (onDeleted: () => void): ColumnDef<Transaction>[] => [
     {
-        accessorKey: "tanggal",
+        accessorKey: "transaction_date",
         header: () => <div className="min-w-[120px]">Tanggal</div>,
         cell: ({ row }) =>
-            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
+            new Date(row.getValue("transaction_date")).toLocaleDateString("id-ID"),
     },
     {
-        accessorKey: "jenis",
+        accessorKey: "transaction_type",
         header: () => <div className="min-w-[100px]">Jenis</div>,
+        cell: ({ row }) => {
+            const type = row.getValue("transaction_type");
+            return type === "income" ? "Pemasukan" :
+                   type === "expense" ? "Pengeluaran" :
+                   type === "transfer_in" ? "Transfer Masuk" :
+                   type === "transfer_out" ? "Transfer Keluar" : "Saldo Awal";
+        }
     },
     {
-        accessorKey: "kategori",
+        accessorKey: "category",
         header: () => <div className="min-w-[140px]">Kategori</div>,
-        cell: ({ row }) => row.getValue("kategori") ?? "-",
+        cell: ({ row }) => row.original.category?.category_name ?? "-",
     },
     {
-        accessorKey: "dompet",
+        accessorKey: "wallet_id",
         header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.getValue("dompet") ?? "-",
+        cell: ({ row }) => row.original.wallet_id.toString(), // bisa ubah sesuai nama kalau kamu punya mapping
     },
     {
         accessorKey: "amount",
         header: () => <div className="min-w-[140px]">Nominal</div>,
         cell: ({ row }) => {
-            const value = row.getValue("amount") as number;
-            return `Rp ${value.toLocaleString("id-ID")}`;
+            const value = row.getValue("amount") as number
+            return `Rp ${value.toLocaleString("id-ID")}`
         },
     },
     {
         id: "actions",
         header: () => <div className="min-w-[200px]">Aksi</div>,
-        cell: ({ row }) => {
-            const transaksi = row.original
-
-            return (
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => alert(`Detail ID ${transaksi.id}`)}>
-                        Detail
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => alert(`Edit ID ${transaksi.id}`)}>
-                        Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => alert(`Hapus ID ${transaksi.id}`)}>
-                        Hapus
-                    </Button>
-                </div>
-            )
-        },
+        cell: ({ row }) => (
+            <TransactionActions transaction={row.original} onDeleted={onDeleted} />
+        ),
     },
 ]
