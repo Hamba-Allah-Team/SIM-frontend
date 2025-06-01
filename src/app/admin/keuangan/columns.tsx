@@ -1,50 +1,43 @@
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table";
 import { Keuangan } from "./types";
-import { Button } from "@/components/ui/button"
+import TransactionActions from "@/components/finance/FinanceCategory";
 
-export const columns: ColumnDef<Keuangan>[] = [
+export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     {
         accessorKey: "tanggal",
-        header: () => <div className="min-w-[120px]">Tanggal</div>,
-        cell: ({ row }) =>
-            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
+        header: "Tanggal",
+        cell: ({ row }) => row.original.tanggal,
     },
     {
         accessorKey: "jenis",
-        header: () => <div className="min-w-[100px]">Jenis</div>,
+        header: "Jenis",
+        cell: ({ row }) => row.original.jenis,
+    },
+    {
+        accessorKey: "kategori",
+        header: "Kategori",
+        cell: ({ row }) => row.original.kategori,
     },
     {
         accessorKey: "dompet",
-        header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.getValue("dompet") ?? "-",
+        header: "Dompet",
+        cell: ({ row }) => row.original.dompet,
     },
     {
         accessorKey: "amount",
-        header: () => <div className="min-w-[140px]">Nominal</div>,
-        cell: ({ row }) => {
-            const value = row.getValue("amount") as number;
-            return `Rp ${value.toLocaleString("id-ID")}`;
-        },
+        header: "Jumlah",
+        cell: ({ row }) => `Rp ${row.original.amount.toLocaleString("id-ID")}`,
     },
+    // {
+    //     accessorKey: "source_or_usage",
+    //     header: "Sumber / Penggunaan",
+    //     cell: ({ row }) => row.original.source_or_usage,
+    // },
     {
         id: "actions",
-        header: () => <div className="min-w-[200px]">Aksi</div>,
-        cell: ({ row }) => {
-            const transaksi = row.original
-
-            return (
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => alert(`Detail ID ${transaksi.id}`)}>
-                        Detail
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => alert(`Edit ID ${transaksi.id}`)}>
-                        Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => alert(`Hapus ID ${transaksi.id}`)}>
-                        Hapus
-                    </Button>
-                </div>
-            )
-        },
+        header: () => <div className="min-w-[150px]">Aksi</div>,
+        cell: ({ row }) => (
+            <TransactionActions transaction={row.original} onDeleted={onDeleted} />
+        ),
     },
-]
+];
