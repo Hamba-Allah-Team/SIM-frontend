@@ -1,4 +1,6 @@
 import { Keuangan, Transaction, Wallet, TransactionCategory } from "./types";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import api from "@/lib/api";
 
 export async function fetchWalletsByMosque(mosqueId: number): Promise<Record<number, Wallet>> {
@@ -45,19 +47,25 @@ export async function fetchTransactionsWithWallets(
             categoryMap[category.category_id] = category.category_name;
         });
 
+        console.log("CategoryMap:", categoryMap);
+
         return transactions
             .filter((item) => item.transaction_type === "income" || item.transaction_type === "expense")
             .map((item) => ({
                 id: item.transaction_id,
-                tanggal: item.transaction_date,
+                tanggal: format(new Date(item.transaction_date), "dd MMMM yyyy", { locale: id }), // ✅ UX friendly
                 jenis: mapTransactionTypeToFrontend(item.transaction_type as "income" | "expense"),
-                dompet: walletsMap[item.wallet_id]?.wallet_name ?? "-", // tampilkan nama dompet
+                dompet: walletsMap[item.wallet_id]?.wallet_name ?? "-",
                 amount: item.amount,
                 source_or_usage: item.source_or_usage,
-                kategori: categoryMap[item.category?.category_id ?? -1] ?? "-",
+                kategori: categoryMap[item.category_id ?? -1] ?? "-", // ✅ aman
             }));
     } catch (error) {
         console.error("Gagal mengambil transaksi:", error);
         throw new Error("Gagal mengambil data keuangan");
     }
+}
+
+export async function deleteTransaction(id: number) {
+    return await api.delete(`/api/finance/transactions/${id}`);
 }

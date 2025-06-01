@@ -1,49 +1,43 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { Transaction } from "./types";
-// import { Button } from "@/components/ui/button"
+import { ColumnDef } from "@tanstack/react-table";
+import { Keuangan } from "./types";
 import TransactionActions from "@/components/finance/FinanceCategory";
 
-export const columns = (onDeleted: () => void): ColumnDef<Transaction>[] => [
+export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     {
-        accessorKey: "transaction_date",
-        header: () => <div className="min-w-[120px]">Tanggal</div>,
-        cell: ({ row }) =>
-            new Date(row.getValue("transaction_date")).toLocaleDateString("id-ID"),
+        accessorKey: "tanggal",
+        header: "Tanggal",
+        cell: ({ row }) => row.original.tanggal,
     },
     {
-        accessorKey: "transaction_type",
-        header: () => <div className="min-w-[100px]">Jenis</div>,
-        cell: ({ row }) => {
-            const type = row.getValue("transaction_type");
-            return type === "income" ? "Pemasukan" :
-                   type === "expense" ? "Pengeluaran" :
-                   type === "transfer_in" ? "Transfer Masuk" :
-                   type === "transfer_out" ? "Transfer Keluar" : "Saldo Awal";
-        }
+        accessorKey: "jenis",
+        header: "Jenis",
+        cell: ({ row }) => row.original.jenis,
     },
     {
-        accessorKey: "category",
-        header: () => <div className="min-w-[140px]">Kategori</div>,
-        cell: ({ row }) => row.original.category?.category_name ?? "-",
+        accessorKey: "kategori",
+        header: "Kategori",
+        cell: ({ row }) => row.original.kategori,
     },
     {
-        accessorKey: "wallet_id",
-        header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.original.wallet_id.toString(), // bisa ubah sesuai nama kalau kamu punya mapping
+        accessorKey: "dompet",
+        header: "Dompet",
+        cell: ({ row }) => row.original.dompet,
     },
     {
         accessorKey: "amount",
-        header: () => <div className="min-w-[140px]">Nominal</div>,
-        cell: ({ row }) => {
-            const value = row.getValue("amount") as number
-            return `Rp ${value.toLocaleString("id-ID")}`
-        },
+        header: "Jumlah",
+        cell: ({ row }) => `Rp ${row.original.amount.toLocaleString("id-ID")}`,
     },
+    // {
+    //     accessorKey: "source_or_usage",
+    //     header: "Sumber / Penggunaan",
+    //     cell: ({ row }) => row.original.source_or_usage,
+    // },
     {
         id: "actions",
-        header: () => <div className="min-w-[200px]">Aksi</div>,
+        header: () => <div className="min-w-[150px]">Aksi</div>,
         cell: ({ row }) => (
             <TransactionActions transaction={row.original} onDeleted={onDeleted} />
         ),
     },
-]
+];

@@ -20,6 +20,11 @@ export type TransactionCategory = {
     mosque_id: number;
 };
 
+export interface Category {
+    category_id: number;
+    category_name: string;
+}
+
 export interface Transaction {
     transaction_id: number;
     wallet_id: number;
@@ -27,8 +32,5 @@ export interface Transaction {
     transaction_date: string;
     amount: number;
     source_or_usage: string;
-    category?: {
-        category_id: number;
-        category_name: string;
-    };
+    category_id: number | null;
 }
