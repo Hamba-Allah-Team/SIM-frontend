@@ -6,34 +6,47 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { fetchTransactions, mapApiToKeuangan } from "./utils";
+import { fetchTransactionsWithWallets } from "./utils";
 import { Keuangan } from "./types";
+import { useUserProfile } from "@/hooks/useUserProfile"
 
 export default function KeuanganPage() {
-    const router = useRouter();
-    const [transactions, setTransactions] = useState<Keuangan[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter()
+    const [transactions, setTransactions] = useState<Keuangan[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    const { profile, loading: profileLoading, error } = useUserProfile()
 
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const data = await fetchTransactions(); // Ambil dari API
-                const mapped = mapApiToKeuangan(data);  // Ubah ke format Keuangan
-                setTransactions(mapped);
-            } catch (error) {
-                console.error("Gagal mengambil transaksi:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+            if (!profile || profileLoading) return // tunggu profile siap
 
-        fetchData();
-    }, []); // Panggil sekali saat komponen dimount
+            setIsLoading(true)
+            try {
+                const mosqueId = profile.mosque_id
+                const mapped = await fetchTransactionsWithWallets(mosqueId)
+                setTransactions(mapped)
+            } catch (error) {
+                console.error("Gagal mengambil transaksi:", error)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [profile, profileLoading])
 
     const handleAddKeuangan = () => {
         router.push("/admin/keuangan/tambah");
     };
+
+    if (error) {
+        return (
+            <div className="p-4 text-red-500">
+                <p>{error}</p>
+            </div>
+        )
+    }
 
     return (
         <div className="p-4">

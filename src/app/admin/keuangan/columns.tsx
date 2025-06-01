@@ -14,6 +14,11 @@ export const columns: ColumnDef<Keuangan>[] = [
         header: () => <div className="min-w-[100px]">Jenis</div>,
     },
     {
+        accessorKey: "kategori",
+        header: () => <div className="min-w-[140px]">Kategori</div>,
+        cell: ({ row }) => row.getValue("kategori") ?? "-",
+    },
+    {
         accessorKey: "dompet",
         header: () => <div className="min-w-[100px]">Dompet</div>,
         cell: ({ row }) => row.getValue("dompet") ?? "-",
