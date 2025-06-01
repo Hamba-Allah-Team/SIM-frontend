@@ -59,6 +59,8 @@ export async function fetchTransactionsWithWallets(
                 amount: item.amount,
                 source_or_usage: item.source_or_usage,
                 kategori: categoryMap[item.category_id ?? -1] ?? "-", // ✅ aman
+                wallet_name: walletsMap[item.wallet_id]?.wallet_name ?? "-",
+                category_name: item.category_id ? categoryMap[item.category_id] ?? "-" : "-",
             }));
     } catch (error) {
         console.error("Gagal mengambil transaksi:", error);
