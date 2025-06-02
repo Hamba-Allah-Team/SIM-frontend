@@ -3,7 +3,7 @@
 import {
     flexRender,
     getCoreRowModel,
-    // getPaginationRowModel,
+    getPaginationRowModel,
     useReactTable,
     ColumnDef,
 } from "@tanstack/react-table";
@@ -36,11 +36,12 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
     })
 
     return (
-        <div className="rounded-md border">
-            <Table>
+        <div className="rounded-md border w-full overflow-x-auto">
+            <Table className="min-w-full table-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
