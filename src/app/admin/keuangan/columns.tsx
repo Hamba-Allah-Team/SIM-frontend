@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Keuangan } from "./types";
-import TransactionActions from "@/components/finance/FinanceCategory";
+import TransactionActions from "@/components/finance/FinanceAction";
 
 export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     {
@@ -35,7 +35,7 @@ export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     // },
     {
         id: "actions",
-        header: () => <div className="min-w-[150px]">Aksi</div>,
+        header: () => <div>Aksi</div>,
         cell: ({ row }) => (
             <TransactionActions transaction={row.original} onDeleted={onDeleted} />
         ),
