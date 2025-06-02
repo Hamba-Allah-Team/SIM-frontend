@@ -43,7 +43,7 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
 
     return (
         <div className="rounded-md border">
-            <Table className="w-full table-fixed">
+            <Table className="w-full table-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>

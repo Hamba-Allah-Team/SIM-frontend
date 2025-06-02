@@ -44,14 +44,14 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
 
     return (
         <TooltipProvider>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
                 {/* Detail */}
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1"
+                            className="flex items-center"
                             onClick={() => setShowDetail(true)}
                         >
                             <Eye className="w-4 h-4" />
