@@ -2,13 +2,30 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, Pencil, Trash } from "lucide-react";
+import { toast } from "sonner";
+import api from "@/lib/api";
+import { TransactionCategory } from "@/app/admin/kategori/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TransactionCategory } from "@/app/admin/kategori/types";
-import { toast } from "sonner";
-import api from "@/lib/api";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import {
+    Tooltip,
+    TooltipProvider,
+    TooltipTrigger,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface Props {
     category: TransactionCategory;
@@ -18,7 +35,6 @@ interface Props {
 export default function CategoryActions({ category, onDeleted }: Props) {
     const router = useRouter();
     const [showDetail, setShowDetail] = useState(false);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const handleDelete = async () => {
         try {
@@ -28,30 +44,85 @@ export default function CategoryActions({ category, onDeleted }: Props) {
         } catch (error) {
             console.error("Gagal menghapus kategori:", error);
             toast.error("Gagal menghapus kategori.");
-        } finally {
-            setShowDeleteConfirm(false);
         }
     };
 
     return (
-        <>
-            <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setShowDetail(true)}>
-                    Detail
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => router.push(`/admin/kategori/edit/${category.id}`)}
-                >
-                    Edit
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => setShowDeleteConfirm(true)}>
-                    Hapus
-                </Button>
+        <TooltipProvider>
+            <div className="flex items-center gap-2">
+                {/* Detail */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1"
+                            onClick={() => setShowDetail(true)}
+                        >
+                            <Eye className="w-4 h-4" />
+                            Detail
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Detail</TooltipContent>
+                </Tooltip>
+
+                {/* Edit */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 text-blue-600 hover:bg-blue-100"
+                            onClick={() => router.push(`/admin/kategori/edit/${category.id}`)}
+                        >
+                            <Pencil className="w-4 h-4" />
+                            Edit
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit</TooltipContent>
+                </Tooltip>
+
+                {/* Delete */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="flex items-center gap-1 text-red-600 hover:bg-red-100"
+                                >
+                                    <Trash className="w-4 h-4" />
+                                    Hapus
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Hapus Kategori?</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <p>
+                                    Apakah Anda yakin ingin menghapus kategori{" "}
+                                    <strong>{category.name}</strong>?
+                                </p>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleDelete();
+                                        }}
+                                    >
+                                        Hapus
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </TooltipTrigger>
+                    <TooltipContent>Hapus</TooltipContent>
+                </Tooltip>
             </div>
 
-            {/* Modal Detail dengan Field ReadOnly */}
+            {/* Modal Detail */}
             <Dialog open={showDetail} onOpenChange={setShowDetail}>
                 <DialogContent className="sm:max-w-xl p-6">
                     <DialogHeader>
@@ -83,26 +154,6 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                     </div>
                 </DialogContent>
             </Dialog>
-
-            {/* Modal Konfirmasi Hapus */}
-            <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Konfirmasi Hapus</DialogTitle>
-                    </DialogHeader>
-                    <div className="text-sm text-gray-700">
-                        Apakah Anda yakin ingin menghapus kategori <strong>{category.name}</strong>?
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
-                            Batal
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Hapus
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        </>
+        </TooltipProvider>
     );
 }
