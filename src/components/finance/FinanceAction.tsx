@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Eye, Pencil, Trash } from "lucide-react";
-
 import api from "@/lib/api";
 import { Keuangan } from "@/app/admin/keuangan/types";
 import { Button } from "@/components/ui/button";
@@ -49,8 +48,14 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
                 {/* Detail */}
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button size="icon" variant="outline" onClick={() => setShowDetail(true)}>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1"
+                            onClick={() => setShowDetail(true)}
+                        >
                             <Eye className="w-4 h-4" />
+                            Detail
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>Detail</TooltipContent>
@@ -60,11 +65,13 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
-                            size="icon"
-                            variant="outline"
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 text-blue-600 hover:bg-blue-100"
                             onClick={() => router.push(`/admin/keuangan/edit/${transaction.id}`)}
                         >
                             <Pencil className="w-4 h-4" />
+                            Edit
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent>Edit</TooltipContent>
@@ -75,8 +82,11 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
                     <TooltipTrigger asChild>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button size="icon" variant="destructive">
+                                <Button variant="ghost"
+                                    size="sm"
+                                    className="flex items-center gap-1 text-red-600 hover:bg-red-100">
                                     <Trash className="w-4 h-4" />
+                                    Hapus
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>

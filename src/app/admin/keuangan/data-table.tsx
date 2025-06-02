@@ -43,12 +43,15 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
 
     return (
         <div className="rounded-md border">
-            <Table className="w-full table-auto">
+            <Table className="w-full table-fixed">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
+                                <TableHead
+                                    key={header.id}
+                                    className={header.column.columnDef.meta?.className}
+                                >
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -73,7 +76,10 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
                         table.getRowModel().rows.map((row) => (
                             <TableRow key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
+                                    <TableCell
+                                        key={cell.id}
+                                        className={cell.column.columnDef.meta?.className}
+                                    >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
                                 ))}
