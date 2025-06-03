@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
+import { Eye, Pencil, Trash } from "lucide-react";
 import api from "@/lib/api";
-import { TransactionCategory } from "@/app/admin/kategori/types";
+import { Keuangan } from "@/app/admin/keuangan/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -20,30 +20,25 @@ import {
     AlertDialogCancel,
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import {
-    Tooltip,
-    TooltipProvider,
-    TooltipTrigger,
-    TooltipContent,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Props {
-    category: TransactionCategory;
+    transaction: Keuangan;
     onDeleted?: () => void;
 }
 
-export default function CategoryActions({ category, onDeleted }: Props) {
+export default function TransactionActions({ transaction, onDeleted }: Props) {
     const router = useRouter();
     const [showDetail, setShowDetail] = useState(false);
 
     const handleDelete = async () => {
         try {
-            await api.delete(`/api/finance/categories/${category.id}`);
-            toast.success("Kategori berhasil dihapus.");
+            await api.delete(`/api/finance/transactions/${transaction.id}`);
+            toast.success("Transaksi berhasil dihapus.");
             onDeleted?.();
         } catch (error) {
-            console.error("Gagal menghapus kategori:", error);
-            toast.error("Gagal menghapus kategori.");
+            console.error("Gagal menghapus transaksi:", error);
+            toast.error("Gagal menghapus transaksi.");
         }
     };
 
@@ -56,7 +51,7 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1"
+                            className="flex items-center"
                             onClick={() => setShowDetail(true)}
                         >
                             <Eye className="w-4 h-4" />
@@ -73,7 +68,7 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                             variant="ghost"
                             size="sm"
                             className="flex items-center gap-1 text-blue-600 hover:bg-blue-100"
-                            onClick={() => router.push(`/admin/kategori/edit/${category.id}`)}
+                            onClick={() => router.push(`/admin/keuangan/edit/${transaction.id}`)}
                         >
                             <Pencil className="w-4 h-4" />
                             Edit
@@ -87,22 +82,20 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                     <TooltipTrigger asChild>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="ghost"
+                                <Button variant="ghost"
                                     size="sm"
-                                    className="flex items-center gap-1 text-red-600 hover:bg-red-100"
-                                >
+                                    className="flex items-center gap-1 text-red-600 hover:bg-red-100">
                                     <Trash className="w-4 h-4" />
                                     Hapus
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>Hapus Kategori?</AlertDialogTitle>
+                                    <AlertDialogTitle>Hapus Transaksi?</AlertDialogTitle>
                                 </AlertDialogHeader>
                                 <p>
-                                    Apakah Anda yakin ingin menghapus kategori{" "}
-                                    <strong>{category.name}</strong>?
+                                    Apakah Anda yakin ingin menghapus transaksi dengan nominal{" "}
+                                    <strong>Rp {transaction.amount.toLocaleString("id-ID")}</strong>?
                                 </p>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Batal</AlertDialogCancel>
@@ -126,30 +119,38 @@ export default function CategoryActions({ category, onDeleted }: Props) {
             <Dialog open={showDetail} onOpenChange={setShowDetail}>
                 <DialogContent className="sm:max-w-xl p-6">
                     <DialogHeader>
-                        <DialogTitle>Detail Kategori</DialogTitle>
+                        <DialogTitle>Detail Transaksi</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium">Nama Kategori</label>
-                            <Input value={category.name} readOnly disabled />
+                            <label className="text-sm font-medium">Dompet</label>
+                            <Input value={transaction.dompet ?? "-"} readOnly disabled />
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Tipe</label>
-                            <Input
-                                value={category.type === "income" ? "Pemasukan" : "Pengeluaran"}
-                                readOnly
-                                disabled
-                            />
+                            <label className="text-sm font-medium">Nominal</label>
+                            <Input value={`Rp ${transaction.amount.toLocaleString("id-ID")}`} readOnly disabled />
+                        </div>
+                        <div>
+                            <label className="text-sm font-medium">Jenis Transaksi</label>
+                            <Input value={transaction.jenis ?? "-"} readOnly disabled />
+                        </div>
+                        <div>
+                            <label className="text-sm font-medium">Kategori</label>
+                            <Input value={transaction.kategori ?? "-"} readOnly disabled />
                         </div>
                         <div>
                             <label className="text-sm font-medium">Deskripsi</label>
                             <Textarea
-                                value={category.description || "-"}
+                                value={transaction.source_or_usage ?? "-"}
                                 readOnly
                                 disabled
                                 className="resize-none"
                                 rows={3}
                             />
+                        </div>
+                        <div>
+                            <label className="text-sm font-medium">Tanggal</label>
+                            <Input value={transaction.tanggal} readOnly disabled />
                         </div>
                     </div>
                 </DialogContent>
