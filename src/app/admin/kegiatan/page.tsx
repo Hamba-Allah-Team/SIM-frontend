@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ListPlus, RefreshCw } from "lucide-react";
 import { columns } from "./columns";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "./data-table";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner"; // 👈 Menggunakan sonner untuk toast
 import { Activity } from "./types";
