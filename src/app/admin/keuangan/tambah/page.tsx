@@ -13,19 +13,29 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useUserProfile } from "@/hooks/useUserProfile"
-import { mapTransactionTypeToBackend } from "../utils";
+import { mapTransactionTypeToBackend } from "../utils"
 import { AxiosError } from "axios"
 
 interface WalletOption {
     wallet_id: number
-    wallet_type: "cash" | "bank"
+    wallet_name: string
+    wallet_type: "cash" | "bank" | "ewallet" | "other"
+}
+
+interface CategoryOption {
+    category_id: number
+    category_name: string
+    category_type: "income" | "expense"
 }
 
 export default function CreateTransactionPage() {
     const [wallets, setWallets] = useState<WalletOption[]>([])
+    const [categories, setCategories] = useState<CategoryOption[]>([])
+
     const [walletId, setWalletId] = useState("")
     const [amount, setAmount] = useState("")
     const [transactionType, setTransactionType] = useState<"Pemasukan" | "Pengeluaran" | "">("")
+    const [selectedCategoryId, setSelectedCategoryId] = useState("")
     const [description, setDescription] = useState("")
     const [transactionDate, setTransactionDate] = useState("")
 
@@ -33,24 +43,36 @@ export default function CreateTransactionPage() {
     const { profile } = useUserProfile()
 
     useEffect(() => {
-        const fetchWallets = async () => {
-            if (!profile?.mosque_id) return
+        if (!profile?.mosque_id) return
+
+        const fetchWalletsAndCategories = async () => {
             try {
-                const res = await api.get(`/api/wallets/mosque/${profile.mosque_id}`)
-                setWallets(res.data)
+                const [walletRes, categoryRes] = await Promise.all([
+                    api.get(`/api/wallets/mosque/${profile.mosque_id}`),
+                    api.get(`/api/finance/categories/mosque/${profile.mosque_id}`),
+                ])
+                setWallets(walletRes.data)
+                setCategories(categoryRes.data)
             } catch (error) {
-                console.error("Gagal mengambil data dompet:", error)
+                console.error("Gagal mengambil data dompet/kategori:", error)
             }
         }
 
-        fetchWallets()
+        fetchWalletsAndCategories()
     }, [profile?.mosque_id])
+
+    const filteredCategories = transactionType
+        ? categories.filter(
+            (cat) => cat.category_type === mapTransactionTypeToBackend(transactionType)
+        )
+        : []
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!transactionType) {
-            alert("Jenis transaksi harus dipilih")
+        if (!transactionType || !selectedCategoryId) {
+            alert("Jenis transaksi dan kategori harus dipilih")
             return
         }
 
@@ -58,7 +80,8 @@ export default function CreateTransactionPage() {
             const response = await api.post("/api/finance/transactions", {
                 wallet_id: Number(walletId),
                 amount,
-                transaction_type: mapTransactionTypeToBackend(transactionType), // menggunakan helper function
+                transaction_type: mapTransactionTypeToBackend(transactionType),
+                category_id: Number(selectedCategoryId),
                 source_or_usage: description,
                 transaction_date: transactionDate,
             })
@@ -70,7 +93,6 @@ export default function CreateTransactionPage() {
             alert(error.response?.data?.message || "Gagal menambahkan transaksi")
         }
     }
-
 
     return (
         <div className="w-full px-4 py-6">
@@ -87,7 +109,7 @@ export default function CreateTransactionPage() {
                             <SelectContent>
                                 {wallets.map((wallet) => (
                                     <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
-                                        {wallet.wallet_type === "cash" ? "Cash" : "Bank"}
+                                        {wallet.wallet_name}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -97,7 +119,10 @@ export default function CreateTransactionPage() {
                     {/* Jenis Transaksi */}
                     <div>
                         <label className="block text-sm font-semibold text-[#1C143D] mb-1">Jenis Keuangan</label>
-                        <Select onValueChange={(val) => setTransactionType(val as "Pemasukan" | "Pengeluaran")}>
+                        <Select onValueChange={(val) => {
+                            setTransactionType(val as "Pemasukan" | "Pengeluaran")
+                            setSelectedCategoryId("") // reset kategori saat ganti jenis transaksi
+                        }}>
                             <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
                                 <SelectValue placeholder="Pilih jenis transaksi" />
                             </SelectTrigger>
@@ -107,6 +132,25 @@ export default function CreateTransactionPage() {
                             </SelectContent>
                         </Select>
                     </div>
+
+                    {/* Kategori Transaksi */}
+                    {transactionType && (
+                        <div>
+                            <label className="block text-sm font-semibold text-[#1C143D] mb-1">Kategori Transaksi</label>
+                            <Select onValueChange={setSelectedCategoryId}>
+                                <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
+                                    <SelectValue placeholder="Pilih kategori" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {filteredCategories.map((cat) => (
+                                        <SelectItem key={cat.category_id} value={cat.category_id.toString()}>
+                                            {cat.category_name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
 
                     {/* Nominal */}
                     <div>
@@ -146,6 +190,7 @@ export default function CreateTransactionPage() {
                     {/* Tombol */}
                     <div className="grid grid-cols-2 gap-4 pt-2">
                         <Button
+                            type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/keuangan")}
                             className="w-full h-12 rounded-full border-[#FF8A4C] text-[#FF8A4C] font-semibold hover:bg-[#FF8A4C]/10"

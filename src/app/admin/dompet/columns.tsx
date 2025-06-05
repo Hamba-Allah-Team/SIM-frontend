@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Dompet } from "./types"
+import WalletAction from "@/components/dompet/DompetAction"
 
 export const columns: ColumnDef<Dompet>[] = [
     {
@@ -22,4 +23,10 @@ export const columns: ColumnDef<Dompet>[] = [
             return `Rp ${balance.toLocaleString("id-ID")}`
         },
     },
+    {
+        id: "actions",
+        header: "Aksi",
+        cell: ({ row }) => <WalletAction wallet={row.original} />,
+    },
+
 ]

@@ -8,19 +8,27 @@ export const columns = (
 ): ColumnDef<TransactionCategory>[] => [
         {
             accessorKey: "name",
-            header: "Nama Kategori",
+            header: () => <div className="min-w-[150px]">Nama Kategori</div>,
+            cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue("name")}</div>,
         },
         {
             accessorKey: "type",
-            header: "Tipe",
-            cell: ({ row }) => (row.getValue("type") === "income" ? "Pemasukan" : "Pengeluaran"),
+            header: () => <div className="min-w-[100px]">Tipe</div>,
+            cell: ({ row }) => (
+                <div className="whitespace-nowrap">
+                    {row.getValue("type") === "income" ? "Pemasukan" : "Pengeluaran"}
+                </div>
+            ),
         },
         {
             id: "actions",
-            header: () => <div className="min-w-[200px]">Aksi</div>,
+            header: () => <div className="min-w-[180px] text-center">Aksi</div>,
             cell: ({ row }) => (
-                <CategoryActions category={row.original} onDeleted={onDeleted} />
+                <div className="flex justify-center">
+                    <CategoryActions category={row.original} onDeleted={onDeleted} />
+                </div>
             ),
         },
+
     ];
 
