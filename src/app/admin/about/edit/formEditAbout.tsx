@@ -71,7 +71,6 @@ const formSchema = z.object({
     .min(-180, { message: "Longitude harus >= -180" })
     .max(180, { message: "Longitude harus <= 180" })
     .optional(),
-
   })
 
 
@@ -129,8 +128,9 @@ export function EditAboutForm() {
           email: data.email || "",
           facebook: data.facebook || "",
           instagram: data.instagram || "",
-          latitude: data.latitude || "",
-          longitude: data.longitude || "",
+          latitude: data.latitude !== undefined ? Number(data.latitude) : undefined,
+          longitude: data.longitude !== undefined ? Number(data.longitude) : undefined,
+
         })
 
         if (data.image) {
@@ -437,7 +437,7 @@ export function EditAboutForm() {
           )}
         />
 
-        <TooltipProvider>
+        {/* <TooltipProvider>
           <FormField
             control={form.control}
             name="latitude"
@@ -488,7 +488,67 @@ export function EditAboutForm() {
               </div>
               </FormItem>
             )}
-          />
+          /> */}
+
+          <TooltipProvider>
+            <FormField
+              control={form.control}
+              name="latitude"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <div className="flex items-center gap-1">
+                    <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                      Latitude Masjid
+                    </FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-pointer text-black" />
+                      </TooltipTrigger>
+                      <TooltipContent 
+                        side="right"
+                        sideOffset={8}
+                        className="max-w-xs bg-white text-black whitespace-pre-line">
+                        <p>
+                          Garis Lintang
+                          <br />
+                          Cara menemukan: Buka <strong>Google Maps</strong>, klik kanan di lokasi masjid,
+                          pilih <strong>"What's here?"</strong>.
+                          <br />
+                          Misalnya muncul koordinat: <span>-7.982085, 112.630348</span> → Maka latitude-nya
+                          adalah <strong>-7.982085</strong>.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      onChange={(e) => {
+                        const value = e.target.valueAsNumber;
+                        field.onChange(isNaN(value) ? undefined : value);
+                      }}
+                      value={field.value ?? ""}
+                      placeholder={
+                        fieldState.error
+                          ? fieldState.error.message
+                          : "Contoh : -7.982085"
+                      }
+                      className={`bg-white text-black ${
+                        fieldState.error
+                          ? "border border-red-500 placeholder-red-600"
+                          : "border border-gray-300 placeholder-gray-400"
+                      } pr-10`}
+                      aria-invalid={fieldState.error ? "true" : "false"}
+                    />
+                  </FormControl>
+                  <div className="bg-white text-black mt-1">
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+
 
           <FormField
             control={form.control}
