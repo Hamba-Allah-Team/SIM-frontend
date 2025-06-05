@@ -61,20 +61,41 @@ const formSchema = z.object({
 
 
   latitude: z
-    .number()
-    .min(-90, { message: "Latitude harus >= -90" })
-    .max(90, { message: "Latitude harus <= 90" })
-    .optional(),
+    .string()
+    .optional()
+    .refine((val) => {
+      if (!val || val.trim() === "") return true; // optional boleh kosong
+      const num = Number(val);
+      return !isNaN(num) && num >= -90 && num <= 90;
+    }, {
+      message: "Latitude harus berupa angka antara -90 sampai 90",
+    }),
 
   longitude: z
-    .number()
-    .min(-180, { message: "Longitude harus >= -180" })
-    .max(180, { message: "Longitude harus <= 180" })
-    .optional(),
-  })
+    .string()
+    .optional()
+    .refine((val) => {
+      if (!val || val.trim() === "") return true;
+      const num = Number(val);
+      return !isNaN(num) && num >= -180 && num <= 180;
+    }, {
+      message: "Longitude harus berupa angka antara -180 sampai 180",
+    }),
+  });
 
 
-export type AboutFormValues = z.infer<typeof formSchema>
+export type AboutFormValues = {
+  name: string;
+  address: string;
+  description?: string;
+  image?: any;
+  phone_whatsapp?: string;
+  email?: string;
+  facebook?: string;
+  instagram?: string;
+  latitude?: string;
+  longitude?: string;
+};
 
 const API = process.env.NEXT_PUBLIC_API_URL
 
@@ -86,7 +107,7 @@ export function EditAboutForm() {
   const router = useRouter()
 
   const form = useForm<AboutFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       name: "",
       address: "",
@@ -96,8 +117,8 @@ export function EditAboutForm() {
       email: "",
       facebook: "",
       instagram: "",
-      latitude: undefined,
-      longitude: undefined,
+      latitude: "",
+      longitude: "",
     },
   })
 
@@ -128,9 +149,8 @@ export function EditAboutForm() {
           email: data.email || "",
           facebook: data.facebook || "",
           instagram: data.instagram || "",
-          latitude: data.latitude !== undefined ? Number(data.latitude) : undefined,
-          longitude: data.longitude !== undefined ? Number(data.longitude) : undefined,
-
+          latitude: data.latitude ?? "",
+          longitude: data.longitude ?? "",
         })
 
         if (data.image) {
@@ -181,8 +201,8 @@ export function EditAboutForm() {
       formData.append("email", values.email || "")
       formData.append("facebook", values.facebook || "")
       formData.append("instagram", values.instagram || "")
-      formData.append("latitude", values.latitude !== undefined ? values.latitude.toString() : "")
-      formData.append("longitude", values.longitude !== undefined ? values.longitude.toString() : "")
+      formData.append("latitude", values.latitude || "");
+      formData.append("longitude", values.longitude || "");
 
 
       if (deleteImage) {
@@ -492,115 +512,126 @@ export function EditAboutForm() {
 
           <TooltipProvider>
             <FormField
-              control={form.control}
-              name="latitude"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <div className="flex items-center gap-1">
-                    <FormLabel className="text-[16px] font-semibold font-poppins text-black">
-                      Latitude Masjid
-                    </FormLabel>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-muted-foreground cursor-pointer text-black" />
-                      </TooltipTrigger>
-                      <TooltipContent 
-                        side="right"
-                        sideOffset={8}
-                        className="max-w-xs bg-white text-black whitespace-pre-line">
-                        <p>
-                          Garis Lintang
-                          <br />
-                          Cara menemukan: Buka <strong>Google Maps</strong>, klik kanan di lokasi masjid,
-                          pilih <strong>"What's here?"</strong>.
-                          <br />
-                          Misalnya muncul koordinat: <span>-7.982085, 112.630348</span> → Maka latitude-nya
-                          adalah <strong>-7.982085</strong>.
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      inputMode="decimal"
-                      onChange={(e) => {
-                        const value = e.target.valueAsNumber;
-                        field.onChange(isNaN(value) ? undefined : value);
-                      }}
-                      value={field.value ?? ""}
-                      placeholder={
-                        fieldState.error
-                          ? fieldState.error.message
-                          : "Contoh : -7.982085"
-                      }
-                      className={`bg-white text-black ${
-                        fieldState.error
-                          ? "border border-red-500 placeholder-red-600"
-                          : "border border-gray-300 placeholder-gray-400"
-                      } pr-10`}
-                      aria-invalid={fieldState.error ? "true" : "false"}
-                    />
-                  </FormControl>
-                  <div className="bg-white text-black mt-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
+  control={form.control}
+  name="latitude"
+  render={({ field, fieldState }) => (
+    <FormItem>
+      <div className="flex items-center gap-1">
+        <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+          Latitude Masjid
+        </FormLabel>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Info className="h-4 w-4 text-muted-foreground cursor-pointer text-black" />
+          </TooltipTrigger>
+          <TooltipContent
+            side="right"
+            sideOffset={8}
+            className="max-w-xs bg-white text-black whitespace-pre-line"
+          >
+            <p>
+              Garis Lintang
+              <br />
+              Cara menemukan: Buka <strong>Google Maps</strong>, klik kanan di lokasi masjid,
+              pilih <strong>"What's here?"</strong>.
+              <br />
+              Misalnya muncul koordinat: <span>-7.982085, 112.630348</span> → Maka latitude-nya
+              adalah <strong>-7.982085</strong>.
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      <FormControl>
+        <Input
+          type="text"
+          inputMode="decimal"
+          value={field.value ?? ""}
+          onChange={(e) => {
+            const value = e.target.value.trim();
+            field.onChange(value);
+          }}
+          placeholder={
+            fieldState.error
+              ? fieldState.error.message
+              : "Contoh : -7.982085"
+          }
+          className={`bg-white text-black ${
+            fieldState.error
+              ? "border border-red-500 placeholder-red-600"
+              : "border border-gray-300 placeholder-gray-400"
+          } pr-10`}
+          aria-invalid={fieldState.error ? "true" : "false"}
+        />
+      </FormControl>
+      <div className="bg-white text-black mt-1">
+        <FormMessage />
+      </div>
+    </FormItem>
+  )}
+/>
 
 
-          <FormField
-            control={form.control}
-            name="longitude"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <div className="flex items-center gap-1">
-                  <FormLabel className="text-[16px] font-semibold font-poppins text-black">
-                    Longitude Masjid
-                  </FormLabel>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-muted-foreground cursor-pointer text-black" />
-                    </TooltipTrigger>
-                    <TooltipContent 
-                      side="right"
-                      sideOffset={8}
-                      className="max-w-xs bg-white text-black whitespace-pre-line">
-                        <p>
-                          Garis Bujur
-                          <br />
-                          Cara menemukan: Buka <strong>Google Maps</strong>, klik kanan di lokasi masjid,
-                          pilih <strong>"What's here?"</strong>.
-                          <br />
-                          Misalnya muncul koordinat: <span>-7.982085, 112.630348</span> → Maka longtitude-nya
-                          adalah <strong>112.630348</strong>.
-                        </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <FormControl>
-                  <Input
-                    placeholder={
-                      fieldState.error
-                        ? fieldState.error.message
-                        : "Contoh : 112.630348"
-                    }
-                    {...field}
-                    className={`bg-white text-black ${
-                      fieldState.error
-                        ? "border border-red-500 placeholder-red-600"
-                        : "border border-gray-300 placeholder-gray-400"
-                    } pr-10`}
-                    aria-invalid={fieldState.error ? "true" : "false"}
-                  />
-                </FormControl>
-                <div className="bg-white text-black mt-1">
-                  <FormMessage />
-                </div>
-              </FormItem>
-            )}
-          />
+
+<FormField
+  control={form.control}
+  name="longitude"
+  render={({ field, fieldState }) => (
+    <FormItem>
+      <div className="flex items-center gap-1">
+        <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+          Longitude Masjid
+        </FormLabel>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Info className="h-4 w-4 text-muted-foreground cursor-pointer text-black" />
+          </TooltipTrigger>
+          <TooltipContent
+            side="right"
+            sideOffset={8}
+            className="max-w-xs bg-white text-black whitespace-pre-line"
+          >
+            <p>
+              Garis Bujur
+              <br />
+              Cara menemukan: Buka <strong>Google Maps</strong>, klik kanan di lokasi masjid,
+              pilih <strong>"What's here?"</strong>.
+              <br />
+              Misalnya muncul koordinat: <span>-7.982085, 112.630348</span> → Maka longitude-nya
+              adalah <strong>112.630348</strong>.
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      <FormControl>
+        <Input
+          type="text"
+          inputMode="decimal"
+          placeholder={
+            fieldState.error
+              ? fieldState.error.message
+              : "Contoh : 112.630348"
+          }
+          value={field.value ?? ""}
+          onChange={(e) => {
+            const value = e.target.value.trim();
+            field.onChange(value);
+          }}
+          className={`bg-white text-black ${
+            fieldState.error
+              ? "border border-red-500 placeholder-red-600"
+              : "border border-gray-300 placeholder-gray-400"
+          } pr-10`}
+          aria-invalid={fieldState.error ? "true" : "false"}
+        />
+      </FormControl>
+      <div className="bg-white text-black mt-1">
+        <FormMessage />
+      </div>
+    </FormItem>
+  )}
+/>
+
+
         </TooltipProvider>
 
         
