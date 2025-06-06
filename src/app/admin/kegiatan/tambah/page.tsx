@@ -92,7 +92,11 @@ export default function TambahKegiatanPage() {
 
     return (
         <div className="w-full px-4 py-6 min-h-screen bg-slate-50">
-            <Button variant="outline" onClick={() => router.back()} className="mb-6 group text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-300">
+            <Button
+                variant="ghost"
+                onClick={() => router.back()}
+                className="mb-6 group text-slate-600 hover:text-slate-900 px-0"
+            >
                 <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
                 Kembali
             </Button>
@@ -144,6 +148,7 @@ export default function TambahKegiatanPage() {
                                 onChange={(e) => setStartDate(e.target.value)}
                                 className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                                 required
+                                style={{ colorScheme: 'light' }}
                             />
                         </div>
                         <div>
@@ -157,6 +162,7 @@ export default function TambahKegiatanPage() {
                                 onChange={(e) => setStartTime(e.target.value)}
                                 className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                                 required
+                                style={{ colorScheme: 'light' }}
                             />
                         </div>
                     </div>
@@ -173,6 +179,7 @@ export default function TambahKegiatanPage() {
                                 onChange={(e) => setEndDate(e.target.value)}
                                 min={startDate || undefined}
                                 className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
+                                style={{ colorScheme: 'light' }}
                             />
                         </div>
                         <div>
@@ -185,6 +192,7 @@ export default function TambahKegiatanPage() {
                                 value={endTime}
                                 onChange={(e) => setEndTime(e.target.value)}
                                 className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
+                                style={{ colorScheme: 'light' }}
                             />
                         </div>
                     </div>
@@ -256,14 +264,14 @@ export default function TambahKegiatanPage() {
                             type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/kegiatan")}
-                            className="w-full h-12 rounded-full border-[#FF8A4C] text-[#FF8A4C] font-semibold hover:bg-[#FF8A4C]/10 transition-colors"
+                            className="w-full h-12 rounded-full bg-white border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10 transition-colors"
                             disabled={isLoading}
                         >
                             Batal
                         </Button>
                         <Button
                             type="submit"
-                            className="w-full h-12 rounded-full bg-[#FF8A4C] hover:bg-[#ff7a38] text-white font-semibold transition-colors"
+                            className="w-full h-12 rounded-full bg-[#FF9357] hover:bg-[#ff7a38] text-white font-semibold transition-colors"
                             disabled={isLoading}
                         >
                             {isLoading ? "Menyimpan..." : "Simpan Kegiatan"}

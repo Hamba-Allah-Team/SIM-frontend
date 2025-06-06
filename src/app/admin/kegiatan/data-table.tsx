@@ -40,13 +40,14 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
     })
 
     return (
-        <div className="rounded-md border w-full overflow-x-auto">
+        // 2. Kontainer tabel diberi latar belakang putih dan border terang yang konsisten.
+        <div className="rounded-xl border border-slate-200/80 bg-white w-full overflow-x-auto shadow-sm">
             <Table className="min-w-full table-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id} className="border-b-slate-200/80">
                             {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
+                                <TableHead key={header.id} className="font-semibold text-slate-600">
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -58,20 +59,25 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
 
                 <TableBody>
                     {isLoading ? (
-                        [...Array(3)].map((_, rowIndex) => (
+                        [...Array(5)].map((_, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {columns.map((_, colIndex) => (
-                                    <TableCell key={colIndex}>
-                                        <Skeleton className="h-4 w-full" />
+                                    <TableCell key={colIndex} className="py-4">
+                                        <Skeleton className="h-5 w-full" />
                                     </TableCell>
                                 ))}
                             </TableRow>
                         ))
                     ) : table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id}>
+                            <TableRow
+                                key={row.id}
+                                // Efek hover baris dibuat abu-abu terang yang konsisten
+                                className="border-b-slate-200/50 hover:bg-slate-50/50"
+                            >
                                 {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
+                                    // 7. Warna teks cell dibuat hitam konsisten
+                                    <TableCell key={cell.id} className="py-2 text-slate-800">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
                                 ))}
@@ -79,22 +85,22 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
-                                Tidak ada data
+                            <TableCell colSpan={columns.length} className="h-24 text-center text-slate-500">
+                                Tidak ada data kegiatan.
                             </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
             {/* Pagination Controls */}
-            <div className="flex items-center justify-between px-4 py-4 border-t">
-                <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200/80">
+                <div className="flex items-center gap-2 text-sm text-slate-600">
                     <span>Tampilkan</span>
                     <Select
                         value={String(table.getState().pagination.pageSize)}
                         onValueChange={(value) => table.setPageSize(Number(value))}
                     >
-                        <SelectTrigger className="w-[80px] h-8">
+                        <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -117,7 +123,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                     >
                         Sebelumnya
                     </Button>
-                    <span className="text-sm">
+                    <span className="text-sm text-slate-600">
                         Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
                     </span>
                     <Button

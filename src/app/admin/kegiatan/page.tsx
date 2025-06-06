@@ -1,13 +1,13 @@
-// Halaman utama untuk mengelola daftar Kegiatan (Diperbarui)
+// Halaman utama untuk mengelola daftar Kegiatan (Diperbarui dengan warna base putih)
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ListPlus, RefreshCw } from "lucide-react";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { DataTable } from "@/app/admin/kegiatan/data-table";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner"; // 👈 Menggunakan sonner untuk toast
+import { toast } from "sonner";
 import { Activity } from "./types";
 import { getActivities } from "./utils";
 import axios from "axios";
@@ -15,12 +15,12 @@ import axios from "axios";
 export default function KegiatanPage() {
     const router = useRouter();
     const [data, setData] = useState<Activity[]>([]);
-    const [isLoadingData, setIsLoadingData] = useState(true); // Mengganti nama state
+    const [isLoadingData, setIsLoadingData] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const fetchData = useCallback(async () => {
-        if (!isRefreshing) setIsLoadingData(true); // Menggunakan setIsLoadingData
-        else setIsRefreshing(true); // Tetap set isRefreshing jika memang sedang refresh
+        if (!isRefreshing) setIsLoadingData(true);
+        else setIsRefreshing(true);
 
         try {
             const activities = await getActivities();
@@ -33,12 +33,12 @@ export default function KegiatanPage() {
             } else if (error instanceof Error) {
                 errorMessage = error.message;
             }
-            toast.error("Gagal Memuat Data", { description: errorMessage }); // 👈 Menggunakan sonner toast
+            toast.error("Gagal Memuat Data", { description: errorMessage });
         } finally {
-            setIsLoadingData(false); // Menggunakan setIsLoadingData
+            setIsLoadingData(false);
             setIsRefreshing(false);
         }
-    }, [isRefreshing]); // Hapus toast dari dependensi jika tidak dipakai langsung di sini
+    }, [isRefreshing]);
 
     useEffect(() => {
         fetchData();
@@ -49,37 +49,36 @@ export default function KegiatanPage() {
     };
 
     const handleRefresh = () => {
-        // setIsRefreshing(true); // Sudah dihandle di dalam fetchData
         fetchData();
     };
 
     const tableColumns = useMemo(() => columns(fetchData), [fetchData]);
 
     return (
-        <div className="p-4 md:p-6">
+        // 3. Menambahkan bg-white dan styling pada kontainer utama halaman
+        <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200/80">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <h1 className="text-2xl lg:text-3xl font-semibold text-gray-800">Kelola Kegiatan Masjid</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold text-[#1C143D]">Kelola Kegiatan Masjid</h1>
                 <div className="flex gap-2">
                     <Button
                         onClick={handleRefresh}
                         variant="outline"
-                        className="flex items-center gap-2"
-                        disabled={isLoadingData || isRefreshing} // Menggunakan isLoadingData
+                        // 3. Styling tombol Refresh dibuat eksplisit agar tidak berubah di mode gelap
+                        className="flex items-center gap-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                        disabled={isLoadingData || isRefreshing}
                     >
                         <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
                         Refresh
                     </Button>
                     <Button
                         onClick={handleAddActivity}
-                        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out disabled:opacity-70"
+                        className="flex items-center gap-2 bg-[#FF8A4C] hover:bg-[#ff7a38] text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out disabled:opacity-70"
                     >
                         <ListPlus size={18} />
                         Tambah Kegiatan
                     </Button>
                 </div>
             </div>
-
-            {/* Menggunakan prop 'isLoading' sesuai definisi DataTable Anda */}
             <DataTable columns={tableColumns} data={data} isLoading={isLoadingData || isRefreshing} />
         </div>
     );
