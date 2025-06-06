@@ -24,6 +24,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -40,7 +41,6 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
     })
 
     return (
-        // 2. Kontainer tabel diberi latar belakang putih dan border terang yang konsisten.
         <div className="rounded-xl border border-slate-200/80 bg-white w-full overflow-x-auto shadow-sm">
             <Table className="min-w-full table-auto">
                 <TableHeader>
@@ -72,11 +72,9 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                         table.getRowModel().rows.map((row) => (
                             <TableRow
                                 key={row.id}
-                                // Efek hover baris dibuat abu-abu terang yang konsisten
                                 className="border-b-slate-200/50 hover:bg-slate-50/50"
                             >
                                 {row.getVisibleCells().map((cell) => (
-                                    // 7. Warna teks cell dibuat hitam konsisten
                                     <TableCell key={cell.id} className="py-2 text-slate-800">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
@@ -103,7 +101,8 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                         <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        {/* 👈 Perbaikan di sini */}
+                        <SelectContent className="bg-white text-slate-800/80 border border-slate-200">
                             {[5, 10, 20, 50].map((pageSize) => (
                                 <SelectItem key={pageSize} value={String(pageSize)}>
                                     {pageSize}
@@ -114,25 +113,46 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                     <span>data per halaman</span>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-end space-x-1 flex-wrap gap-1">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
+                        aria-label="Previous page"
+                        className="h-8 w-8 p-0 bg-white border-slate-400 text-slate-700 hover:bg-slate-100"
                     >
-                        Sebelumnya
+                        <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm text-slate-600">
-                        Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
-                    </span>
+
+                    {Array.from({ length: table.getPageCount() }).map((_, i) => {
+                        const isActive = i === table.getState().pagination.pageIndex;
+                        return (
+                            <Button
+                                key={i}
+                                variant={isActive ? "outline" : "ghost"}
+                                size="sm"
+                                onClick={() => table.setPageIndex(i)}
+                                className={`h-8 w-8 p-0 ${isActive
+                                        ? "bg-slate-100 border-slate-400 font-semibold text-slate-900"
+                                        : "text-slate-600"
+                                    }`}
+                                aria-current={isActive ? "page" : undefined}
+                            >
+                                {i + 1}
+                            </Button>
+                        );
+                    })}
+
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
+                        aria-label="Next page"
+                        className="h-8 w-8 p-0 bg-white border-slate-400 text-slate-700 hover:bg-slate-100"
                     >
-                        Selanjutnya
+                        <ChevronRight className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
