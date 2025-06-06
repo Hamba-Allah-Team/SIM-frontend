@@ -63,7 +63,7 @@ export default function GuestLayout({ children }: { children: ReactNode }) {
   }, [mosque_id]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <nav
         style={{ backgroundColor: "var(--color-custom-blue)" }}
         className="text-white shadow-md"
@@ -71,7 +71,7 @@ export default function GuestLayout({ children }: { children: ReactNode }) {
         <Navbar />
       </nav>
 
-      <main className="w-full pt-0 pb-10">{children}</main>
+      <main className="flex-grow w-full pt-0 pb-10">{children}</main>
 
       {/* Footer, kasih props location */}
       <Footer
