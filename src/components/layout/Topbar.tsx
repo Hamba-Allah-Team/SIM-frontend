@@ -1,5 +1,12 @@
 "use client"
 
+import * as React from "react"
+import { Moon, Sun, Search, LogOut, ChevronDown } from "lucide-react"
+import { useTheme } from "next-themes"
+import { useUserProfile } from "@/hooks/useUserProfile"
+import { useRouter } from "next/navigation"
+
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
@@ -7,18 +14,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Search } from "lucide-react"
-import { useUserProfile } from "@/hooks/useUserProfile"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 export default function AdminTopbar() {
+  const { theme, setTheme } = useTheme()
   const { profile } = useUserProfile()
   const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-
-  console.log("Ini Data Profile:", profile)
+  const [searchTerm, setSearchTerm] = React.useState("")
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -29,7 +30,6 @@ export default function AdminTopbar() {
     const value = e.target.value
     setSearchTerm(value)
 
-    // Dispatch event global untuk pencarian
     const searchEvent = new CustomEvent("globalSearch", {
       detail: { searchTerm: value }
     })
@@ -37,33 +37,60 @@ export default function AdminTopbar() {
   }
 
   return (
-    <header className="w-full bg-white rounded-xl p-4 mb-4 shadow-sm flex items-center justify-between">
+    // 1. Mengubah latar belakang menjadi bg-white secara eksplisit
+    <header className="w-full bg-white rounded-xl p-4 mb-4 shadow-sm flex items-center justify-between gap-4 border border-slate-200/80">
       {/* Search Input */}
       <div className="relative w-full max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
         <Input
           type="text"
-          placeholder="Pencarian"
+          placeholder="Pencarian..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm text-gray-500 border-none focus:outline-none focus:ring-2 focus:ring-orange-200 placeholder:text-gray-500"
+          // 2. Memberi warna latar yang konsisten pada input
+          className="pl-10 pr-4 py-2 h-10 bg-slate-100 border-transparent rounded-full text-sm focus:ring-2 focus:ring-orange-400 focus:bg-white"
         />
       </div>
 
-      {/* User Greeting & Dropdown */}
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
-          <div className="text-sm text-right cursor-pointer">
-            <div className="text-gray-500">Halo</div>
-            <div className="font-semibold text-[#1B1B3A]">{profile?.name || "Pengguna"}</div>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 mt-2">
-          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-gray-500">
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* User Actions */}
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Tombol Ganti Tema */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          aria-label="Toggle theme"
+          // 3. Memberi warna teks yang konsisten pada tombol tema
+          className="h-9 w-9 text-slate-500 hover:text-slate-900"
+        >
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+
+        {/* User Greeting & Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-100">
+              <div className="text-sm text-right">
+                {/* 4. Memberi warna teks yang konsisten */}
+                <div className="text-slate-500 text-xs">Halo</div>
+                <div className="font-semibold text-slate-800">{profile?.name || "Pengguna"}</div>
+              </div>
+              <ChevronDown className="h-4 w-4 text-slate-500 transition-transform duration-200 group-data-[state=open]:-rotate-180" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            // 5. Mengubah latar dropdown menjadi putih dan memberi border
+            className="w-48 mt-2 bg-white border-slate-200/80 shadow-lg"
+          >
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10 flex items-center gap-2">
+              <LogOut size={14} />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   )
 }
