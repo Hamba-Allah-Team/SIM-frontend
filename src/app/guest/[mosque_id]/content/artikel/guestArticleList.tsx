@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ArticleItem {
-  id: string;
+  contents_id: string;
   title: string;
   content_description: string;
   image: string;
@@ -22,6 +23,8 @@ export default function GuestArticleList({ mosque_id, mosqueName }: GuestArticle
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const router = useRouter();
+  
   const itemsPerPage = 5;
   const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -49,8 +52,9 @@ export default function GuestArticleList({ mosque_id, mosqueName }: GuestArticle
 
       console.log("Data artikel setelah filter:", filtered);
 
-      const mapped = filtered.map((item: ArticleItem) => ({
+      const mapped = filtered.map((item: any) => ({
         ...item,
+        id: item.contents_id,
         image: item.image
           ? item.image.startsWith("http")
             ? item.image
@@ -108,12 +112,13 @@ export default function GuestArticleList({ mosque_id, mosqueName }: GuestArticle
             Artikel Terbaru
             </h2>
             <div className="space-y-6 mt-8">
-              {currentItems.map((item, index) => (
-                <div key={item.id ? `item-${item.id}` : `index-${index}`}
-                  className="bg-white rounded-xl shadow-md p-6 hover:bg-gray-50 cursor-pointer transition"
-                  onClick={() =>
-                    (window.location.href = `/guest/${mosque_id}/content/artikel/${item.id}`)
-                  }
+              {currentItems.map((item) => (
+                <div
+                    key={item.contents_id}
+                    className="bg-white rounded-xl shadow-md p-6 hover:bg-gray-50 cursor-pointer transition"
+                    onClick={() =>
+                    router.push(`/guest/${mosque_id}/content/berita/${item.contents_id}`)
+                    }
                 >
                   {item.image && (
                     <img
