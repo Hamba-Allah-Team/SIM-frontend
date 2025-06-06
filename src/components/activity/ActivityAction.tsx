@@ -11,8 +11,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
-    DialogFooter,
     DialogTrigger,
+    // DialogClose,
 } from "@/components/ui/dialog";
 import {
     AlertDialog,
@@ -25,15 +25,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { Activity } from "@/app/admin/kegiatan/types"; // Path disesuaikan
-import { deleteActivity, getFullImageUrl } from "@/app/admin/kegiatan/utils"; // Path disesuaikan
+import { Activity } from "@/app/admin/kegiatan/types";
+import { deleteActivity, getFullImageUrl } from "@/app/admin/kegiatan/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,7 +38,7 @@ import axios from "axios";
 const formatDateDetails = (dateString: string | null | undefined, includeTime = false) => {
     if (!dateString) return "-";
     try {
-        const formatString = includeTime ? "dd MMM yyyy, HH:mm" : "dd MMMM yyyy"; // Menggunakan yyyy untuk tahun
+        const formatString = includeTime ? "dd MMM yy, HH:mm" : "dd MMMM yy";
         return format(new Date(dateString), formatString, { locale: LocaleID });
     } catch (e) {
         console.error("Invalid date for formatDateDetails:", dateString, e);
@@ -97,134 +91,111 @@ export default function ActivityActions({ activity, onDeleted }: ActivityActions
     const fullImageUrl = getFullImageUrl(activity.image);
 
     return (
-        <TooltipProvider>
-            <div className="flex items-center justify-center gap-1">
-                {/* Tombol Detail dengan Dialog */}
-                <Dialog>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <DialogTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
-                                >
-                                    <Eye className="w-4 h-4" />
-                                    <span className="sr-only">Detail Kegiatan</span>
-                                </Button>
-                            </DialogTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Detail Kegiatan</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    <DialogContent className="sm:max-w-lg p-0">
-                        <DialogHeader className="p-6 pb-4">
-                            <DialogTitle className="text-xl">Detail Kegiatan</DialogTitle>
-                            <DialogDescription>Informasi lengkap mengenai kegiatan &quot;{activity.event_name}&quot;.</DialogDescription>
-                        </DialogHeader>
-                        <div className="max-h-[70vh] overflow-y-auto px-6 pb-6 space-y-4">
-                            {fullImageUrl && (
-                                <div className="mb-4 rounded-md overflow-hidden border aspect-video relative w-full">
-                                    <Image
-                                        src={fullImageUrl}
-                                        alt={activity.event_name || "Gambar Kegiatan"}
-                                        layout="fill"
-                                        objectFit="contain"
-                                        unoptimized
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = "https://placehold.co/400x225/E2E8F0/94A3B8?text=Gambar+Tidak+Tersedia";
-                                            (e.target as HTMLImageElement).alt = "Gambar tidak tersedia";
-                                        }}
-                                    />
-                                </div>
-                            )}
-                            <div>
-                                <Label htmlFor={`detailEventName-${activity.activities_id}`} className="text-sm font-medium text-gray-700">Nama Kegiatan</Label>
-                                <Input id={`detailEventName-${activity.activities_id}`} value={activity.event_name} readOnly disabled className="mt-1 bg-gray-50 cursor-default" />
+        <div className="flex items-center justify-center gap-2">
+            {/* Tombol Detail dengan Dialog */}
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1 text-slate-600 hover:bg-slate-100">
+                        <Eye className="w-4 h-4" />
+                        Detail
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-lg p-0 bg-white">
+                    <DialogHeader className="p-6 pb-4 border-b">
+                        <DialogTitle className="text-xl text-slate-900">Detail Kegiatan</DialogTitle>
+                        <DialogDescription className="text-slate-500">Informasi lengkap mengenai kegiatan &quot;{activity.event_name}&quot;.</DialogDescription>
+                    </DialogHeader>
+                    <div className="max-h-[70vh] overflow-y-auto px-6 py-4 space-y-4">
+                        {fullImageUrl && (
+                            <div className="mb-4 rounded-md overflow-hidden border aspect-video relative w-full">
+                                <Image
+                                    src={fullImageUrl}
+                                    alt={activity.event_name || "Gambar Kegiatan"}
+                                    layout="fill"
+                                    objectFit="contain"
+                                    unoptimized
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = "https://placehold.co/400x225/E2E8F0/94A3B8?text=Gambar+Tidak+Tersedia";
+                                        (e.target as HTMLImageElement).alt = "Gambar tidak tersedia";
+                                    }}
+                                />
                             </div>
-                            <div>
-                                <Label htmlFor={`detailDescription-${activity.activities_id}`} className="text-sm font-medium text-gray-700">Deskripsi</Label>
-                                <Textarea id={`detailDescription-${activity.activities_id}`} value={activity.event_description || "-"} readOnly disabled className="mt-1 bg-gray-50 cursor-default resize-none" rows={4} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div><Label className="text-sm font-medium">Tgl Mulai</Label><Input value={formatDateDetails(activity.start_date)} readOnly disabled className="mt-1 bg-gray-50" /></div>
-                                <div><Label className="text-sm font-medium">Jam Mulai</Label><Input value={formatTimeDetails(activity.start_time)} readOnly disabled className="mt-1 bg-gray-50" /></div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div><Label className="text-sm font-medium">Tgl Selesai</Label><Input value={formatDateDetails(activity.end_date)} readOnly disabled className="mt-1 bg-gray-50" /></div>
-                                <div><Label className="text-sm font-medium">Jam Selesai</Label><Input value={formatTimeDetails(activity.end_time)} readOnly disabled className="mt-1 bg-gray-50" /></div>
-                            </div>
-                            <div><Label className="text-sm font-medium">Dibuat</Label><Input value={formatDateDetails(activity.created_at, true)} readOnly disabled className="mt-1 bg-gray-50" /></div>
-                            <div><Label className="text-sm font-medium">Diperbarui</Label><Input value={formatDateDetails(activity.updated_at, true)} readOnly disabled className="mt-1 bg-gray-50" /></div>
+                        )}
+                        <div>
+                            <Label htmlFor={`detailEventName-${activity.activities_id}`} className="text-sm font-medium text-slate-600">Nama Kegiatan</Label>
+                            <Input id={`detailEventName-${activity.activities_id}`} value={activity.event_name} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <DialogFooter className="p-6 pt-0">
-                            {/* Tombol Tutup bisa menjadi DialogClose agar lebih semantik */}
-                            {/* <DialogClose asChild> */}
-                            <Button variant="outline">Tutup</Button>
-                            {/* </DialogClose> */}
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                        <div>
+                            <Label htmlFor={`detailDescription-${activity.activities_id}`} className="text-sm font-medium text-slate-600">Deskripsi</Label>
+                            <Textarea id={`detailDescription-${activity.activities_id}`} value={activity.event_description || "-"} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default resize-none" rows={4} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><Label className="text-sm font-medium text-slate-600">Tgl Mulai</Label><Input value={formatDateDetails(activity.start_date)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                            <div><Label className="text-sm font-medium text-slate-600">Jam Mulai</Label><Input value={formatTimeDetails(activity.start_time)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><Label className="text-sm font-medium text-slate-600">Tgl Selesai</Label><Input value={formatDateDetails(activity.end_date)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                            <div><Label className="text-sm font-medium text-slate-600">Jam Selesai</Label><Input value={formatTimeDetails(activity.end_time)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                        </div>
+                        <div><Label className="text-sm font-medium text-slate-600">Dibuat</Label><Input value={formatDateDetails(activity.created_at, true)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                        <div><Label className="text-sm font-medium text-slate-600">Diperbarui</Label><Input value={formatDateDetails(activity.updated_at, true)} readOnly disabled className="mt-1 bg-slate-100 text-slate-900" /></div>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
-                {/* Tombol Edit */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                            onClick={handleEdit}
-                        >
-                            <Edit className="w-4 h-4" />
-                            <span className="sr-only">Ubah Kegiatan</span>
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Ubah Kegiatan</p>
-                    </TooltipContent>
-                </Tooltip>
+            {/* Tombol Edit */}
+            <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                onClick={handleEdit}
+            >
+                <Edit className="w-4 h-4" />
+                Ubah
+            </Button>
 
-                {/* Tombol Hapus dengan AlertDialog */}
-                <AlertDialog>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                    <span className="sr-only">Hapus Kegiatan</span>
-                                </Button>
-                            </AlertDialogTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Hapus Kegiatan</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Tindakan ini tidak dapat dibatalkan. Ini akan menghapus kegiatan
-                                &quot;{activity.event_name}&quot; secara permanen.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-                            <AlertDialogAction
+            {/* Tombol Hapus */}
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                        Hapus
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-white">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-slate-900">Apakah Anda yakin?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-600">
+                            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus kegiatan
+                            &quot;{activity.event_name}&quot; secara permanen.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="sm:justify-end gap-2">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full sm:w-auto bg-white rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                                disabled={isDeleting}
+                            >
+                                Batal
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
                                 onClick={handleDeleteConfirm}
                                 disabled={isDeleting}
-                                className="bg-red-600 hover:bg-red-700"
+                                className="w-full sm:w-auto rounded-full bg-red-600 text-white hover:bg-red-700"
                             >
                                 {isDeleting ? "Menghapus..." : "Ya, Hapus"}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
-        </TooltipProvider>
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </div>
     );
 }
