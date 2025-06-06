@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { CalendarDays, Clock4, LayoutDashboard } from 'lucide-react';
+import { useParams, useRouter } from "next/navigation";
+import { CalendarDays, Clock4, LayoutDashboard, MoveLeft } from 'lucide-react';
 
 interface NewsDetail {
   id: string;
@@ -16,6 +16,7 @@ interface NewsDetail {
 export default function GuestNewsDetail() {
   const params = useParams();
   const { mosque_id, article_id } = params;
+  const router = useRouter();
 
   const [news, setNews] = useState<NewsDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -89,7 +90,19 @@ export default function GuestNewsDetail() {
   });
 
   return (
-    <div className="max-w-5xl pt-15 mx-auto p-6 space-y-12">
+    <>
+      {/* Tombol Kembali di luar kontainer utama */}
+      <div className="max-w-7xl mx-auto px-6 pt-10">
+        <button
+          className="flex items-center gap-2 text-base text-black hover:text-orange-600 font-medium mb-2"
+          onClick={() => router.push(`/guest/${mosque_id}/content/berita`)}
+        >
+          <MoveLeft size={22} />
+          <span>Kembali</span>
+        </button>
+      </div>
+
+    <div className="max-w-5xl pt-6 mx-auto p-6 space-y-12">
        {/* Gambar */}
       {news.image && (
         <img
@@ -134,5 +147,6 @@ export default function GuestNewsDetail() {
         dangerouslySetInnerHTML={{ __html: news.content_full }}
       />
     </div>
+    </>
   );
 }
