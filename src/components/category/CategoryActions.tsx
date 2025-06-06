@@ -129,7 +129,7 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                         <AlertDialogCancel asChild>
                             <Button
                                 variant="outline"
-                                className="w-full sm:w-auto rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                                className="w-full bg-white sm:w-auto rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
                                 disabled={loading}
                             >
                                 Batal
@@ -139,6 +139,7 @@ export default function CategoryActions({ category, onDeleted }: Props) {
                             <Button
                                 onClick={handleDelete}
                                 disabled={loading}
+                                variant="secondary"
                                 className="w-full sm:w-auto rounded-full bg-red-600 text-white hover:bg-red-700"
                             >
                                 {loading ? "Menghapus..." : "Ya, Hapus"}

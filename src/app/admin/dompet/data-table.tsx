@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                         ))
                     ) : table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow
+                            <TableRow 
                                 key={row.id}
                                 className="border-b-slate-200/50 hover:bg-slate-50/50"
                             >
@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                     )}
                 </TableBody>
             </Table>
-
+            
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200/80">
                 <div className="flex items-center gap-2 text-sm text-slate-600">
                     <span>Tampilkan</span>
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                         <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white">
+                        <SelectContent className="bg-white text-slate-800/80 border border-slate-200">
                             {[5, 10, 20, 50].map((pageSize) => (
                                 <SelectItem key={pageSize} value={String(pageSize)}>
                                     {pageSize}
@@ -128,7 +128,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-
+            
                     {Array.from({ length: table.getPageCount() }).map((_, i) => {
                         const isActive = i === table.getState().pagination.pageIndex;
                         return (
@@ -137,17 +137,18 @@ export function DataTable<TData, TValue>({ columns, data, isLoading = false }: D
                                 variant={isActive ? "outline" : "ghost"}
                                 size="sm"
                                 onClick={() => table.setPageIndex(i)}
-                                className={`h-8 w-8 p-0 ${isActive
-                                        ? "bg-slate-100 border-slate-400 font-semibold text-slate-900"
+                                className={`h-8 w-8 p-0 ${
+                                    isActive 
+                                        ? "bg-slate-100 border-slate-400 font-semibold text-slate-900" 
                                         : "text-slate-600"
-                                    }`}
+                                }`}
                                 aria-current={isActive ? "page" : undefined}
                             >
                                 {i + 1}
                             </Button>
                         );
                     })}
-
+            
                     <Button
                         variant="outline"
                         size="sm"

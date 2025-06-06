@@ -153,8 +153,8 @@ export default function EditCategoryPage() {
                                 <SelectValue placeholder="Pilih jenis kategori" />
                             </SelectTrigger>
                             <SelectContent className="bg-white">
-                                <SelectItem value="income">Pemasukan</SelectItem>
-                                <SelectItem value="expense">Pengeluaran</SelectItem>
+                                <SelectItem value="income" className="text-slate-800/80">Pemasukan</SelectItem>
+                                <SelectItem value="expense" className="text-slate-800/80">Pengeluaran</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -178,7 +178,7 @@ export default function EditCategoryPage() {
                             type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/kategori")}
-                            className="w-full h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                            className="w-full bg-white h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
                             disabled={isLoading}
                         >
                             Batal
