@@ -24,7 +24,7 @@ export default function GuestArticleList({ mosque_id, mosqueName }: GuestArticle
   const [currentPage, setCurrentPage] = useState(1);
 
   const router = useRouter();
-  
+
   const itemsPerPage = 5;
   const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -117,7 +117,7 @@ export default function GuestArticleList({ mosque_id, mosqueName }: GuestArticle
                     key={item.contents_id}
                     className="bg-white rounded-xl shadow-md p-6 hover:bg-gray-50 cursor-pointer transition"
                     onClick={() =>
-                    router.push(`/guest/${mosque_id}/content/berita/${item.contents_id}`)
+                    router.push(`/guest/${mosque_id}/content/artikel/${item.contents_id}`)
                     }
                 >
                   {item.image && (
