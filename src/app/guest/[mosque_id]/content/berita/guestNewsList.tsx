@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface NewsItem {
-  id: string;
+  contents_id: string;
   title: string;
   content_description: string;
   image: string;
@@ -22,6 +23,8 @@ export default function GuestNewsList({ mosque_id, mosqueName }: GuestNewsListPr
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const router = useRouter();
+
   const itemsPerPage = 5;
   const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -38,8 +41,6 @@ export default function GuestNewsList({ mosque_id, mosqueName }: GuestNewsListPr
 
       const data = await res.json();
 
-      console.log("Data dari API:", data.data);
-
       if (!Array.isArray(data.data)) {
         throw new Error("Data yang diterima bukan array");
       }
@@ -49,8 +50,9 @@ export default function GuestNewsList({ mosque_id, mosqueName }: GuestNewsListPr
 
       console.log("Data berita setelah filter:", filtered);
 
-      const mapped = filtered.map((item: NewsItem) => ({
+      const mapped = filtered.map((item: any) => ({
         ...item,
+        id: item.contents_id,
         image: item.image
           ? item.image.startsWith("http")
             ? item.image
@@ -108,36 +110,37 @@ export default function GuestNewsList({ mosque_id, mosqueName }: GuestNewsListPr
             Berita Terbaru
             </h2>
             <div className="space-y-6 mt-8">
-              {currentItems.map((item, index) => (
-                <div key={item.id ? `item-${item.id}` : `index-${index}`}
-                  className="bg-white rounded-xl shadow-md p-6 hover:bg-gray-50 cursor-pointer transition"
-                  onClick={() =>
-                    (window.location.href = `/guest/${mosque_id}/content/berita/${item.id}`)
-                  }
+              {currentItems.map((item) => (
+                <div
+                    key={item.contents_id}
+                    className="bg-white rounded-xl shadow-md p-6 hover:bg-gray-50 cursor-pointer transition"
+                    onClick={() =>
+                    router.push(`/guest/${mosque_id}/content/berita/${item.contents_id}`)
+                    }
                 >
-                  {item.image && (
+                    {item.image && (
                     <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-48 object-cover rounded-md mb-3"
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-48 object-cover rounded-md mb-3"
                     />
-                  )}
-                  <p className="text-sm mb-1" style={{ color: "var(--color-custom-orange)" }}>
+                    )}
+                    <p className="text-sm mb-1" style={{ color: "var(--color-custom-orange)" }}>
                     {new Date(item.published_date).toLocaleDateString("id-ID", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric",
                     })}
-                  </p>
-                  <h2 className="text-2xl font-bold text-black mb-1">{item.title}</h2>
-                  <p className="text-sm text-gray-700 line-clamp-3 mb-2">
+                    </p>
+                    <h2 className="text-2xl font-bold text-black mb-1">{item.title}</h2>
+                    <p className="text-sm text-gray-700 line-clamp-3 mb-2">
                     {item.content_description}
-                  </p>
-                  <span className="text-sm" style={{ color: "var(--color-custom-orange)" }}>
+                    </p>
+                    <span className="text-sm" style={{ color: "var(--color-custom-orange)" }}>
                     Baca selengkapnya →
-                  </span>
+                    </span>
                 </div>
-              ))}
+                ))}
             </div>
 
             {/* Pagination */}
