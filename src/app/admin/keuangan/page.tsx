@@ -1,69 +1,87 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ListPlus, ScrollText } from "lucide-react";
+import { ListPlus, ScrollText, RefreshCw } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { fetchTransactionsWithWallets } from "./utils";
 import { Keuangan } from "./types";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { ExportReportModal } from "@/app/admin/keuangan/modal/ExportModalReport"; // path disesuaikan
+import { ExportReportModal } from "./modal/ExportModalReport";
+import { toast } from "sonner";
+import axios from "axios";
 
 export default function KeuanganPage() {
     const router = useRouter();
     const [transactions, setTransactions] = useState<Keuangan[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [openExportModal, setOpenExportModal] = useState(false);
-
     const { profile, loading: profileLoading, error } = useUserProfile();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!profile || profileLoading) return;
+    const fetchData = useCallback(async () => {
+        if (!profile || profileLoading) return;
+        if (!isRefreshing) setIsLoading(true);
+        else setIsRefreshing(true);
 
-            setIsLoading(true);
-            try {
-                const mosqueId = profile.mosque_id;
-                const mapped = await fetchTransactionsWithWallets(mosqueId);
-                setTransactions(mapped);
-            } catch (error) {
-                console.error("Gagal mengambil transaksi:", error);
-            } finally {
-                setIsLoading(false);
+        try {
+            const mosqueId = profile.mosque_id;
+            const mapped = await fetchTransactionsWithWallets(mosqueId);
+            setTransactions(mapped);
+        } catch (error: unknown) {
+            console.error("Gagal mengambil transaksi:", error);
+            let errorMessage = "Gagal mengambil data transaksi.";
+            if (axios.isAxiosError(error)) {
+                errorMessage = error.response?.data?.message || error.message;
             }
-        };
+            toast.error("Gagal Memuat Data", { description: errorMessage });
+        } finally {
+            setIsLoading(false);
+            setIsRefreshing(false);
+        }
+    }, [profile, profileLoading, isRefreshing]);
 
+    const handleDeleted = useCallback(() => {
         fetchData();
-    }, [profile, profileLoading]);
+    }, [fetchData]);
+
+    useEffect(() => {
+        if (profile) { // Hanya fetch jika profile sudah ada
+            fetchData();
+        }
+    }, [profile, fetchData]);
 
     const handleAddKeuangan = () => {
         router.push("/admin/keuangan/tambah");
     };
 
-    const handleDeleted = () => {
-        // Refresh data setelah hapus
-        if (profile) {
-            fetchTransactionsWithWallets(profile.mosque_id)
-                .then(setTransactions)
-                .catch((err) => console.error("Gagal refresh setelah hapus:", err));
-        }
-    };
+    // 👈 Pemanggilan useMemo dipindahkan ke atas
+    const tableColumns = useMemo(() => columns(handleDeleted), [handleDeleted]);
 
     if (error) {
         return <div className="p-4 text-red-500"><p>{error}</p></div>;
     }
 
     return (
-        <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-semibold">Data Keuangan</h1>
+        <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200/80">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h1 className="text-2xl lg:text-3xl font-bold text-[#1C143D]">Data Keuangan</h1>
                 <div className="flex gap-2">
-
+                    <Button
+                        onClick={() => setIsRefreshing(true)}
+                        variant="outline"
+                        className="flex items-center gap-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                        disabled={isLoading || isRefreshing}
+                    >
+                        <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
+                        Refresh
+                    </Button>
                     <Button
                         onClick={() => setOpenExportModal(true)}
-                        className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition"
+                        variant="outline"
+                        className="flex items-center gap-2 border-blue-500 text-blue-600 hover:bg-blue-50"
                     >
                         <ScrollText size={16} />
                         Cetak Laporan
@@ -71,14 +89,14 @@ export default function KeuanganPage() {
 
                     <Button
                         onClick={handleAddKeuangan}
-                        className="flex items-center gap-2 bg-[#FF9357]/20 text-[#FF9357] px-4 py-2 rounded-md hover:bg-[#FF9357]/30 transition"
+                        className="flex items-center gap-2 bg-[#FF8A4C] hover:bg-[#ff7a38] text-white px-4 py-2 rounded-lg shadow-md"
                     >
                         <ListPlus size={16} />
                         Tambah
                     </Button>
                 </div>
             </div>
-            <DataTable columns={columns(handleDeleted)} data={transactions} isLoading={isLoading} />
+            <DataTable columns={tableColumns} data={transactions} isLoading={isLoading || profileLoading} />
             <ExportReportModal open={openExportModal} onClose={() => setOpenExportModal(false)} />
         </div>
     );
