@@ -9,7 +9,7 @@ export const columns = (
         {
             accessorKey: "name",
             header: () => <div className="min-w-[150px]">Nama Kategori</div>,
-            cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue("name")}</div>,
+            cell: ({ row }) => <div className="whitespace-nowrap font-medium">{row.getValue("name")}</div>,
         },
         {
             accessorKey: "type",
@@ -22,13 +22,11 @@ export const columns = (
         },
         {
             id: "actions",
-            header: () => <div className="min-w-[180px] text-center">Aksi</div>,
+            header: () => <div className="text-center min-w-[180px]">Aksi</div>,
             cell: ({ row }) => (
                 <div className="flex justify-center">
                     <CategoryActions category={row.original} onDeleted={onDeleted} />
                 </div>
             ),
         },
-
     ];
-

@@ -7,9 +7,9 @@ import { Eye, Pencil, Trash } from "lucide-react";
 import api from "@/lib/api";
 import { Keuangan } from "@/app/admin/keuangan/types";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+// import { Input } from "@/components/ui/input";
+// import { Textarea } from "@/components/ui/textarea";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -19,8 +19,10 @@ import {
     AlertDialogFooter,
     AlertDialogCancel,
     AlertDialogAction,
+    AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+// import { Label } from "@/components/ui/label";
+import axios from "axios";
 
 interface Props {
     transaction: Keuangan;
@@ -29,132 +31,114 @@ interface Props {
 
 export default function TransactionActions({ transaction, onDeleted }: Props) {
     const router = useRouter();
-    const [showDetail, setShowDetail] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleDelete = async () => {
+        setLoading(true);
         try {
             await api.delete(`/api/finance/transactions/${transaction.id}`);
             toast.success("Transaksi berhasil dihapus.");
             onDeleted?.();
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Gagal menghapus transaksi:", error);
-            toast.error("Gagal menghapus transaksi.");
+            let errorMessage = "Gagal menghapus transaksi.";
+            if (axios.isAxiosError(error) && error.response) {
+                errorMessage = error.response.data.message || errorMessage;
+            }
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <TooltipProvider>
-            <div className="flex items-center gap-2">
-                {/* Detail */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center"
-                            onClick={() => setShowDetail(true)}
-                        >
-                            <Eye className="w-4 h-4" />
-                            Detail
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Detail</TooltipContent>
-                </Tooltip>
-
-                {/* Edit */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 text-blue-600 hover:bg-blue-100"
-                            onClick={() => router.push(`/admin/keuangan/edit/${transaction.id}`)}
-                        >
-                            <Pencil className="w-4 h-4" />
-                            Edit
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Edit</TooltipContent>
-                </Tooltip>
-
-                {/* Delete */}
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="ghost"
-                                    size="sm"
-                                    className="flex items-center gap-1 text-red-600 hover:bg-red-100">
-                                    <Trash className="w-4 h-4" />
-                                    Hapus
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Hapus Transaksi?</AlertDialogTitle>
-                                </AlertDialogHeader>
-                                <p>
-                                    Apakah Anda yakin ingin menghapus transaksi dengan nominal{" "}
-                                    <strong>Rp {transaction.amount.toLocaleString("id-ID")}</strong>?
-                                </p>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleDelete();
-                                        }}
-                                    >
-                                        Hapus
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </TooltipTrigger>
-                    <TooltipContent>Hapus</TooltipContent>
-                </Tooltip>
-            </div>
-
-            {/* Modal Detail */}
-            <Dialog open={showDetail} onOpenChange={setShowDetail}>
-                <DialogContent className="sm:max-w-xl p-6">
+        <div className="flex items-center justify-center gap-2">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1 text-slate-600 hover:bg-slate-100">
+                        <Eye className="w-4 h-4" />
+                        Detail
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-white">
                     <DialogHeader>
-                        <DialogTitle>Detail Transaksi</DialogTitle>
+                        <DialogTitle className="text-slate-900">Detail Transaksi</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="text-sm font-medium">Dompet</label>
-                            <Input value={transaction.dompet ?? "-"} readOnly disabled />
+                    <div className="space-y-4 py-4 text-slate-800">
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="text-sm text-slate-500">Tanggal</span>
+                            <span className="font-medium">{transaction.tanggal}</span>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium">Nominal</label>
-                            <Input value={`Rp ${transaction.amount.toLocaleString("id-ID")}`} readOnly disabled />
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="text-sm text-slate-500">Jenis</span>
+                            <span className={`font-medium ${transaction.jenis === 'Pemasukan' ? 'text-green-600' : 'text-red-600'}`}>{transaction.jenis}</span>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium">Jenis Transaksi</label>
-                            <Input value={transaction.jenis ?? "-"} readOnly disabled />
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="text-sm text-slate-500">Jumlah</span>
+                            <span className={`font-medium ${transaction.jenis === 'Pemasukan' ? 'text-green-600' : 'text-red-600'}`}>Rp {transaction.amount.toLocaleString("id-ID")}</span>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium">Kategori</label>
-                            <Input value={transaction.kategori ?? "-"} readOnly disabled />
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="text-sm text-slate-500">Kategori</span>
+                            <span className="font-medium">{transaction.kategori}</span>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium">Deskripsi</label>
-                            <Textarea
-                                value={transaction.source_or_usage ?? "-"}
-                                readOnly
-                                disabled
-                                className="resize-none"
-                                rows={3}
-                            />
+                        <div className="flex justify-between border-b pb-2">
+                            <span className="text-sm text-slate-500">Dompet</span>
+                            <span className="font-medium">{transaction.dompet}</span>
                         </div>
-                        <div>
-                            <label className="text-sm font-medium">Tanggal</label>
-                            <Input value={transaction.tanggal} readOnly disabled />
+                        <div className="flex flex-col space-y-1">
+                            <span className="text-sm text-slate-500">Keterangan</span>
+                            <p className="font-medium p-2 bg-slate-50 rounded-md">{transaction.source_or_usage || '-'}</p>
                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
-        </TooltipProvider>
+
+            <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                onClick={() => router.push(`/admin/keuangan/edit/${transaction.id}`)}
+            >
+                <Pencil className="w-4 h-4" />
+                Edit
+            </Button>
+
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700">
+                        <Trash className="w-4 h-4" />
+                        Hapus
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-white">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-slate-900">Hapus Transaksi?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-600">
+                            Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="sm:justify-end gap-2">
+                        <AlertDialogCancel asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full sm:w-auto rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                                disabled={loading}
+                            >
+                                Batal
+                            </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                onClick={handleDelete}
+                                disabled={loading}
+                                className="w-full sm:w-auto rounded-full bg-red-600 text-white hover:bg-red-700"
+                            >
+                                {loading ? "Menghapus..." : "Ya, Hapus"}
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </div>
     );
 }

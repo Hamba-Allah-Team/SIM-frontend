@@ -25,6 +25,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Keuangan } from "./types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 
 interface DataTableProps {
     columns: ColumnDef<Keuangan, unknown>[];
@@ -38,19 +40,23 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        manualPagination: false,
+        initialState: {
+            pagination: {
+                pageSize: 5,
+            },
+        },
     });
 
     return (
-        <div className="rounded-md border">
+        <div className="rounded-xl border border-slate-200/80 bg-white w-full overflow-x-auto shadow-sm">
             <Table className="w-full table-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id} className="border-b-slate-200/80 hover:bg-white">
                             {headerGroup.headers.map((header) => (
                                 <TableHead
                                     key={header.id}
-                                    className={header.column.columnDef.meta?.className}
+                                    className={`${header.column.columnDef.meta?.className} font-semibold text-slate-600`}
                                 >
                                     {header.isPlaceholder
                                         ? null
@@ -63,22 +69,22 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
 
                 <TableBody>
                     {isLoading ? (
-                        [...Array(3)].map((_, rowIndex) => (
+                        [...Array(table.getState().pagination.pageSize)].map((_, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 {columns.map((_, colIndex) => (
-                                    <TableCell key={colIndex}>
-                                        <Skeleton className="h-4 w-full" />
+                                    <TableCell key={colIndex} className="py-4">
+                                        <Skeleton className="h-5 w-full" />
                                     </TableCell>
                                 ))}
                             </TableRow>
                         ))
                     ) : table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id}>
+                            <TableRow key={row.id} className="border-b-slate-200/50 hover:bg-slate-50/50">
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell
                                         key={cell.id}
-                                        className={cell.column.columnDef.meta?.className}
+                                        className={`${cell.column.columnDef.meta?.className} py-2 text-slate-800`}
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
@@ -87,26 +93,24 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
+                            <TableCell colSpan={columns.length} className="h-24 text-center text-slate-500">
                                 Tidak ada data
                             </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
-
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between px-4 py-4 border-t">
-                <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200/80">
+                <div className="flex items-center gap-2 text-sm text-slate-600">
                     <span>Tampilkan</span>
                     <Select
                         value={String(table.getState().pagination.pageSize)}
                         onValueChange={(value) => table.setPageSize(Number(value))}
                     >
-                        <SelectTrigger className="w-[80px] h-8">
+                        <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white">
                             {[5, 10, 20, 50].map((pageSize) => (
                                 <SelectItem key={pageSize} value={String(pageSize)}>
                                     {pageSize}
@@ -114,28 +118,49 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
                             ))}
                         </SelectContent>
                     </Select>
-                    <span>data per halaman</span>
+                    <span>baris</span>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-end space-x-1 flex-wrap gap-1">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
+                        aria-label="Previous page"
+                        className="h-8 w-8 p-0 bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
                     >
-                        Sebelumnya
+                        <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm">
-                        Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
-                    </span>
+
+                    {Array.from({ length: table.getPageCount() }).map((_, i) => {
+                        const isActive = i === table.getState().pagination.pageIndex;
+                        return (
+                            <Button
+                                key={i}
+                                variant={isActive ? "outline" : "ghost"}
+                                size="sm"
+                                onClick={() => table.setPageIndex(i)}
+                                className={`h-8 w-8 p-0 ${isActive
+                                        ? "bg-slate-100 border-slate-400 font-semibold text-slate-900"
+                                        : "text-slate-600"
+                                    }`}
+                                aria-current={isActive ? "page" : undefined}
+                            >
+                                {i + 1}
+                            </Button>
+                        );
+                    })}
+
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
+                        aria-label="Next page"
+                        className="h-8 w-8 p-0 bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
                     >
-                        Selanjutnya
+                        <ChevronRight className="h-4 w-4" />
                     </Button>
                 </div>
             </div>

@@ -15,6 +15,10 @@ import {
 import { useUserProfile } from "@/hooks/useUserProfile"
 import { mapTransactionTypeToBackend } from "../utils"
 import { AxiosError } from "axios"
+import { toast } from "sonner"
+import { ArrowLeft } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 interface WalletOption {
     wallet_id: number
@@ -37,7 +41,8 @@ export default function CreateTransactionPage() {
     const [transactionType, setTransactionType] = useState<"Pemasukan" | "Pengeluaran" | "">("")
     const [selectedCategoryId, setSelectedCategoryId] = useState("")
     const [description, setDescription] = useState("")
-    const [transactionDate, setTransactionDate] = useState("")
+    const [transactionDate, setTransactionDate] = useState<string>(new Date().toISOString().split("T")[0])
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter()
     const { profile } = useUserProfile()
@@ -70,142 +75,160 @@ export default function CreateTransactionPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setIsLoading(true);
 
-        if (!transactionType || !selectedCategoryId) {
-            alert("Jenis transaksi dan kategori harus dipilih")
+        if (!walletId || !amount || !transactionType || !selectedCategoryId || !transactionDate) {
+            toast.error("Semua field wajib diisi kecuali deskripsi.")
+            setIsLoading(false);
             return
         }
 
         try {
-            const response = await api.post("/api/finance/transactions", {
+            await api.post("/api/finance/transactions", {
                 wallet_id: Number(walletId),
-                amount,
+                amount: parseFloat(amount),
                 transaction_type: mapTransactionTypeToBackend(transactionType),
                 category_id: Number(selectedCategoryId),
-                source_or_usage: description,
+                source_or_usage: description.trim(),
                 transaction_date: transactionDate,
             })
-
-            console.log("Transaksi berhasil ditambahkan:", response.data)
-            router.push("/admin/keuangan")
+            toast.success("Transaksi berhasil ditambahkan.");
+            router.push("/admin/keuangan");
+            router.refresh();
         } catch (err) {
-            const error = err as AxiosError<{ message: string }>
-            alert(error.response?.data?.message || "Gagal menambahkan transaksi")
+            const error = err as AxiosError<{ message: string }>;
+            const message = error.response?.data?.message || "Gagal menambahkan transaksi";
+            toast.error("Gagal Menambah Transaksi", { description: message });
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
-        <div className="w-full px-4 py-6">
-            <div className="w-full mx-auto">
-                <h1 className="text-2xl font-bold text-[#1C143D] mb-6">Tambah Transaksi Keuangan</h1>
+        <div className="w-full">
+            <Button
+                variant="ghost"
+                onClick={() => router.back()}
+                className="mb-6 group text-slate-600 hover:text-slate-900 px-0"
+            >
+                <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
+                Kembali ke Daftar Transaksi
+            </Button>
+            <div className="w-full bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200/80">
+                <h1 className="text-2xl lg:text-3xl font-bold text-[#1C143D] mb-2">Tambah Transaksi Keuangan</h1>
+                <p className="text-gray-500 mb-6">Catat pemasukan atau pengeluaran baru.</p>
+
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
-                    {/* Dompet */}
-                    <div>
-                        <label className="block text-sm font-semibold text-[#1C143D] mb-1">Pilih Dompet</label>
-                        <Select onValueChange={setWalletId}>
-                            <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
-                                <SelectValue placeholder="Pilih dompet" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {wallets.map((wallet) => (
-                                    <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
-                                        {wallet.wallet_name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    {/* Jenis Transaksi */}
-                    <div>
-                        <label className="block text-sm font-semibold text-[#1C143D] mb-1">Jenis Keuangan</label>
-                        <Select onValueChange={(val) => {
-                            setTransactionType(val as "Pemasukan" | "Pengeluaran")
-                            setSelectedCategoryId("") // reset kategori saat ganti jenis transaksi
-                        }}>
-                            <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
-                                <SelectValue placeholder="Pilih jenis transaksi" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Pemasukan">Pemasukan</SelectItem>
-                                <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    {/* Kategori Transaksi */}
-                    {transactionType && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label className="block text-sm font-semibold text-[#1C143D] mb-1">Kategori Transaksi</label>
-                            <Select onValueChange={setSelectedCategoryId}>
-                                <SelectTrigger className="w-full rounded-lg border border-gray-300 bg-white h-12 px-4 text-sm">
-                                    <SelectValue placeholder="Pilih kategori" />
+                            <Label htmlFor="transactionType" className="block text-sm font-semibold text-[#1C143D] mb-1">Jenis Transaksi <span className="text-red-500">*</span></Label>
+                            <Select onValueChange={(val) => {
+                                setTransactionType(val as "Pemasukan" | "Pengeluaran")
+                                setSelectedCategoryId("")
+                            }} value={transactionType}>
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                    <SelectValue placeholder="Pilih jenis transaksi" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    {filteredCategories.map((cat) => (
-                                        <SelectItem key={cat.category_id} value={cat.category_id.toString()}>
-                                            {cat.category_name}
+                                <SelectContent className="bg-white">
+                                    <SelectItem value="Pemasukan">Pemasukan</SelectItem>
+                                    <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        {transactionType && (
+                            <div>
+                                <Label htmlFor="category" className="block text-sm font-semibold text-[#1C143D] mb-1">Kategori Transaksi <span className="text-red-500">*</span></Label>
+                                <Select onValueChange={setSelectedCategoryId} value={selectedCategoryId}>
+                                    <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                        <SelectValue placeholder="Pilih kategori" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                        {filteredCategories.map((cat) => (
+                                            <SelectItem key={cat.category_id} value={cat.category_id.toString()}>
+                                                {cat.category_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <Label htmlFor="wallet" className="block text-sm font-semibold text-[#1C143D] mb-1">Pilih Dompet <span className="text-red-500">*</span></Label>
+                            <Select onValueChange={setWalletId} value={walletId}>
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                    <SelectValue placeholder="Pilih dompet" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white">
+                                    {wallets.map((wallet) => (
+                                        <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
+                                            {wallet.wallet_name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                    )}
-
-                    {/* Nominal */}
-                    <div>
-                        <label className="block text-sm font-semibold text-[#1C143D] mb-1">Nominal</label>
-                        <Input
-                            type="number"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            placeholder="Masukkan nominal transaksi"
-                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
-                        />
+                        <div>
+                            <Label htmlFor="amount" className="block text-sm font-semibold text-[#1C143D] mb-1">Nominal <span className="text-red-500">*</span></Label>
+                            <Input
+                                id="amount"
+                                type="number"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                placeholder="Masukkan nominal transaksi"
+                                className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
+                                required
+                            />
+                        </div>
                     </div>
 
-                    {/* Deskripsi */}
                     <div>
-                        <label className="block text-sm font-semibold text-[#1C143D] mb-1">Deskripsi / Kegunaan</label>
-                        <Input
-                            type="text"
+                        <Label htmlFor="description" className="block text-sm font-semibold text-[#1C143D] mb-1">Deskripsi / Keterangan</Label>
+                        <Textarea
+                            id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Contoh: Donasi Jumat atau Pembelian Alat"
-                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
+                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-3 placeholder:text-sm placeholder:text-gray-400"
+                            rows={3}
                         />
                     </div>
 
-                    {/* Tanggal Transaksi */}
                     <div>
-                        <label className="block text-sm font-semibold text-[#1C143D] mb-1">Tanggal Transaksi</label>
+                        <Label htmlFor="transactionDate" className="block text-sm font-semibold text-[#1C143D] mb-1">Tanggal Transaksi <span className="text-red-500">*</span></Label>
                         <Input
+                            id="transactionDate"
                             type="date"
                             value={transactionDate}
                             onChange={(e) => setTransactionDate(e.target.value)}
                             className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm"
+                            required
+                            style={{ colorScheme: 'light' }}
                         />
                     </div>
 
-                    {/* Tombol */}
-                    <div className="grid grid-cols-2 gap-4 pt-2">
+                    <div className="grid grid-cols-2 gap-4 pt-4">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/keuangan")}
-                            className="w-full h-12 rounded-full border-[#FF8A4C] text-[#FF8A4C] font-semibold hover:bg-[#FF8A4C]/10"
+                            className="w-full h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                            disabled={isLoading}
                         >
                             Batal
                         </Button>
                         <Button
                             type="submit"
                             className="w-full h-12 rounded-full bg-[#FF8A4C] hover:bg-[#ff7a38] text-white font-semibold"
+                            disabled={isLoading}
                         >
-                            Simpan
+                            {isLoading ? "Menyimpan..." : "Simpan"}
                         </Button>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }
