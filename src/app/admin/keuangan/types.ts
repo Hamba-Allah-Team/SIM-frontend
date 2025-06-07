@@ -1,7 +1,7 @@
 export type Keuangan = {
     id: number;
     tanggal: string;
-    jenis: "Pemasukan" | "Pengeluaran";
+    jenis: "Pemasukan" | "Pengeluaran" | "Transfer Masuk" | "Transfer Keluar";
     dompet: string; // ✅ ditambah
     amount: number;
     source_or_usage: string;
