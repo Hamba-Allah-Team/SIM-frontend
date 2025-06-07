@@ -89,10 +89,10 @@ export function ExportReportModal({ open, onClose }: ExportReportModalProps) {
                     <div>
                         <Label className="block mb-1 text-sm font-semibold text-[#1C143D]">Periode</Label>
                         <Select value={period} onValueChange={handlePeriodChange}>
-                            <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA]">
+                            <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA] placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                 <SelectValue placeholder="Pilih Periode" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                 <SelectItem value="monthly">Bulanan</SelectItem>
                                 <SelectItem value="yearly">Tahunan</SelectItem>
                             </SelectContent>
@@ -102,10 +102,10 @@ export function ExportReportModal({ open, onClose }: ExportReportModalProps) {
                     <div>
                         <Label className="block mb-1 text-sm font-semibold text-[#1C143D]">Tahun</Label>
                         <Select value={year} onValueChange={setYear}>
-                            <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA]">
+                            <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA] placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                 <SelectValue placeholder="Pilih Tahun" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                 {years.map((y) => (
                                     <SelectItem key={y} value={y}>{y}</SelectItem>
                                 ))}
@@ -117,10 +117,10 @@ export function ExportReportModal({ open, onClose }: ExportReportModalProps) {
                         <div>
                             <Label className="block mb-1 text-sm font-semibold text-[#1C143D]">Bulan</Label>
                             <Select value={month} onValueChange={setMonth}>
-                                <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA]">
+                                <SelectTrigger className="w-full h-12 rounded-lg bg-[#F7F8FA] placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                     <SelectValue placeholder="Pilih Bulan" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white placeholder:text-slate-600/80 text-slate-800 border border-slate-300">
                                     {months.map((m) => (
                                         <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                     ))}

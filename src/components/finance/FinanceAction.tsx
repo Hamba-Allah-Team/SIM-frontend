@@ -8,8 +8,8 @@ import api from "@/lib/api";
 import { Keuangan } from "@/app/admin/keuangan/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -21,7 +21,7 @@ import {
     AlertDialogAction,
     AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-// import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label";
 import axios from "axios";
 
 interface Props {
@@ -60,34 +60,41 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
                         Detail
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md bg-white">
-                    <DialogHeader>
-                        <DialogTitle className="text-slate-900">Detail Transaksi</DialogTitle>
+                <DialogContent className="sm:max-w-md bg-white p-0">
+                    <DialogHeader className="p-6 pb-4 border-b">
+                        <DialogTitle className="text-xl text-slate-900">Detail Transaksi</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 py-4 text-slate-800">
-                        <div className="flex justify-between border-b pb-2">
-                            <span className="text-sm text-slate-500">Tanggal</span>
-                            <span className="font-medium">{transaction.tanggal}</span>
+                    <div className="p-6 space-y-4">
+                        <div>
+                            <Label htmlFor={`detail-tanggal-${transaction.id}`} className="text-sm font-medium text-slate-600">Tanggal</Label>
+                            <Input id={`detail-tanggal-${transaction.id}`} value={transaction.tanggal} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <div className="flex justify-between border-b pb-2">
-                            <span className="text-sm text-slate-500">Jenis</span>
-                            <span className={`font-medium ${transaction.jenis === 'Pemasukan' ? 'text-green-600' : 'text-red-600'}`}>{transaction.jenis}</span>
+                        <div>
+                            <Label htmlFor={`detail-jenis-${transaction.id}`} className="text-sm font-medium text-slate-600">Jenis</Label>
+                            <Input id={`detail-jenis-${transaction.id}`} value={transaction.jenis} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <div className="flex justify-between border-b pb-2">
-                            <span className="text-sm text-slate-500">Jumlah</span>
-                            <span className={`font-medium ${transaction.jenis === 'Pemasukan' ? 'text-green-600' : 'text-red-600'}`}>Rp {transaction.amount.toLocaleString("id-ID")}</span>
+                        <div>
+                            <Label htmlFor={`detail-jumlah-${transaction.id}`} className="text-sm font-medium text-slate-600">Jumlah</Label>
+                            <Input id={`detail-jumlah-${transaction.id}`} value={`Rp ${transaction.amount.toLocaleString("id-ID")}`} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <div className="flex justify-between border-b pb-2">
-                            <span className="text-sm text-slate-500">Kategori</span>
-                            <span className="font-medium">{transaction.kategori}</span>
+                        <div>
+                            <Label htmlFor={`detail-kategori-${transaction.id}`} className="text-sm font-medium text-slate-600">Kategori</Label>
+                            <Input id={`detail-kategori-${transaction.id}`} value={transaction.kategori} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <div className="flex justify-between border-b pb-2">
-                            <span className="text-sm text-slate-500">Dompet</span>
-                            <span className="font-medium">{transaction.dompet}</span>
+                        <div>
+                            <Label htmlFor={`detail-dompet-${transaction.id}`} className="text-sm font-medium text-slate-600">Dompet</Label>
+                            <Input id={`detail-dompet-${transaction.id}`} value={transaction.dompet} readOnly disabled className="mt-1 bg-slate-100 text-slate-900 cursor-default" />
                         </div>
-                        <div className="flex flex-col space-y-1">
-                            <span className="text-sm text-slate-500">Keterangan</span>
-                            <p className="font-medium p-2 bg-slate-50 rounded-md">{transaction.source_or_usage || '-'}</p>
+                        <div>
+                            <Label htmlFor={`detail-keterangan-${transaction.id}`} className="text-sm font-medium text-slate-600">Keterangan</Label>
+                            <Textarea
+                                id={`detail-keterangan-${transaction.id}`}
+                                value={transaction.source_or_usage || "-"}
+                                readOnly
+                                disabled
+                                className="resize-none mt-1 bg-slate-100 text-slate-900 cursor-default"
+                                rows={3}
+                            />
                         </div>
                     </div>
                 </DialogContent>
@@ -121,7 +128,7 @@ export default function TransactionActions({ transaction, onDeleted }: Props) {
                         <AlertDialogCancel asChild>
                             <Button
                                 variant="outline"
-                                className="w-full sm:w-auto rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                                className="w-full sm:w-auto bg-white rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
                                 disabled={loading}
                             >
                                 Batal

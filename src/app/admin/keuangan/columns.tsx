@@ -32,11 +32,11 @@ export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     },
     {
         accessorKey: "amount",
-        header: () => <div className="text-right">Jumlah</div>,
+        header: () => <div className="text-center">Jumlah</div>,
         cell: ({ row }) => {
             const isIncome = row.original.jenis === "Pemasukan";
             return (
-                <div className={`text-right font-medium ${isIncome ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`text-center font-medium ${isIncome ? 'text-green-600' : 'text-red-600'}`}>
                     {isIncome ? '+' : '-'} Rp {row.original.amount.toLocaleString("id-ID")}
                 </div>
             );

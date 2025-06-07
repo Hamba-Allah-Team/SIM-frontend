@@ -110,7 +110,7 @@ export function DataTable({ columns, data, isLoading = false }: DataTableProps) 
                         <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white">
+                        <SelectContent className="bg-white text-slate-800/80 border border-slate-200">
                             {[5, 10, 20, 50].map((pageSize) => (
                                 <SelectItem key={pageSize} value={String(pageSize)}>
                                     {pageSize}
