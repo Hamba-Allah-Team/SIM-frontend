@@ -123,13 +123,13 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div className='space-y-1'>
                   <CardTitle className="text-xl font-bold text-[#1C143D]">Grafik Keuangan</CardTitle>
-                  <CardDescription>Pemasukan vs Pengeluaran</CardDescription>
+                  <CardDescription className='text-slate-500'>Pemasukan vs Pengeluaran</CardDescription>
                 </div>
                 <Select value={range} onValueChange={(val) => setRange(val as '7d' | '1m' | '1y')}>
-                  <SelectTrigger className="w-[120px] h-9 bg-slate-50 border-slate-300">
+                  <SelectTrigger className="w-[120px] h-9 bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100">
                     <SelectValue placeholder="Pilih range" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white">
+                  <SelectContent className="bg-white text-slate-600 border border-slate-200">
                     <SelectItem value="7d">7 Hari</SelectItem>
                     <SelectItem value="1m">1 Bulan</SelectItem>
                     <SelectItem value="1y">1 Tahun</SelectItem>

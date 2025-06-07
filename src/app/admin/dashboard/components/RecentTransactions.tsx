@@ -15,7 +15,7 @@ export default function RecentTransactions({ transactions }: Props) {
         <Card className="bg-white shadow-lg border border-slate-200/80 h-full flex flex-col">
             <CardHeader>
                 <CardTitle className="text-xl font-bold text-[#1C143D]">Transaksi Terbaru</CardTitle>
-                <CardDescription>5 transaksi pemasukan & pengeluaran terakhir.</CardDescription>
+                <CardDescription className='text-slate-500'>5 transaksi pemasukan & pengeluaran terakhir.</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
                 <ScrollArea className="h-[300px] pr-4 -mr-4">

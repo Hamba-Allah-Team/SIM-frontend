@@ -46,7 +46,7 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
         try {
             if (range === '1y') {
                 // Jika range 1 tahun, tampilkan 3 huruf pertama bulan
-                return tick.slice(0, 3);
+                return format(parseISO(tick), "MMM", { locale: localeID });
             }
             if (range === '7d') {
                 // Jika range 7 hari, tampilkan nama hari
@@ -114,7 +114,7 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
                         />
                     }
                 />
-                <ChartLegend content={<ChartLegendContent />} />
+                <ChartLegend content={<ChartLegendContent />} className='text-slate-500'/>
                 <defs>
                     <linearGradient id="fillIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--color-income)" stopOpacity={0.8} />
