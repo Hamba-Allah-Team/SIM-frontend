@@ -2,64 +2,110 @@
 
 'use client'
 
-import { TopCategory } from '../types'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Pie, PieChart, Cell } from 'recharts' // 👈 1. Impor kembali 'Cell'
+import * as React from 'react'
 import {
-    PieChart,
-    Pie,
-    Cell,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
-} from 'recharts'
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from '@/components/ui/card'
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+    ChartLegend,
+    ChartLegendContent,
+} from '@/components/ui/chart'
+import { TopCategory } from '../types'
+import { formatCurrency } from '@/lib/utils'
+import { TrendingUp } from 'lucide-react'
 
 interface Props {
     data: TopCategory[]
     title: string
 }
 
-const COLORS = [
-    '#0088FE', '#00C49F', '#FFBB28', '#FF8042',
-    '#A28EFF', '#FF6B81', '#B5E853', '#FFB6C1',
-]
-
 export default function TopCategoriesChart({ data, title }: Props) {
-    const chartData = data.map((item) => ({
-        name: item.category_name,
-        value: item.total_amount,
-    }))
+    // Palet warna yang akan digunakan, diambil dari variabel CSS tema shadcn/ui
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const colorPalette = [
+        "var(--chart-1)",
+        "var(--chart-2)",
+        "var(--chart-3)",
+        "var(--chart-4)",
+        "var(--chart-5)",
+    ];
+
+    // Data sekarang tidak lagi memerlukan properti 'fill'
+    const chartData = React.useMemo(() => {
+        return data?.map((item) => ({
+            name: item.category_name,
+            value: item.total_amount,
+        })) || []; // Pastikan selalu array
+    }, [data]);
+
+    // Konfigurasi chart untuk legenda dan tooltip
+    const chartConfig = React.useMemo(() => {
+        const config: ChartConfig = {};
+        if (chartData.length > 0) {
+            chartData.forEach((item, index) => {
+                config[item.name] = {
+                    label: item.name,
+                    color: `hsl(${colorPalette[index % colorPalette.length]})`,
+                };
+            });
+        }
+        return config;
+    }, [chartData, colorPalette]);
+
 
     return (
-        <Card className="h-[400px]">
+        <Card className="bg-white shadow-lg border border-slate-200/80 flex flex-col h-full">
             <CardHeader>
-                <CardTitle>{title}</CardTitle>
+                <CardTitle className="text-xl font-bold text-[#1C143D]">{title}</CardTitle>
+                <CardDescription className='text-slate-400'>Berdasarkan total nominal 30 hari terakhir</CardDescription>
             </CardHeader>
-            <CardContent className="h-[320px]">
+            <CardContent className="flex-1 pb-0">
                 {chartData.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Belum ada data.</p>
+                    <div className="flex flex-col items-center justify-center h-full text-center text-slate-500">
+                        <TrendingUp className="w-16 h-16 text-slate-300 mb-2" />
+                        <p className="font-medium">Belum ada data yang cukup.</p>
+                    </div>
                 ) : (
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ChartContainer
+                        config={chartConfig}
+                        className="mx-auto aspect-square max-h-[280px]"
+                    >
                         <PieChart>
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent
+                                    formatter={(value) => formatCurrency(value as number)}
+                                    hideLabel
+                                />}
+                            />
                             <Pie
                                 data={chartData}
-                                cx="50%"
-                                cy="50%"
-                                labelLine={false}
-                                outerRadius={100}
-                                fill="#8884d8"
                                 dataKey="value"
-                                label={({ name, percent }) =>
-                                    `${name} (${(percent * 100).toFixed(0)}%)`
-                                }
+                                nameKey="name"
+                                innerRadius={60}
+                                strokeWidth={5}
+                                labelLine={false}
                             >
+                                {/* 👈 2. Render <Cell> secara manual untuk setiap data */}
                                 {chartData.map((_, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    <Cell key={`cell-${index}`} fill={`hsl(${colorPalette[index % colorPalette.length]})`} />
                                 ))}
                             </Pie>
-                            <Tooltip formatter={(value: number) => `Rp ${value.toLocaleString('id-ID')}`} />
-                            <Legend verticalAlign="bottom" height={36} />
+                            <ChartLegend
+                                content={<ChartLegendContent nameKey="name" />}
+                                className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center text-xs text-slate-600 font-medium"
+                            />
                         </PieChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 )}
             </CardContent>
         </Card>

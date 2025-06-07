@@ -7,6 +7,20 @@
   /* Tambahkan variabel orange custom */
   --color-custom-orange: #FF9357;
   --color-custom-blue: #C0D1D9;
+
+  --chart-1: 23 100% 67%;
+  /* Oranye Utama (dari #FF9357) */
+  --chart-2: 210 90% 55%;
+  /* Biru Cerah */
+  --chart-3: 150 70% 45%;
+  /* Hijau Mint */
+  --chart-4: 260 85% 65%;
+  /* Ungu Lavender */
+  --chart-5: 45 95% 55%;
+  /* Kuning Emas */
+  --chart-green: 142 71% 45%;
+  /* Hijau Pemasukan */
+  --chart-red: 0 84% 60%;
 }
 
 @theme inline {

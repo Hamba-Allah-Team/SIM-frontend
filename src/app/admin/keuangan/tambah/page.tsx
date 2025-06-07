@@ -15,10 +15,11 @@ import {
 import { useUserProfile } from "@/hooks/useUserProfile"
 import { mapTransactionTypeToBackend } from "../utils"
 import { AxiosError } from "axios"
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+
 
 interface WalletOption {
     wallet_id: number
@@ -46,6 +47,23 @@ export default function CreateTransactionPage() {
 
     const router = useRouter()
     const { profile } = useUserProfile()
+
+    // 👈 Hook untuk mereset state saat komponen tidak lagi ditampilkan
+    useEffect(() => {
+        const resetForm = () => {
+            setWalletId("");
+            setAmount("");
+            setTransactionType("");
+            setSelectedCategoryId("");
+            setDescription("");
+            setTransactionDate(new Date().toISOString().split("T")[0]);
+        };
+
+        // Saat komponen dihancurkan (unmount), panggil fungsi reset
+        return () => {
+            resetForm();
+        };
+    }, []);
 
     useEffect(() => {
         if (!profile?.mosque_id) return
@@ -96,7 +114,7 @@ export default function CreateTransactionPage() {
             router.push("/admin/keuangan");
             router.refresh();
         } catch (err) {
-            const error = err as AxiosError<{ message: string }>;
+            const error = err as AxiosError<{ message: string }>
             const message = error.response?.data?.message || "Gagal menambahkan transaksi";
             toast.error("Gagal Menambah Transaksi", { description: message });
         } finally {
@@ -112,12 +130,11 @@ export default function CreateTransactionPage() {
                 className="mb-6 group text-slate-600 hover:text-slate-900 px-0"
             >
                 <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-                Kembali ke Daftar Transaksi
+                Kembali
             </Button>
             <div className="w-full bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200/80">
                 <h1 className="text-2xl lg:text-3xl font-bold text-[#1C143D] mb-2">Tambah Transaksi Keuangan</h1>
                 <p className="text-gray-500 mb-6">Catat pemasukan atau pengeluaran baru.</p>
-
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
@@ -126,10 +143,10 @@ export default function CreateTransactionPage() {
                                 setTransactionType(val as "Pemasukan" | "Pengeluaran")
                                 setSelectedCategoryId("")
                             }} value={transactionType}>
-                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih jenis transaksi" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                     <SelectItem value="Pemasukan">Pemasukan</SelectItem>
                                     <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
                                 </SelectContent>
@@ -139,10 +156,10 @@ export default function CreateTransactionPage() {
                             <div>
                                 <Label htmlFor="category" className="block text-sm font-semibold text-[#1C143D] mb-1">Kategori Transaksi <span className="text-red-500">*</span></Label>
                                 <Select onValueChange={setSelectedCategoryId} value={selectedCategoryId}>
-                                    <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                    <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                         <SelectValue placeholder="Pilih kategori" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white">
+                                    <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                         {filteredCategories.map((cat) => (
                                             <SelectItem key={cat.category_id} value={cat.category_id.toString()}>
                                                 {cat.category_name}
@@ -158,10 +175,10 @@ export default function CreateTransactionPage() {
                         <div>
                             <Label htmlFor="wallet" className="block text-sm font-semibold text-[#1C143D] mb-1">Pilih Dompet <span className="text-red-500">*</span></Label>
                             <Select onValueChange={setWalletId} value={walletId}>
-                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                     {wallets.map((wallet) => (
                                         <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
                                             {wallet.wallet_name}
@@ -178,7 +195,7 @@ export default function CreateTransactionPage() {
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="Masukkan nominal transaksi"
-                                className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
+                                className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-slate-600/80 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                                 required
                             />
                         </div>
@@ -191,7 +208,7 @@ export default function CreateTransactionPage() {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Contoh: Donasi Jumat atau Pembelian Alat"
-                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-3 placeholder:text-sm placeholder:text-gray-400"
+                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-3 placeholder:text-sm placeholder:text-slate-600/80 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                             rows={3}
                         />
                     </div>
@@ -203,7 +220,7 @@ export default function CreateTransactionPage() {
                             type="date"
                             value={transactionDate}
                             onChange={(e) => setTransactionDate(e.target.value)}
-                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm"
+                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-slate-600/80 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                             required
                             style={{ colorScheme: 'light' }}
                         />
@@ -214,7 +231,7 @@ export default function CreateTransactionPage() {
                             type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/keuangan")}
-                            className="w-full h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                            className="w-full bg-white h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
                             disabled={isLoading}
                         >
                             Batal

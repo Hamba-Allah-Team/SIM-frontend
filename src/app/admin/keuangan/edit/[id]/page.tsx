@@ -150,7 +150,7 @@ export default function EditTransactionPage() {
                 className="mb-6 group text-slate-600 hover:text-slate-900 px-0"
             >
                 <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-                Kembali ke Daftar Transaksi
+                Kembali
             </Button>
             <div className="w-full bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200/80">
                 <h1 className="text-2xl lg:text-3xl font-bold text-[#1C143D] mb-2">Edit Transaksi Keuangan</h1>
@@ -164,10 +164,10 @@ export default function EditTransactionPage() {
                                 setTransactionType(val as "Pemasukan" | "Pengeluaran")
                                 setSelectedCategoryId("")
                             }}>
-                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih jenis transaksi" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                     <SelectItem value="Pemasukan">Pemasukan</SelectItem>
                                     <SelectItem value="Pengeluaran">Pengeluaran</SelectItem>
                                 </SelectContent>
@@ -177,10 +177,10 @@ export default function EditTransactionPage() {
                             <div>
                                 <Label htmlFor="category" className="block text-sm font-semibold text-[#1C143D] mb-1">Kategori Transaksi</Label>
                                 <Select value={selectedCategoryId} onValueChange={setSelectedCategoryId}>
-                                    <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                    <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                         <SelectValue placeholder="Pilih kategori" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white">
+                                    <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                         {filteredCategories.map((cat) => (
                                             <SelectItem key={cat.category_id} value={cat.category_id.toString()}>
                                                 {cat.category_name}
@@ -195,10 +195,10 @@ export default function EditTransactionPage() {
                         <div>
                             <Label className="block text-sm font-semibold text-[#1C143D] mb-1">Pilih Dompet</Label>
                             <Select value={walletId} onValueChange={setWalletId}>
-                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
+                                <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-800 border border-slate-300">
                                     {wallets.map((wallet) => (
                                         <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
                                             {wallet.wallet_name}
@@ -213,7 +213,7 @@ export default function EditTransactionPage() {
                                 type="number"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
-                                className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400"
+                                className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                             />
                         </div>
                     </div>
@@ -223,7 +223,7 @@ export default function EditTransactionPage() {
                         <Textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-3 placeholder:text-sm placeholder:text-gray-400"
+                            className="w-full bg-[#F7F8FA] rounded-lg px-4 py-3 placeholder:text-sm placeholder:text-gray-400 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                             rows={3}
                         />
                     </div>
@@ -234,7 +234,7 @@ export default function EditTransactionPage() {
                             type="date"
                             value={transactionDate}
                             onChange={(e) => setTransactionDate(e.target.value)}
-                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm"
+                            className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 placeholder:text-sm placeholder:text-gray-400 text-slate-800 border border-slate-300 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]"
                             style={{ colorScheme: 'light' }}
                         />
                     </div>
@@ -244,7 +244,7 @@ export default function EditTransactionPage() {
                             type="button"
                             variant="outline"
                             onClick={() => router.push("/admin/keuangan")}
-                            className="w-full h-12 rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
+                            className="w-full h-12 bg-white rounded-full border-[#FF9357] text-[#FF9357] font-semibold hover:bg-[#FF9357]/10"
                             disabled={isLoading}
                         >
                             Batal
