@@ -19,7 +19,7 @@ export function LaporanKeuangan({ laporan }: { laporan: LaporanData }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {/* Card Pemasukan */}
-                    <Card className="bg-white shadow-lg border-t-4 border-green-500 p-6">
+                    <Card className="bg-white shadow-lg border-t-4 border-orange-400 p-6">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
                             <CardTitle className="text-sm font-medium text-slate-500 uppercase">
                                 Total Pemasukan
@@ -33,7 +33,7 @@ export function LaporanKeuangan({ laporan }: { laporan: LaporanData }) {
                         </CardContent>
                     </Card>
                     {/* Card Pengeluaran */}
-                    <Card className="bg-white shadow-lg border-t-4 border-red-500 p-6">
+                    <Card className="bg-white shadow-lg border-t-4 border-orange-400 p-6">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
                             <CardTitle className="text-sm font-medium text-slate-500 uppercase">
                                 Total Pengeluaran
