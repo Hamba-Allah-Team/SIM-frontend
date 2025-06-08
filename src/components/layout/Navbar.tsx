@@ -11,42 +11,61 @@ import {
 } from "@/components/ui/sheet"
 import Image from "next/image"
 import Link from "next/link"
-
-const menu = [
-    { label: "Home", href: "/" },
-    { label: "Tentang", href: "/tentang" },
-    { label: "Berita", href: "/berita" },
-    { label: "Artikel", href: "/artikel" },
-    { label: "Kegiatan", href: "/kegiatan" },
-    { label: "Reservasi", href: "/reservasi" },
-    { label: "Kontak", href: "/kontak" },
-]
+import { usePathname, useParams } from 'next/navigation'
+import { Button } from "@/components/ui/button"
 
 export default function Navbar() {
+    const pathname = usePathname();
+    const params = useParams(); // 👈 1. Mengambil parameter dari URL
+    const slug = params.slug as string; // 👈 Mengambil slug
+
+    // 2. Menu sekarang tidak lagi hardcode '[slug]'
+    const menu = [
+        { label: "Home", href: `/${slug}` },
+        { label: "Tentang", href: `/${slug}/tentang` },
+        { label: "Berita", href: `/${slug}/berita` },
+        { label: "Artikel", href: `/${slug}/artikel` },
+        { label: "Kegiatan", href: `/${slug}/kegiatan` },
+        { label: "Reservasi", href: `/${slug}/reservasi` },
+        { label: "Kontak", href: `/${slug}/kontak` },
+    ]
+
     return (
         <header className="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-7xl px-4">
             <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg px-6 h-[72px] flex items-center justify-between">
-                
-                {/* Logo - Kiri */}
-                <div className="flex items-center gap-2">
+
+                <Link href={`/${slug}`} className="flex items-center gap-2">
                     <Image src="/sima-icon.png" alt="Logo SIMA" width={32} height={32} />
                     <span className="text-xl font-bold text-[#1A1B4B]">SIMA</span>
-                </div>
+                </Link>
 
-                {/* Desktop Nav - Tengah */}
-                <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-6">
-                    {menu.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className="text-sm font-semibold text-[#1A1B4B] hover:underline"
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
+                <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-1">
+                    {menu.map((item) => {
+                        // 3. Logika 'isActive' disesuaikan
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors
+                                    ${isActive
+                                        ? 'text-white bg-[#FF9357]'
+                                        : 'text-[#1A1B4B] hover:bg-orange-50'
+                                    }`
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        )
+                    })}
                 </nav>
 
-                {/* Drawer (Mobile) - Kanan */}
+                <div className="hidden md:flex items-center">
+                    <Button asChild>
+                        <Link href="/login">Login</Link>
+                    </Button>
+                </div>
+
                 <div className="md:hidden">
                     <Sheet>
                         <SheetTrigger asChild>
