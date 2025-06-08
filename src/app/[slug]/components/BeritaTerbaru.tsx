@@ -21,7 +21,7 @@ export function BeritaTerbaru({ berita, slug }: { berita: Berita[], slug: string
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold text-[#0A1E4A]">Berita Terbaru</h2>
                 <Button variant="outline" asChild className="border-[#FF9357] text-[#FF9357] hover:bg-[#FF9357]/10 hover:text-[#FF9357]">
-                    <Link href={`/${slug}/berita`}>Berita Lainnya</Link>
+                    <Link href={`/${slug}/berita`} className="bg-orange-50">Berita Lainnya</Link>
                 </Button>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -30,7 +30,7 @@ export function BeritaTerbaru({ berita, slug }: { berita: Berita[], slug: string
                         <Image src={beritaUtama.img} alt={beritaUtama.title} width={800} height={400} className="w-full h-64 object-cover" />
                         <CardHeader>
                             <p className="text-sm text-slate-500">{beritaUtama.date}</p>
-                            <CardTitle className="text-2xl hover:text-[#FF9357] transition-colors"><Link href={`/${slug}/berita/${beritaUtama.id}`}>{beritaUtama.title}</Link></CardTitle>
+                            <CardTitle className="text-2xl text-slate-800 hover:text-[#FF9357] transition-colors"><Link href={`/${slug}/berita/${beritaUtama.id}`}>{beritaUtama.title}</Link></CardTitle>
                         </CardHeader>
                         <CardContent className="flex-grow">
                             <p className="text-slate-600">{beritaUtama.excerpt}</p>
