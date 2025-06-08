@@ -1,5 +1,5 @@
-import ActivationSideImage from "@/components/ActivationSideImage";
-import ActivationRegisterForm from "@/components/ActivationRegisterForm";
+import ActivationSideImage from "@/components/activation/ActivationSideImage";
+import ActivationRegisterForm from "@/components/activation/ActivationRegisterForm";
 
 export default function ActivationRegisterPage() {
   return (

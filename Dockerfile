@@ -4,15 +4,13 @@ FROM node:22-alpine
 # Atur working directory
 WORKDIR /app
 
-# Salin package.json dan install dependencies
+# Copy only built files and dependencies
 COPY package*.json ./
-RUN npm install
-
-# Salin semua file ke dalam container
-COPY . .
-
-# Build Next.js app
-RUN npm run build
+COPY node_modules/ ./node_modules/
+COPY .next/ .next/
+COPY public/ ./public/
+COPY next.config.ts ./
+COPY tsconfig.json ./
 
 # Gunakan port 3000
 EXPOSE 3000
