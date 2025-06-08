@@ -17,7 +17,7 @@ export function KegiatanMendatang({ kegiatan, slug }: { kegiatan: KegiatanItem[]
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold text-[#0A1E4A]">Kegiatan Mendatang</h2>
                 <Button variant="outline" asChild className="border-[#FF9357] text-[#FF9357] hover:bg-[#FF9357]/10 hover:text-[#FF9357]">
-                    <Link href={`/${slug}/kegiatan`}>Kegiatan Lainnya</Link>
+                    <Link href={`/${slug}/kegiatan`} className="bg-orange-50">Kegiatan Lainnya</Link>
                 </Button>
             </div>
             <div className="space-y-4">
