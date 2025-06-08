@@ -104,6 +104,7 @@ export default function ContentEditForm() {
     form.setValue("image", file)
     setPreviewUrl(URL.createObjectURL(file))
     setFileName(file.name)
+    setDeleteImage(false)
   }
 
   // Handle delete image preview dan reset field

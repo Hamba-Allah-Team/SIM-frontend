@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Dompet } from "./types"
+import DompetAction from "@/components/dompet/DompetAction"
 
-export const columns: ColumnDef<Dompet>[] = [
+export const columns = (onDeleted: () => void): ColumnDef<Dompet>[] => [
     {
         accessorKey: "name",
         header: "Nama Dompet",
@@ -16,10 +17,19 @@ export const columns: ColumnDef<Dompet>[] = [
     },
     {
         accessorKey: "balance",
-        header: "Saldo",
+        header: () => "Saldo",
         cell: ({ row }) => {
             const balance = row.getValue("balance") as number
-            return `Rp ${balance.toLocaleString("id-ID")}`
+            return <div>Rp {balance.toLocaleString("id-ID")}</div>
         },
+    },
+    {
+        id: "actions",
+        header: () => <div className="text-center">Aksi</div>,
+        cell: ({ row }) => (
+            <div className="flex justify-center">
+                <DompetAction wallet={row.original} onDeleted={onDeleted} />
+            </div>
+        ),
     },
 ]

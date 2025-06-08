@@ -1,50 +1,54 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { Keuangan } from "./types";
-import { Button } from "@/components/ui/button"
+"use client";
 
-export const columns: ColumnDef<Keuangan>[] = [
+import { ColumnDef } from "@tanstack/react-table";
+import { Keuangan } from "./types";
+import TransactionActions from "@/components/finance/FinanceAction";
+import { Badge } from "@/components/ui/badge";
+
+export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     {
         accessorKey: "tanggal",
-        header: () => <div className="min-w-[120px]">Tanggal</div>,
-        cell: ({ row }) =>
-            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
+        header: "Tanggal",
     },
     {
         accessorKey: "jenis",
-        header: () => <div className="min-w-[100px]">Jenis</div>,
+        header: "Jenis",
+        cell: ({ row }) => {
+            const isIncome = row.original.jenis === "Pemasukan";
+            return (
+                <Badge variant={isIncome ? "default" : "destructive"} className={isIncome ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                    {row.original.jenis}
+                </Badge>
+            )
+        }
+    },
+    {
+        accessorKey: "kategori",
+        header: "Kategori",
     },
     {
         accessorKey: "dompet",
-        header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.getValue("dompet") ?? "-",
+        header: "Dompet",
     },
     {
         accessorKey: "amount",
-        header: () => <div className="min-w-[140px]">Nominal</div>,
+        header: () => <div className="text-center">Jumlah</div>,
         cell: ({ row }) => {
-            const value = row.getValue("amount") as number;
-            return `Rp ${value.toLocaleString("id-ID")}`;
+            const isIncome = row.original.jenis === "Pemasukan";
+            return (
+                <div className={`text-center font-medium ${isIncome ? 'text-green-600' : 'text-red-600'}`}>
+                    {isIncome ? '+' : '-'} Rp {row.original.amount.toLocaleString("id-ID")}
+                </div>
+            );
         },
     },
     {
         id: "actions",
-        header: () => <div className="min-w-[200px]">Aksi</div>,
-        cell: ({ row }) => {
-            const transaksi = row.original
-
-            return (
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => alert(`Detail ID ${transaksi.id}`)}>
-                        Detail
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => alert(`Edit ID ${transaksi.id}`)}>
-                        Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => alert(`Hapus ID ${transaksi.id}`)}>
-                        Hapus
-                    </Button>
-                </div>
-            )
-        },
+        header: () => <div className="text-center">Aksi</div>,
+        cell: ({ row }) => (
+            <div className="flex justify-center items-center">
+                <TransactionActions transaction={row.original} onDeleted={onDeleted} />
+            </div>
+        ),
     },
-]
+];

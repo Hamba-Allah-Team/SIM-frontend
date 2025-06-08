@@ -34,7 +34,7 @@ export default function AboutSection({ data }: AboutSectionProps) {
         {/* Deskripsi */}
         <div className="mt-15 grid grid-cols-3 md:grid-cols-6 gap-7 text-gray-700 text-justify">
             <div className="font-bold text-lg col-span-1">
-                Tentang Masjid {data.name}
+                {data.name}
             </div>
 
             {/* Separator vertikal */}
