@@ -1,3 +1,5 @@
+"use client"
+
 import { Menu } from "lucide-react"
 import {
     Sheet,
@@ -22,9 +24,9 @@ const menu = [
 
 export default function Navbar() {
     return (
-        <header className="w-full py-6">
-            <div className="relative bg-white rounded-2xl shadow-lg h-[72px] px-6 flex items-center justify-between max-w-7xl mx-auto">
-
+        <header className="absolute top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-7xl px-4">
+            <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg px-6 h-[72px] flex items-center justify-between">
+                
                 {/* Logo - Kiri */}
                 <div className="flex items-center gap-2">
                     <Image src="/sima-icon.png" alt="Logo SIMA" width={32} height={32} />
@@ -78,6 +80,5 @@ export default function Navbar() {
                 </div>
             </div>
         </header>
-
     )
 }
