@@ -30,7 +30,7 @@ export function BeritaTerbaru({ berita, slug }: { berita: Berita[], slug: string
                         <Image src={beritaUtama.img} alt={beritaUtama.title} width={800} height={400} className="w-full h-64 object-cover" />
                         <CardHeader>
                             <p className="text-sm text-slate-500">{beritaUtama.date}</p>
-                            <CardTitle className="text-2xl hover:text-[#FF9357] transition-colors"><Link href={`/${slug}/berita/${beritaUtama.id}`}>{beritaUtama.title}</Link></CardTitle>
+                            <CardTitle className="text-2xl text-slate-800 hover:text-[#FF9357] transition-colors"><Link href={`/${slug}/berita/${beritaUtama.id}`}>{beritaUtama.title}</Link></CardTitle>
                         </CardHeader>
                         <CardContent className="flex-grow">
                             <p className="text-slate-600">{beritaUtama.excerpt}</p>

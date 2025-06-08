@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        // 👈 Tambahkan blok ini untuk mengizinkan gambar dari backend lokal Anda
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080', // Sesuaikan dengan port backend Anda
+        pathname: '/uploads/**',
+      },
       // Anda bisa menambahkan hostname lain di sini di masa depan
     ],
   },

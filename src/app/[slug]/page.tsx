@@ -38,15 +38,14 @@ async function getLaporanKeuanganPage(slug: string) {
     }
 }
 
-async function getBeritaPage(
-    // masjidId: number
-) {
-    return [
-        { id: 1, img: 'https://placehold.co/600x400/EBF1F4/888?text=Berita+Utama', title: 'Pelaksanaan Sholat Idul Adha 1446 H', date: '2 hari lalu', excerpt: 'Kegiatan sholat Idul Adha berjalan dengan khidmat dan diikuti oleh ribuan jamaah...' },
-        { id: 2, img: 'https://placehold.co/150x100/EBF1F4/888?text=Berita', title: 'Kajian Rutin Sabtu Pagi', date: '3 hari lalu' },
-        { id: 3, img: 'https://placehold.co/150x100/EBF1F4/888?text=Berita', title: 'Penyaluran Zakat Fitrah', date: '5 hari lalu' },
-        { id: 4, img: 'https://placehold.co/150x100/EBF1F4/888?text=Berita', title: 'Program Buka Puasa Bersama', date: '1 minggu lalu' },
-    ];
+async function getBeritaPage(slug: string) {
+    try {
+        const response = await api.get(`/api/public/news/recent/${slug}`);
+        return response.data;
+    } catch (error) {
+        console.error("Gagal mengambil data berita:", error);
+        return []; // Kembalikan array kosong jika gagal
+    }
 }
 
 async function getKegiatanPage(slug: string) {
@@ -73,9 +72,7 @@ export default async function MasjidPage({ params }: { params: { slug: string } 
         kegiatanData
     ] = await Promise.all([
         getJadwalSholatPage(params.slug),
-        getBeritaPage(
-            // masjidData.mosque_id
-        ),
+        getBeritaPage(params.slug),
         getLaporanKeuanganPage(params.slug),
         getKegiatanPage(params.slug),
     ]);
