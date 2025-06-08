@@ -15,7 +15,8 @@ async function getMasjidLayoutData(slug: string) {
 }
 
 export default async function GuestLayout({ children, params }: { children: ReactNode, params: { slug: string } }) {
-    const masjidData = await getMasjidLayoutData(params.slug);
+    const { slug } = params;
+    const masjidData = await getMasjidLayoutData(slug);
 
     return (
         <div className="relative min-h-screen bg-[#F8F9FA]">
