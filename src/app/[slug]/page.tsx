@@ -16,15 +16,13 @@ async function getMasjidDataPage(slug: string) {
     }
 }
 
-async function getJadwalSholatPage(latitude?: number | null, longitude?: number | null) {
-    if (!latitude || !longitude) {
-        return { tanggalHijriyah: "-", subuh: "--:--", dzuhur: "--:--", ashar: "--:--", maghrib: "--:--", isya: "--:--" };
-    }
+async function getJadwalSholatPage(slug: string) {
     try {
-        const response = await api.get('/api/public/prayertimes', { params: { lat: latitude, lon: longitude } });
+        const response = await api.get(`/api/public/prayertimes/${slug}`);
         return response.data;
     } catch (error) {
         console.error("Gagal fetch jadwal sholat dari backend:", error);
+        // Kembalikan data default jika API gagal
         return { tanggalHijriyah: "-", subuh: "--:--", dzuhur: "--:--", ashar: "--:--", maghrib: "--:--", isya: "--:--" };
     }
 }
@@ -74,7 +72,7 @@ export default async function MasjidPage({ params }: { params: { slug: string } 
         laporanKeuanganData,
         kegiatanData
     ] = await Promise.all([
-        getJadwalSholatPage(masjidData.latitude, masjidData.longitude),
+        getJadwalSholatPage(params.slug),
         getBeritaPage(
             // masjidData.mosque_id
         ),
