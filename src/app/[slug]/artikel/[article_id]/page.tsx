@@ -130,48 +130,55 @@ export default function ArticleDetailPage() {
         )}
 
         {/* Konten Artikel */}
-        {!loading && !error && article && (
-          <>
+        {!loading && !error && article && article.contents_type === "artikel" && (
+        <>
             {article.image && (
-              <img
+            <img
                 src={article.image}
                 alt={article.title}
                 className="w-full h-100 object-cover rounded-lg mb-8"
-              />
+            />
             )}
 
             <h1 className="text-4xl font-bold mb-10 text-black">{article.title}</h1>
 
             <div className="flex gap-4 mb-10">
-              <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
+            <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
                 <CalendarDays size={24} />
                 <div>
-                  <p className="text-sm">Tanggal Rilis</p>
-                  <p className="font-semibold">{tanggal}</p>
+                <p className="text-sm">Tanggal Rilis</p>
+                <p className="font-semibold">{tanggal}</p>
                 </div>
-              </div>
-              <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
+            </div>
+            <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
                 <Clock4 size={24} />
                 <div>
-                  <p className="text-sm">Jam Rilis</p>
-                  <p className="font-semibold">{jam}</p>
+                <p className="text-sm">Jam Rilis</p>
+                <p className="font-semibold">{jam}</p>
                 </div>
-              </div>
-              <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
+            </div>
+            <div className="flex-1 bg-gray-200 p-4 rounded-xl flex items-center gap-3 text-black">
                 <LayoutDashboard size={24} />
                 <div>
-                  <p className="text-sm">Jenis Konten</p>
-                  <p className="font-semibold capitalize">{article.contents_type}</p>
+                <p className="text-sm">Jenis Konten</p>
+                <p className="font-semibold capitalize">{article.contents_type}</p>
                 </div>
-              </div>
+            </div>
             </div>
 
             <div
-              className="prose max-w-none mb-20"
-              style={{ color: "black" }}
-              dangerouslySetInnerHTML={{ __html: article.content_full }}
+            className="prose max-w-none mb-20"
+            style={{ color: "black" }}
+            dangerouslySetInnerHTML={{ __html: article.content_full }}
             />
-          </>
+        </>
+        )}
+
+        {/* Jika tipe konten bukan artikel */}
+        {!loading && !error && article && article.contents_type !== "artikel" && (
+        <p className="mt-8 text-gray-500 text-center ">
+            Artikel tidak ditemukan.
+        </p>
         )}
       </main>
     </>
