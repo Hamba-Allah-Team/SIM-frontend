@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import GuestNewsList from "./guestNewsList";
 
 export default function BeritaPage() {
-  // useParams dapat string atau string[], pastikan menjadi string
   const params = useParams();
   const rawSlug = params.slug;
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
@@ -39,10 +38,27 @@ export default function BeritaPage() {
     fetchMosque();
   }, [slug, API]);
 
-  if (!slug) return <div>Memuat...</div>;
-  if (loading) return <div>Memuat data masjid...</div>;
-  if (error) return <div className="text-red-600">Error: {error}</div>;
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <div className="bg-[#EBF1F4] py-16 pt-32">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-[#0A1E4A] text-center">
+            Berita
+          </h1>
+        </div>
+      </div>
 
-  // slug sekarang pasti string
-  return <GuestNewsList slug={slug} mosqueName={mosqueName} />;
+      {/* Main content */}
+      <main className="flex-grow">
+        {error ? (
+          <div className="text-center text-red-600 mt-8">{error}</div>
+        ) : loading ? (
+          <div className="text-center text-gray-500 mt-8">Memuat data masjid...</div>
+        ) : (
+          <GuestNewsList slug={slug as string} mosqueName={mosqueName} />
+        )}
+      </main>
+    </div>
+  );
 }

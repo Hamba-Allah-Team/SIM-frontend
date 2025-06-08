@@ -86,18 +86,18 @@ export default function GuestNewsList({ slug, mosqueName }: GuestNewsListProps) 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header disesuaikan dengan PageHeader */}
-      <div className="bg-[#EBF1F4] py-16 pt-32">
+      {/* <div className="bg-[#EBF1F4] py-16 pt-32">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-[#0A1E4A] text-center">
             Tentang {mosqueName}
           </h1>
         </div>
-      </div>
+      </div> */}
 
       {/* List berita */}
       <div className="max-w-6xl mx-auto mt-6 px-6 flex-grow">
         {berita.length === 0 ? (
-          <p className="mt-8">Tidak ada berita untuk saat ini.</p>
+          <p className="mt-8 text-gray-500">Tidak ada berita untuk saat ini.</p>
         ) : (
           <>
             <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
