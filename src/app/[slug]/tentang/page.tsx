@@ -53,7 +53,27 @@ export default function AboutPage() {
     fetchData();
   }, [slug]);
 
-  if (!data) return <div className="text-center py-5">Loading...</div>;
+  return (
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow">
+        {/* Header Section */}
+        <div className="bg-[#EBF1F4] py-16 pt-32">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl font-bold text-[#0A1E4A] text-center">
+              Tentang {data ? data.name : "Masjid"}
+            </h1>
+          </div>
+        </div>
 
-  return <AboutSection data={data} />;
+        {/* Content */}
+        <div className="container mx-auto px-4 py-8">
+          {!data ? (
+            <div className="text-center py-10">Loading...</div>
+          ) : (
+            <AboutSection data={data} />
+          )}
+        </div>
+      </main>
+    </div>
+  );
 }
