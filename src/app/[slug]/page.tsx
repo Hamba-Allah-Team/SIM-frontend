@@ -59,7 +59,9 @@ async function getKegiatanPage(slug: string) {
 }
 
 export default async function MasjidPage({ params }: { params: { slug: string } }) {
-    const masjidData = await getMasjidDataPage(params.slug);
+    const { slug } = await params;
+
+    const masjidData = await getMasjidDataPage(slug);
 
     if (!masjidData) {
         notFound();
@@ -71,19 +73,19 @@ export default async function MasjidPage({ params }: { params: { slug: string } 
         laporanKeuanganData,
         kegiatanData
     ] = await Promise.all([
-        getJadwalSholatPage(params.slug),
-        getBeritaPage(params.slug),
-        getLaporanKeuanganPage(params.slug),
-        getKegiatanPage(params.slug),
+        getJadwalSholatPage(slug),
+        getBeritaPage(slug),
+        getLaporanKeuanganPage(slug),
+        getKegiatanPage(slug),
     ]);
 
     return (
         <>
             <HeroSection masjid={masjidData} />
             <JadwalSolat jadwal={jadwalSholatData} />
-            <BeritaTerbaru berita={beritaData} slug={params.slug} />
+            <BeritaTerbaru berita={beritaData} slug={slug} />
             <LaporanKeuangan laporan={laporanKeuanganData} />
-            <KegiatanMendatang kegiatan={kegiatanData} slug={params.slug} />
+            <KegiatanMendatang kegiatan={kegiatanData} slug={slug} />
         </>
     );
 }

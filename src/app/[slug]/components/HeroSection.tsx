@@ -1,36 +1,44 @@
-import Image from "next/image"; // 👈 Impor Image sekarang akan terpakai
+import Image from "next/image";
 
-// 👈 1. Menambahkan interface untuk tipe data prop
 interface MasjidData {
     name: string;
     description: string;
-    // image: string | null;
 }
 
-export default function HeroSection({ masjid }: { masjid: MasjidData }) { // 👈 2. Menggunakan tipe yang sudah didefinisikan
+export default function HeroSection({ masjid }: { masjid: MasjidData }) {
     return (
-        <section className="relative bg-[#EBF1F4] overflow-hidden">
-            <div className="container mx-auto px-4">
-                {/* Kontainer untuk teks, padding vertikalnya menentukan tinggi section */}
-                <div className="relative z-10 w-full md:w-3/5 lg:w-1/2 py-24 md:py-32 lg:py-40 text-center md:text-left">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0A1E4A] leading-tight">
-                        Selamat Datang di <br /> Masjid <span className="text-[#FF9357]">{masjid.name}</span>
-                    </h1>
-                    <p className="mt-4 text-slate-600 max-w-lg mx-auto md:mx-0">
-                        Tempat sholat, belajar, dan beribadah bersama.
-                    </p>
+        <section className="relative bg-[#EBF1F4] overflow-hidden min-h-[500px] md:min-h-[600px]">
+            <div className="container mx-auto px-4 h-full">
+                {/* Text Container dengan positioning yang lebih konsisten */}
+                <div className="relative z-10 flex items-center h-full min-h-[500px] md:min-h-[600px]">
+                    <div className="w-full md:w-3/5 lg:w-1/2 text-center md:text-left">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0A1E4A] leading-[1.1] mb-4">
+                            Selamat Datang di <br /> 
+                            Masjid <span className="text-[#FF9357] break-words">{masjid.name}</span>
+                        </h1>
+                        <p className="text-base md:text-lg text-slate-600 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                            Tempat sholat, belajar, dan beribadah bersama.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            {/* Kontainer untuk gambar yang diposisikan absolut */}
-            <div className="absolute inset-y-0 right-0 w-1/2 h-full opacity-70 md:opacity-100 pointer-events-none">
-                <Image
-                    src="/masjid-home.png"
-                    alt={`Ilustrasi ${masjid.name}`}
-                    fill
-                    style={{ objectFit: 'contain', objectPosition: 'bottom right' }}
-                    priority
-                />
+            {/* Image Container dengan sizing yang lebih terkontrol */}
+            <div className="absolute inset-y-0 right-0 w-full md:w-1/2 h-full">
+                <div className="relative w-full h-full opacity-70 md:opacity-100">
+                    <Image
+                        src="/masjid-home.png"
+                        alt={`Ilustrasi ${masjid.name}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        style={{ 
+                            objectFit: 'contain', 
+                            objectPosition: 'center right'
+                        }}
+                        priority
+                        className="select-none"
+                    />
+                </div>
             </div>
         </section>
     );

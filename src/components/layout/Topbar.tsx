@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Sun, Search, LogOut, ChevronDown } from "lucide-react"
+import { Moon, Sun, Search, LogOut, ChevronDown, User } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useUserProfile } from "@/hooks/useUserProfile"
 import { useRouter } from "next/navigation"
@@ -84,6 +84,10 @@ export default function AdminTopbar() {
             // 5. Mengubah latar dropdown menjadi putih dan memberi border
             className="w-48 mt-2 bg-white border-slate-200/80 shadow-lg"
           >
+            <DropdownMenuItem className="cursor-pointer text-slate-800 focus:text-slate-800 focus:bg-slate-800/10 flex items-center gap-2">
+              <User size={14} />
+              Profil
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10 flex items-center gap-2">
               <LogOut size={14} />
               Logout

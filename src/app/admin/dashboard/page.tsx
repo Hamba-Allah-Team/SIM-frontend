@@ -9,7 +9,6 @@ import { SummaryData, Transaction, TopCategory } from './types'
 import { useLineStats } from '@/hooks/useLineStats';
 import AreaIncomeExpenseChart from './components/AreaIncomeExpenseChart';
 import { Skeleton } from '@/components/ui/skeleton';
-
 import SummaryCard from './components/SummaryCard'
 import WalletBalanceList from './components/WalletBalanceList'
 import RecentTransactions from './components/RecentTransactions'

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '@/lib/api'; // Ganti fetch() dengan ini
+import { apiClient as api } from '@/lib/api-client'; // Ganti fetch() dengan ini
 
 export interface LineChartPoint {
     label: string;

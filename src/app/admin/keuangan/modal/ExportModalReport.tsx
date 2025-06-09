@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import api from "@/lib/api";
+import { apiClient as api } from '@/lib/api-client';
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
