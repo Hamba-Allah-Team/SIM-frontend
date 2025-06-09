@@ -82,6 +82,26 @@ export default function ReservationPage() {
         setFilteredData((prevData) => prevData.filter((reservation) => reservation.reservation_id !== reservationId));
     }
 
+    const handleDataUpdate = (
+        reservationId: number,
+        newStatus: "pending" | "approved" | "rejected" | "completed"
+    ) => {
+        setData((prevData) =>
+            prevData.map((reservation) =>
+                reservation.reservation_id === reservationId
+                    ? { ...reservation, status: newStatus }
+                    : reservation
+            )
+        );
+        setFilteredData((prevData) =>
+            prevData.map((reservation) =>
+                reservation.reservation_id === reservationId
+                    ? { ...reservation, status: newStatus }
+                    : reservation
+            )
+        );
+    };
+
     const handleShowDetail = (id: number) => {
         setSelectedReservationId(id);
         setOpenDetail(true);
@@ -211,7 +231,7 @@ export default function ReservationPage() {
                                 throw new Error("Gagal menyetujui data: " + errorData.message);
                             }
 
-                            handleDataDeletion(reservationId);
+                            handleDataUpdate(reservationId, "approved");
                             toast.success("Data reservasi berhasil disetujui", {
                                 style: {
                                     background: "white",
@@ -249,7 +269,7 @@ export default function ReservationPage() {
                                 throw new Error("Gagal menolak data: " + errorData.message);
                             }
 
-                            handleDataDeletion(reservationId);
+                            handleDataUpdate(reservationId, "rejected");
                             toast.success("Data reservasi berhasil ditolak", {
                                 style: {
                                     background: "white",
