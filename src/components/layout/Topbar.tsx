@@ -118,7 +118,8 @@ export default function AdminTopbar() {
         <Dialog
           open={isProfileDialogOpen}
           onOpenChange={setIsProfileDialogOpen}
-        >
+        > 
+          <DialogTitle></DialogTitle>
           <DialogContent className="sm:max-w-2xl bg-white text-black">
             <div className="mt-4">
               <ProfilePage />

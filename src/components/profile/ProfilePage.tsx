@@ -2,6 +2,7 @@
 
 import { useState, useEffect, forwardRef, InputHTMLAttributes } from 'react';
 import { Button } from '@/components/ui/button';
+import { ChangePasswordDialog } from '@/components/change-password/ChangePasswordDialog'; 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -16,13 +17,13 @@ interface UpdatePayload {
   name: string;
   email: string;
   username: string;
-  password?: string; // Tambahkan field password untuk verifikasi
+  password?: string;
 }
 
 const ProfilePage = () => {
   const [formData, setFormData] = useState({ name: '', email: '' });
-  const [password, setPassword] = useState(''); // State untuk password verifikasi
-  const [showPasswordField, setShowPasswordField] = useState(false); // Toggle field password
+  const [password, setPassword] = useState(''); 
+  const [showPasswordField, setShowPasswordField] = useState(false); 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,7 +62,6 @@ const ProfilePage = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Jika email diubah, tampilkan field password
     if (name === 'email' && value !== userProfile?.email) {
       setShowPasswordField(true);
     }
@@ -88,8 +88,6 @@ const ProfilePage = () => {
       setMessage({ type: 'error', text: 'ID Pengguna tidak valid. Gagal menyimpan.' });
       return;
     }
-
-    // Validasi jika email berubah tapi password kosong
     if (formData.email !== userProfile.email && !password) {
       setMessage({ type: 'error', text: 'Password diperlukan untuk mengubah email' });
       return;
@@ -105,7 +103,7 @@ const ProfilePage = () => {
       const payload: UpdatePayload = { 
         ...formData, 
         username: userProfile.username,
-        ...(formData.email !== userProfile.email && { password }) // Sertakan password hanya jika email berubah
+        ...(formData.email !== userProfile.email && { password }) 
       };
 
       const response = await fetch(`${API_URL}/api/users/${userProfile.id}`, {
@@ -189,9 +187,10 @@ const ProfilePage = () => {
       </div>
 
       <div className="pt-12 flex items-center justify-between">
-        <a href="/change-password" className={`text-sm font-medium text-custom-orange hover:text-orange-600 ${isEditMode ? 'hidden' : 'block'}`}>
-          Ganti Password
-        </a>
+        <div className={isEditMode ? 'hidden' : 'block'}>
+           <ChangePasswordDialog />
+        </div>
+
         <div className="flex items-center gap-3 ml-auto">
           {isEditMode ? (
             <>
