@@ -1,6 +1,6 @@
 // app/admin/dashboard/utils.ts
 
-import api from '@/lib/api'; // kamu pakai Axios interceptor di sini
+import { apiClient as api } from '@/lib/api-client'; // kamu pakai Axios interceptor di sini
 import { SummaryData, Transaction, TopCategory } from './types';
 
 export async function fetchSummary(mosqueId: string): Promise<SummaryData> {

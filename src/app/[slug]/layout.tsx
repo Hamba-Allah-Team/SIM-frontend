@@ -15,12 +15,12 @@ async function getMasjidLayoutData(slug: string) {
 }
 
 export default async function GuestLayout({ children, params }: { children: ReactNode, params: { slug: string } }) {
-    const { slug } = params;
+    const { slug } = await params;
     const masjidData = await getMasjidLayoutData(slug);
 
     return (
         <div className="relative min-h-screen bg-[#F8F9FA]">
-            <Navbar />
+            <Navbar slug={slug}/>
             <main>
                 {children}
             </main>

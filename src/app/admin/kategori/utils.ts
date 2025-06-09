@@ -1,4 +1,4 @@
-import api from "@/lib/api"
+import { apiClient as api } from '@/lib/api-client';
 import { TransactionCategory, TransactionCategoryResponse } from "./types"
 
 export async function getTransactionCategories(mosqueId: number): Promise<TransactionCategory[]> {

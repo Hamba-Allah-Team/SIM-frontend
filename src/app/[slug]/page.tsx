@@ -59,7 +59,7 @@ async function getKegiatanPage(slug: string) {
 }
 
 export default async function MasjidPage({ params }: { params: { slug: string } }) {
-    const { slug } = params;
+    const { slug } = await params;
 
     const masjidData = await getMasjidDataPage(slug);
 
