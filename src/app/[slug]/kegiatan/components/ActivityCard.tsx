@@ -72,7 +72,7 @@ export default function ActivityCard({ item }: { item: KegiatanItem }) {
                     </div>
                     <DialogFooter className="p-6 pt-0">
                         <DialogClose asChild>
-                            <Button type="button" variant="secondary" className="w-full rounded-full">
+                            <Button type="button" variant="secondary" className="w-full text-slate-600/80 rounded-full border border-slate-200 hover:bg-slate-50">
                                 Tutup
                             </Button>
                         </DialogClose>

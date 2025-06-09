@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { apiClient as api } from '@/lib/api-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarX2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Impor komponen yang akan kita buat di bawah
 import PageHeader from './components/PageHeader';
@@ -94,8 +94,11 @@ export default function KegiatanPage() {
                                 <ActivityCard key={item.id} item={item} />
                             ))
                         ) : (
-                            <div className="text-center py-20">
-                                <p className="text-slate-500">Tidak ada kegiatan mendatang yang dijadwalkan.</p>
+                            // 👈 PERBAIKAN DI SINI: Tampilan empty state yang lebih baik
+                            <div className="text-center py-20 border-2 border-dashed rounded-lg">
+                                <CalendarX2 className="mx-auto w-16 h-16 text-slate-300 mb-4" />
+                                <h3 className="text-lg font-semibold text-slate-600">Tidak Ada Kegiatan</h3>
+                                <p className="text-sm text-slate-400">Belum ada kegiatan mendatang yang dijadwalkan.</p>
                             </div>
                         )}
                     </div>
