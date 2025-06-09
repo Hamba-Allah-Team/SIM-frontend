@@ -36,8 +36,8 @@ export default function GuestNewsList({ slug, mosqueName }: GuestNewsListProps) 
       try {
         const res = await fetch(`${API}/api/guest/content/${slug}`);
         if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || "Gagal memuat berita");
+          const { message } = await res.json().catch(() => ({ message: null }));
+          throw new Error(message || "Gagal memuat berita");
         }
 
         const json = await res.json();
@@ -64,7 +64,8 @@ export default function GuestNewsList({ slug, mosqueName }: GuestNewsListProps) 
 
         setBerita(mapped);
       } catch (err: any) {
-        setError(err.message || "Terjadi kesalahan saat memuat berita");
+        console.error("Gagal fetch berita:", err.message); // tampilkan di console
+        setError("Terjadi kesalahan saat memuat berita."); // tampilkan pesan umum ke user
       } finally {
         setLoading(false);
       }
@@ -81,7 +82,11 @@ export default function GuestNewsList({ slug, mosqueName }: GuestNewsListProps) 
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
 
   if (loading) return <div className="p-4">Memuat berita...</div>;
-  if (error) return <div className="p-4 text-red-600">Error: {error}</div>;
+  if (error) return (
+    <div className="text-center text-gray-500 mt-8">
+      Tidak ada berita untuk saat ini
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
