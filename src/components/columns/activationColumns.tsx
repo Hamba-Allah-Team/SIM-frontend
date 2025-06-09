@@ -25,10 +25,10 @@ export const columns = (
       <div className="flex space-x-2">
         <Button
           size="sm"
-          variant="outline"
+          variant="ghost"
           onClick={() => onDetail(row.original)}
         >
-          Detail
+          Tinjau
         </Button>
       </div>
     ),

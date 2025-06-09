@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { PenLine, CircleEllipsis, Trash2 } from "lucide-react";
+import { PenLine, CircleEllipsis, Trash2, Eye } from "lucide-react";
 
 export type Mosque = {
   name: string;
@@ -59,7 +59,7 @@ export const columns = (
             className="flex items-center gap-1 p-1"
             onClick={() => onDetail?.(user)}
           >
-            <PenLine size={16} />
+            <Eye size={16} />
             <span>Detail</span>
           </Button>
           {/* <Button

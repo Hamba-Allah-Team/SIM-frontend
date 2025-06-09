@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle, AlertTriangle, XCircle, Info } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, FileText  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -48,7 +48,7 @@ function AlertModal({
   type?: AlertType;
 }) {
   let color = "";
-  let Icon: React.ElementType = Info;
+  let Icon: React.ElementType = FileText ;
 
   switch (type) {
     case "success":
@@ -137,15 +137,15 @@ const columns = (
     cell: ({ row }) => (
       <div
         onClick={() => onDetail(row.original)}
-        className="flex items-center gap-1 text-black cursor-pointer hover:underline select-none"
+        className="flex items-center gap-1"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") onDetail(row.original);
         }}
       >
-        <Info className="w-5 h-5" />
-        <span>Detail</span>
+        <FileText  size={16} />
+        <span>Tinjau</span>
       </div>
     ),
   },
@@ -299,7 +299,7 @@ export default function ActivationPage() {
   const baseURL = API;
 
   return (
-    <div className="p-6">
+    <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
       <h1 className="text-2xl font-bold mb-4 text-black">
         Permintaan Aktivasi
       </h1>
@@ -381,7 +381,7 @@ export default function ActivationPage() {
                   onClick={() => {
                     if(selectedRequest) handleActionClick(selectedRequest, "reject");
                   }}
-                  className="bg-red-600 text-white hover:bg-red-700"
+                  className="bg-red-500 text-white hover:bg-red-600"
                   disabled={actionLoading}
                 >
                   Tolak
@@ -437,7 +437,7 @@ export default function ActivationPage() {
 
           <DialogFooter>
             <Button
-              className="bg-white text-black border border-gray-300 hover:text-black hover:bg-gray-100"
+              className="bg-white text-black hover:text-black hover:bg-gray-100"
               onClick={() => {
                 setConfirmActionOpen(false);
                 setActionType(null);
@@ -451,8 +451,8 @@ export default function ActivationPage() {
               onClick={handleConfirmAction}
               className={`${
                 actionType === "approve"
-                  ? "bg-custom-orange hover:bg-orange-600"
-                  : "bg-red-600 hover:bg-red-700"
+                  ? "bg-custom-orange hover:bg-orange-600 "
+                  : "bg-red-600 hover:bg-red-700 "
               } text-white`}
               disabled={actionLoading}
             >
