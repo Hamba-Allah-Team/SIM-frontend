@@ -14,7 +14,7 @@ export default function Navbar({ slug }: { slug: string }) {
         { label: "Artikel", href: `/${safeSlug}/artikel` },
         { label: "Kegiatan", href: `/${safeSlug}/kegiatan` },
         { label: "Reservasi", href: `/${safeSlug}/reservasi` },
-        { label: "Kontak", href: `/${safeSlug}/kontak` },
+        { label: "Kontak", href: "#kontak" },
     ];
 
     return (
