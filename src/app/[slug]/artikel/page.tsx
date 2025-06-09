@@ -52,7 +52,7 @@ export default function BeritaPage() {
       {/* Main content */}
       <main className="flex-grow">
         {error ? (
-          <div className="text-center text-red-600 mt-8">{error}</div>
+          <div className="text-center text-gray-500 mt-8">{error}</div>
         ) : loading ? (
           <div className="text-center text-gray-500 mt-8">Memuat data masjid...</div>
         ) : (

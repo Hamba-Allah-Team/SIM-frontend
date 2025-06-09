@@ -80,8 +80,8 @@ export default function GuestNewsList({ slug, mosqueName }: GuestNewsListProps) 
   const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
 
-  if (loading) return <div className="p-4">Memuat artikel...</div>;
-  if (error) return <div className="p-4 text-red-600">Error: {error}</div>;
+  if (loading) return <div className="text-center text-gray-500 mt-8">Memuat artikel...</div>;
+  if (error) return <div className="text-center text-gray-500 mt-8">{error}</div>;
 
   return (
     <div className="min-h-screen flex flex-col">
