@@ -289,7 +289,7 @@ export default function UserPage() {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
       <h1 className="text-2xl font-bold mb-4 text-black">User Admin</h1>
 
       <DataTable columns={columns} data={filtered} loading={loading} />

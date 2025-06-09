@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle, AlertTriangle, XCircle, Info } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, FileText  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -46,7 +46,7 @@ function AlertModal({
   type?: AlertType;
 }) {
   let color = "";
-  let Icon: React.ElementType = Info;
+  let Icon: React.ElementType = FileText ;
 
   switch (type) {
     case "success":
@@ -136,15 +136,15 @@ const columns = (
     cell: ({ row }) => (
       <div
         onClick={() => onDetail(row.original)}
-        className="flex items-center gap-1 text-black cursor-pointer hover:underline select-none"
+        className="flex items-center gap-1"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") onDetail(row.original);
         }}
       >
-        <Info className="w-5 h-5" />
-        <span>Detail</span>
+        <FileText  size={16} />
+        <span>Tinjau</span>
       </div>
     ),
   },
@@ -291,7 +291,7 @@ export default function ExtensionPage() {
   const baseURL = API;
 
   return (
-    <div className="p-6">
+    <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
       <h1 className="text-2xl font-bold mb-4 text-black">
         Permintaan Ekstensi
       </h1>
@@ -366,7 +366,7 @@ export default function ExtensionPage() {
               <div className="flex gap-2">
                 <Button
                   onClick={() => handleActionClick(selectedRequest, "reject")}
-                  className="bg-white text-black border border-gray-300 hover:text-white"
+                  className="bg-red-500 text-white border hover:text-white"
                   disabled={actionLoading}
                 >
                   {actionLoading && actionType === "reject"
@@ -375,7 +375,7 @@ export default function ExtensionPage() {
                 </Button>
                 <Button
                   onClick={() => handleActionClick(selectedRequest, "approve")}
-                  className="bg-custom-orange text-white border border-gray-300 hover:text-white"
+                  className="bg-custom-orange text-white border hover:text-white"
                   disabled={actionLoading}
                 >
                   {actionLoading && actionType === "approve"
