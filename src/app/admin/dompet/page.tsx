@@ -6,7 +6,7 @@ import { ListPlus, HandCoins, RefreshCw } from "lucide-react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table"; // Pastikan path ke DataTable benar
 import { Button } from "@/components/ui/button";
-import api from "@/lib/api";
+import { apiClient as api } from '@/lib/api-client';
 import { WalletApiResponse, Dompet } from "./types";
 import { mapWalletApiToDompet } from "./utils";
 import { useUserProfile } from "@/hooks/useUserProfile";

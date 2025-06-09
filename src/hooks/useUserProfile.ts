@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import api from "@/lib/api"
+import { apiClient as api } from '@/lib/api-client';
 import axios from "axios"
 
 interface UserProfile {

@@ -1,4 +1,4 @@
-import api from "@/lib/api"; // Pastikan path ini benar
+import { apiClient as api } from '@/lib/api-client'; // Pastikan path ini benar
 import { Activity } from "./types";
 import axios from "axios";
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import api from "@/lib/api"
+import { apiClient as api } from '@/lib/api-client';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {

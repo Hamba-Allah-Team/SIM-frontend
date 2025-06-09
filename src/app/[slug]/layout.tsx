@@ -15,15 +15,19 @@ async function getMasjidLayoutData(slug: string) {
 }
 
 export default async function GuestLayout({ children, params }: { children: ReactNode, params: { slug: string } }) {
-    const masjidData = await getMasjidLayoutData(params.slug);
+    const { slug } = await params;
+    const masjidData = await getMasjidLayoutData(slug);
 
     return (
-        <div className="relative min-h-screen bg-[#F8F9FA]">
-            <Navbar />
-            <main>
-                {children}
-            </main>
-            {masjidData && <Footer masjidData={masjidData} />}
-        </div>
+        <>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css" />
+            <div className="relative min-h-screen bg-[#F8F9FA]">
+                <Navbar slug={slug} />
+                <main>
+                    {children}
+                </main>
+                {masjidData && <Footer masjidData={masjidData} />}
+            </div>
+        </>
     );
 }

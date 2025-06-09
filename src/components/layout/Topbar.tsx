@@ -1,47 +1,58 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Moon, Sun, Search, LogOut, ChevronDown } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useUserProfile } from "@/hooks/useUserProfile"
-import { useRouter } from "next/navigation"
+import * as React from "react";
+import { Moon, Sun, Search, LogOut, ChevronDown, User } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import ProfilePage from "@/components/profile/ProfilePage";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function AdminTopbar() {
-  const { theme, setTheme } = useTheme()
-  const { profile } = useUserProfile()
-  const router = useRouter()
-  const [searchTerm, setSearchTerm] = React.useState("")
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = React.useState(false);
+  const { theme, setTheme } = useTheme();
+  const { profile } = useUserProfile();
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    router.replace("/login")
-  }
+    localStorage.removeItem("token");
+    router.replace("/login");
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchTerm(value)
+    const value = e.target.value;
+    setSearchTerm(value);
 
     const searchEvent = new CustomEvent("globalSearch", {
-      detail: { searchTerm: value }
-    })
-    window.dispatchEvent(searchEvent)
-  }
+      detail: { searchTerm: value },
+    });
+    window.dispatchEvent(searchEvent);
+  };
 
   return (
     // 1. Mengubah latar belakang menjadi bg-white secara eksplisit
     <header className="w-full bg-white rounded-xl p-4 mb-4 shadow-sm flex items-center justify-between gap-4 border border-slate-200/80">
       {/* Search Input */}
       <div className="relative w-full max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+        <Search
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          size={16}
+        />
         <Input
           type="text"
           placeholder="Pencarian..."
@@ -68,29 +79,54 @@ export default function AdminTopbar() {
         </Button>
 
         {/* User Greeting & Dropdown */}
+        {/* DropdownMenu yang sudah dimodifikasi */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-100">
               <div className="text-sm text-right">
-                {/* 4. Memberi warna teks yang konsisten */}
                 <div className="text-slate-500 text-xs">Halo</div>
-                <div className="font-semibold text-slate-800">{profile?.name || "Pengguna"}</div>
+                <div className="font-semibold text-slate-800">
+                  {profile?.name || "Pengguna"}
+                </div>
               </div>
               <ChevronDown className="h-4 w-4 text-slate-500 transition-transform duration-200 group-data-[state=open]:-rotate-180" />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            // 5. Mengubah latar dropdown menjadi putih dan memberi border
             className="w-48 mt-2 bg-white border-slate-200/80 shadow-lg"
           >
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10 flex items-center gap-2">
+            <DropdownMenuItem
+              onClick={() => setIsProfileDialogOpen(true)}
+              onSelect={(e) => e.preventDefault()}
+              className="cursor-pointer text-slate-800 focus:text-slate-800 focus:bg-slate-800/10 flex items-center gap-2"
+            >
+              <User size={14} />
+              <span>Profil</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10 flex items-center gap-2"
+            >
               <LogOut size={14} />
-              Logout
+              <span>Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        
+        <Dialog
+          open={isProfileDialogOpen}
+          onOpenChange={setIsProfileDialogOpen}
+        > 
+          <DialogTitle></DialogTitle>
+          <DialogContent className="sm:max-w-2xl bg-white text-black">
+            <div className="mt-4">
+              <ProfilePage />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </header>
-  )
+  );
 }

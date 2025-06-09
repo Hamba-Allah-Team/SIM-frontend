@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { PenLine, CircleEllipsis, Trash2 } from "lucide-react";
+import { PenLine, CircleEllipsis, Trash2, Eye } from "lucide-react";
 
 export type Mosque = {
   name: string;
@@ -34,18 +34,26 @@ export const columns = (
     accessorFn: (row) => row.mosque?.name || "-",
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      const displayText = status === "active" ? "Aktif" : "Nonaktif";
-      return (
-        <span className={`${status === "active" ? "aktif text-black" : "text-black"}`}>
-          {displayText}
-        </span>
-      );
-    },
+  accessorKey: "status",
+  header: "Status",
+  cell: ({ row }) => {
+    const status = row.original.status;
+    const isActive = status === "active";
+
+    // Tentukan kelas CSS berdasarkan status
+    const statusClasses = isActive
+      ? "bg-green-100 text-green-800 dark:bg-green-100 dark:text-green-800" 
+      : "bg-red-100 text-red-800 dark:bg-red-100 dark:text-red-800"; 
+
+    return (
+      <span
+        className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
+      >
+        {isActive ? "Aktif" : "Nonaktif"}
+      </span>
+    );
   },
+},
   {
     id: "actions",
     header: "Aksi",
@@ -59,7 +67,7 @@ export const columns = (
             className="flex items-center gap-1 p-1"
             onClick={() => onDetail?.(user)}
           >
-            <PenLine size={16} />
+            <Eye size={16} />
             <span>Detail</span>
           </Button>
           {/* <Button

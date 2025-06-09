@@ -1,7 +1,7 @@
 import { Keuangan, Transaction, Wallet, TransactionCategory } from "./types";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import api from "@/lib/api";
+import { apiClient as api } from '@/lib/api-client';
 
 export async function fetchWalletsByMosque(mosqueId: number): Promise<Record<number, Wallet>> {
     try {
