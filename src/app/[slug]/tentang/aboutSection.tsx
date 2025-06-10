@@ -12,14 +12,13 @@ interface AboutSectionProps {
 export default function AboutSection({ data }: AboutSectionProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header disesuaikan dengan PageHeader */}
-      <div className="bg-[#EBF1F4] py-16 pt-32">
+      {/* <div className="bg-[#EBF1F4] py-16 pt-32">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-[#0A1E4A] text-center">
             Tentang {data.name}
           </h1>
         </div>
-      </div>
+      </div> */}
 
       {/* Content */}
       <div className="max-w-5xl mx-auto mt-16 px-4 flex-grow">
