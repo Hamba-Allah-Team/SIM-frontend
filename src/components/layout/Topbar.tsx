@@ -50,7 +50,7 @@ export default function AdminTopbar() {
           value={searchTerm}
           onChange={handleSearchChange}
           // 2. Memberi warna latar yang konsisten pada input
-          className="pl-10 pr-4 py-2 h-10 bg-slate-100 border-transparent rounded-full text-sm focus:ring-2 focus:ring-orange-400 focus:bg-white"
+          className="pl-10 pr-4 py-2 h-10 bg-slate-100 border-transparent rounded-full text-sm focus:ring-2 focus:ring-orange-400 focus:bg-white text-slate-600"
         />
       </div>
 
@@ -89,7 +89,7 @@ export default function AdminTopbar() {
             {profile?.role === 'admin' && (
               <>
                 <DropdownMenuItem className="cursor-pointer text-slate-800 focus:text-slate-800 focus:bg-slate-800/10 flex items-center gap-2">
-                  <Link href="/profile">
+                  <Link href="/profile" className="flex flex-row gap-2">
                     <User size={14} />
                     Profil
                   </Link>
