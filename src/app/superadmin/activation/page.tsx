@@ -118,9 +118,35 @@ const columns = (
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <span className="capitalize">{row.original.status}</span>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status.toLowerCase();
+      let statusClasses = "";
+
+      switch (status) {
+        case "approved": // Diubah dari 'accepted' menjadi 'approved'
+          statusClasses = "bg-green-100 text-green-800";
+          break;
+        case "pending":
+          statusClasses = "bg-yellow-100 text-yellow-800";
+          break;
+        case "rejected":
+          statusClasses = "bg-red-100 text-red-800";
+          break;
+        default:
+          statusClasses = "bg-gray-100 text-gray-800";
+          break;
+      }
+
+      return (
+        <div className="flex justify-start">
+          <span
+            className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
+          >
+            {row.original.status}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
@@ -308,33 +334,35 @@ export default function ActivationPage() {
 
   return (
     <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
-      <h1 className="text-2xl font-bold mb-4 text-black">
-        Permintaan Aktivasi
-      </h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-black">
+          Permintaan Aktivasi
+        </h1>
 
-      <div className="flex gap-2 mb-4">
-        <Button
-          onClick={() => setFilterStatus("pending")}
-          variant={filterStatus === "pending" ? "default" : "outline"}
-          className={
-            filterStatus === "pending"
-              ? "bg-custom-orange text-white hover:bg-orange-600"
-              : "bg-white text-gray-800"
-          }
-        >
-          Pending
-        </Button>
-        <Button
-          onClick={() => setFilterStatus("history")}
-          variant={filterStatus === "history" ? "default" : "outline"}
-          className={
-            filterStatus === "history"
-              ? "bg-custom-orange text-white hover:bg-orange-600"
-              : "bg-white text-gray-800"
-          }
-        >
-          Riwayat
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setFilterStatus("pending")}
+            variant={filterStatus === "pending" ? "default" : "outline"}
+            className={
+              filterStatus === "pending"
+                ? "bg-custom-orange text-white hover:bg-orange-600"
+                : "bg-white text-gray-800"
+            }
+          >
+            Pending
+          </Button>
+          <Button
+            onClick={() => setFilterStatus("history")}
+            variant={filterStatus === "history" ? "default" : "outline"}
+            className={
+              filterStatus === "history"
+                ? "bg-custom-orange text-white hover:bg-orange-600"
+                : "bg-white text-gray-800"
+            }
+          >
+            Riwayat
+          </Button>
+        </div>
       </div>
 
       <DataTable columns={actionColumns} data={filtered} loading={loading} />
