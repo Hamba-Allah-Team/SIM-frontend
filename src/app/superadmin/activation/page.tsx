@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,12 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle, AlertTriangle, XCircle, FileText  } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 
-// Komponen InfoRow tetap sama
 function InfoRow({
   label,
   value,
@@ -33,7 +32,6 @@ function InfoRow({
 
 type AlertType = "success" | "error" | "info";
 
-// Komponen AlertModal tetap sama
 function AlertModal({
   open,
   onClose,
@@ -48,7 +46,7 @@ function AlertModal({
   type?: AlertType;
 }) {
   let color = "";
-  let Icon: React.ElementType = FileText ;
+  let Icon: React.ElementType = FileText;
 
   switch (type) {
     case "success":
@@ -100,7 +98,6 @@ export type ActivationData = {
   proof_image?: string | null;
 };
 
-// Definisi kolom DataTable tetap sama
 const columns = (
   onDetail: (req: ActivationData) => void,
   onApprove: (req: ActivationData) => void,
@@ -137,19 +134,21 @@ const columns = (
     cell: ({ row }) => (
       <div
         onClick={() => onDetail(row.original)}
-        className="flex items-center gap-1"
+        className="flex items-center gap-1 cursor-pointer"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") onDetail(row.original);
         }}
       >
-        <FileText  size={16} />
+        <FileText size={16} />
         <span>Tinjau</span>
       </div>
     ),
   },
 ];
+
+type FilterStatus = "pending" | "history";
 
 export default function ActivationPage() {
   const [requests, setRequests] = useState<ActivationData[]>([]);
@@ -169,8 +168,9 @@ export default function ActivationPage() {
     type: "info" as AlertType,
   });
   const [actionLoading, setActionLoading] = useState(false);
-  // State untuk melacak error saat memuat gambar bukti
   const [proofImageError, setProofImageError] = useState(false);
+
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("pending");
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
   const token =
@@ -186,35 +186,43 @@ export default function ActivationPage() {
     };
   }, []);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${API}/api/activations?status=pending&limit=100`,
-        {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-      if (!res.ok) throw new Error("Gagal memuat data");
-      const json = await res.json();
-      setRequests(json.activations || []);
-    } catch {
-      setAlert({
-        open: true,
-        title: "Error",
-        message: "Gagal memuat data aktivasi.",
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = useCallback(
+    async (status: FilterStatus) => {
+      setLoading(true);
+      const statusQuery =
+        status === "pending" ? "status=pending" : "status=approved,rejected";
+
+      try {
+        const res = await fetch(
+          `${API}/api/activations?${statusQuery}&limit=100`,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : "",
+            },
+          }
+        );
+        if (!res.ok) throw new Error("Gagal memuat data");
+        const json = await res.json();
+        setRequests(json.activations || []);
+      } catch {
+        setAlert({
+          open: true,
+          title: "Error",
+          message: "Gagal memuat data aktivasi.",
+          type: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [API, token]
+  );
 
   useEffect(() => {
-    if (API) fetchData();
-  }, [API]);
+    if (API) {
+      fetchData(filterStatus);
+    }
+  }, [API, filterStatus, fetchData]);
 
   useEffect(() => {
     if (selectedRequest) {
@@ -240,7 +248,7 @@ export default function ActivationPage() {
     req: ActivationData,
     type: "approve" | "reject"
   ) => {
-    setSelectedRequest(req); 
+    setSelectedRequest(req);
     setActionType(type);
     setConfirmActionOpen(true);
   };
@@ -273,8 +281,8 @@ export default function ActivationPage() {
       });
 
       setConfirmActionOpen(false);
-      setSelectedRequest(null); 
-      await fetchData();
+      setSelectedRequest(null);
+      await fetchData(filterStatus);
     } catch {
       setAlert({
         open: true,
@@ -304,10 +312,37 @@ export default function ActivationPage() {
         Permintaan Aktivasi
       </h1>
 
+      <div className="flex gap-2 mb-4">
+        <Button
+          onClick={() => setFilterStatus("pending")}
+          variant={filterStatus === "pending" ? "default" : "outline"}
+          className={
+            filterStatus === "pending"
+              ? "bg-custom-orange text-white hover:bg-orange-600"
+              : "bg-white text-gray-800"
+          }
+        >
+          Pending
+        </Button>
+        <Button
+          onClick={() => setFilterStatus("history")}
+          variant={filterStatus === "history" ? "default" : "outline"}
+          className={
+            filterStatus === "history"
+              ? "bg-custom-orange text-white hover:bg-orange-600"
+              : "bg-white text-gray-800"
+          }
+        >
+          Riwayat
+        </Button>
+      </div>
+
       <DataTable columns={actionColumns} data={filtered} loading={loading} />
 
-      {/* Modal Detail Samping */}
-      <Dialog open={!!selectedRequest && !confirmActionOpen} onOpenChange={handleCloseDetail}>
+      <Dialog
+        open={!!selectedRequest && !confirmActionOpen}
+        onOpenChange={handleCloseDetail}
+      >
         <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-4xl bg-white text-black rounded shadow-lg p-6">
           <DialogHeader>
             <DialogTitle>Detail Permintaan Aktivasi</DialogTitle>
@@ -315,7 +350,6 @@ export default function ActivationPage() {
 
           {selectedRequest && (
             <div className="mt-4 flex flex-col md:flex-row gap-6">
-              {/* Kolom kiri: Info teks */}
               <div className="flex-1 space-y-4 text-sm max-w-lg">
                 <InfoRow
                   label="Nomor Transaksi"
@@ -339,7 +373,6 @@ export default function ActivationPage() {
                 />
               </div>
 
-              {/* Kolom kanan: Gambar proof */}
               <div className="flex-1 max-w-md flex flex-col items-center justify-start pt-2 md:pt-0">
                 <label className="block font-semibold mb-2 text-gray-700 text-center md:text-left w-full">
                   Bukti Transfer
@@ -348,14 +381,17 @@ export default function ActivationPage() {
                   {selectedRequest.proof_image ? (
                     proofImageError ? (
                       <div className="w-full h-full flex flex-col items-center justify-center text-center">
-                        <XCircle className="w-20 h-20 text-red-500" strokeWidth={1.5} /> 
+                        <XCircle
+                          className="w-20 h-20 text-red-500"
+                          strokeWidth={1.5}
+                        />
                         <p className="text-sm text-red-600 mt-2 font-medium">
                           Gambar tidak dapat dimuat.
                         </p>
                       </div>
                     ) : (
                       <img
-                        key={selectedRequest.proof_image} 
+                        key={selectedRequest.proof_image}
                         src={`${baseURL}/uploads/${selectedRequest.proof_image}`}
                         alt="Bukti Transfer"
                         className="max-w-full max-h-full rounded object-contain"
@@ -379,7 +415,8 @@ export default function ActivationPage() {
               <div className="flex gap-2">
                 <Button
                   onClick={() => {
-                    if(selectedRequest) handleActionClick(selectedRequest, "reject");
+                    if (selectedRequest)
+                      handleActionClick(selectedRequest, "reject");
                   }}
                   className="bg-red-500 text-white hover:bg-red-600"
                   disabled={actionLoading}
@@ -388,7 +425,8 @@ export default function ActivationPage() {
                 </Button>
                 <Button
                   onClick={() => {
-                     if(selectedRequest) handleActionClick(selectedRequest, "approve");
+                    if (selectedRequest)
+                      handleActionClick(selectedRequest, "approve");
                   }}
                   className="bg-custom-orange text-white hover:bg-orange-600"
                   disabled={actionLoading}
@@ -401,11 +439,10 @@ export default function ActivationPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal Konfirmasi Approve/Reject */}
       <Dialog
         open={confirmActionOpen}
         onOpenChange={(isOpen) => {
-          if (actionLoading) return; 
+          if (actionLoading) return;
           setConfirmActionOpen(isOpen);
           if (!isOpen) {
             setActionType(null);
@@ -428,10 +465,10 @@ export default function ActivationPage() {
               ini?
             </p>
             {selectedRequest && (
-                 <p className="text-sm text-gray-600 mt-2">
-                 No. Transaksi: {selectedRequest.proof_number} <br/>
-                 Username: {selectedRequest.username ?? "-"}
-               </p>
+              <p className="text-sm text-gray-600 mt-2">
+                No. Transaksi: {selectedRequest.proof_number} <br />
+                Username: {selectedRequest.username ?? "-"}
+              </p>
             )}
           </div>
 
@@ -466,7 +503,6 @@ export default function ActivationPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Alert Modal */}
       <AlertModal
         open={alert.open}
         onClose={() => setAlert({ ...alert, open: false })}
