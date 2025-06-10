@@ -22,18 +22,26 @@ export function mapTransactionTypeToBackend(type: "Pemasukan" | "Pengeluaran"): 
     return type === "Pemasukan" ? "income" : "expense"
 }
 
-export function mapTransactionTypeToFrontend(type: "income" | "expense"): "Pemasukan" | "Pengeluaran" {
-    return type === "income" ? "Pemasukan" : "Pengeluaran";
+// Fungsi ini sekarang menangani semua tipe transaksi
+export function mapFullTransactionTypeToFrontend(type: Transaction['transaction_type']): Keuangan['jenis'] {
+    switch (type) {
+        case 'income': return 'Pemasukan';
+        case 'expense': return 'Pengeluaran';
+        case 'transfer_in': return 'Transfer Masuk';
+        case 'transfer_out': return 'Transfer Keluar';
+        case 'initial_balance': return 'Saldo Awal';
+        default: return 'Lainnya';
+    }
 }
 
 export async function fetchTransactionsWithWallets(
     mosqueId: number,
-    includeDeleted: boolean = false
+    filterType: string // 'cashflow', 'transfer', atau 'all'
 ): Promise<Keuangan[]> {
     try {
         const [transactionsRes, walletsMap, categoriesRes] = await Promise.all([
             api.get("/api/finance/transactions", {
-                params: { includeDeleted: includeDeleted ? "true" : "false" },
+                params: { type: filterType }, // Mengirimkan parameter filter ke backend
             }),
             fetchWalletsByMosque(mosqueId),
             api.get(`/api/finance/categories/mosque/${mosqueId}`),
@@ -47,21 +55,15 @@ export async function fetchTransactionsWithWallets(
             categoryMap[category.category_id] = category.category_name;
         });
 
-        console.log("CategoryMap:", categoryMap);
-
-        return transactions
-            .filter((item) => item.transaction_type === "income" || item.transaction_type === "expense")
-            .map((item) => ({
-                id: item.transaction_id,
-                tanggal: format(new Date(item.transaction_date), "dd MMMM yyyy", { locale: id }), // ✅ UX friendly
-                jenis: mapTransactionTypeToFrontend(item.transaction_type as "income" | "expense"),
-                dompet: walletsMap[item.wallet_id]?.wallet_name ?? "-",
-                amount: item.amount,
-                source_or_usage: item.source_or_usage,
-                kategori: categoryMap[item.category_id ?? -1] ?? "-", // ✅ aman
-                wallet_name: walletsMap[item.wallet_id]?.wallet_name ?? "-",
-                category_name: item.category_id ? categoryMap[item.category_id] ?? "-" : "-",
-            }));
+        return transactions.map((item) => ({
+            id: item.transaction_id,
+            tanggal: format(new Date(item.transaction_date), "dd MMMM yyyy", { locale: id }),
+            jenis: mapFullTransactionTypeToFrontend(item.transaction_type),
+            dompet: walletsMap[item.wallet_id]?.wallet_name ?? "-",
+            amount: item.amount,
+            source_or_usage: item.source_or_usage,
+            kategori: categoryMap[item.category_id ?? -1] ?? (item.transaction_type.includes('transfer') ? 'Transfer Dana' : '-'),
+        }));
     } catch (error) {
         console.error("Gagal mengambil transaksi:", error);
         throw new Error("Gagal mengambil data keuangan");
