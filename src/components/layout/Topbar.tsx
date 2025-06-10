@@ -100,11 +100,9 @@ export default function AdminTopbar() {
           >
             {profile?.role === 'admin' && (
               <>
-                <DropdownMenuItem className="cursor-pointer text-slate-800 focus:text-slate-800 focus:bg-slate-800/10 flex items-center gap-2">
-                  <Link href="/profile" className="flex flex-row gap-2">
+                <DropdownMenuItem className="cursor-pointer text-slate-800 focus:text-slate-800 focus:bg-slate-800/10 flex items-center gap-2" onClick={() => setIsProfileDialogOpen(true)}>
                     <User size={14} />
-                    Profil
-                  </Link>
+                    <span>Profil</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>

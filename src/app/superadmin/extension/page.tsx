@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle, AlertTriangle, XCircle, FileText  } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -46,7 +46,7 @@ function AlertModal({
   type?: AlertType;
 }) {
   let color = "";
-  let Icon: React.ElementType = FileText ;
+  let Icon: React.ElementType = FileText;
 
   switch (type) {
     case "success":
@@ -120,9 +120,35 @@ const columns = (
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <span className="capitalize">{row.original.status}</span>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status.toLowerCase();
+      let statusClasses = "";
+
+      switch (status) {
+        case "approved": // Diubah dari 'accepted' menjadi 'approved'
+          statusClasses = "bg-green-100 text-green-800";
+          break;
+        case "pending":
+          statusClasses = "bg-yellow-100 text-yellow-800";
+          break;
+        case "rejected":
+          statusClasses = "bg-red-100 text-red-800";
+          break;
+        default:
+          statusClasses = "bg-gray-100 text-gray-800";
+          break;
+      }
+
+      return (
+        <div className="flex justify-start">
+          <span
+            className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
+          >
+            {row.original.status}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
@@ -136,19 +162,21 @@ const columns = (
     cell: ({ row }) => (
       <div
         onClick={() => onDetail(row.original)}
-        className="flex items-center gap-1"
+        className="flex items-center gap- cursor-pointer"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") onDetail(row.original);
         }}
       >
-        <FileText  size={16} />
+        <FileText size={16} />
         <span>Tinjau</span>
       </div>
     ),
   },
 ];
+
+type FilterStatus = "pending" | "history";
 
 export default function ExtensionPage() {
   const [requests, setRequests] = useState<ExtensionData[]>([]);
@@ -170,6 +198,8 @@ export default function ExtensionPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [proofImageError, setProofImageError] = useState(false);
 
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("pending");
+
   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") ?? "" : "";
@@ -183,36 +213,45 @@ export default function ExtensionPage() {
       window.removeEventListener("globalSearch", handleSearch as EventListener);
     };
   }, []);
+  
+  const fetchData = useCallback(
+    async (status: FilterStatus) => {
+      setLoading(true);
+      const statusQuery =
+        status === "pending" ? "status=pending" : "status=approved,rejected";
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${API}/api/extensions?status=pending&limit=100`,
-        {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-      if (!res.ok) throw new Error("Gagal memuat data");
-      const json = await res.json();
-      setRequests(json.extensions || []);
-    } catch {
-      setAlert({
-        open: true,
-        title: "Error",
-        message: "Gagal memuat data ekstensi.",
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const res = await fetch(
+          `${API}/api/extensions?${statusQuery}&limit=100`,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : "",
+            },
+          }
+        );
+        if (!res.ok) throw new Error("Gagal memuat data");
+        const json = await res.json();
+        setRequests(json.extensions || []);
+      } catch {
+        setAlert({
+          open: true,
+          title: "Error",
+          message: "Gagal memuat data aktivasi.",
+          type: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [API, token]
+  );
 
   useEffect(() => {
-    if (API) fetchData();
-  }, [API]);
+    if (API) {
+      fetchData(filterStatus);
+    }
+  }, [API, filterStatus, fetchData]);
+
 
   const filtered = requests.filter((req) => {
     if (!searchTerm) return true;
@@ -226,7 +265,7 @@ export default function ExtensionPage() {
 
   const handleShowDetail = (req: ExtensionData) => setSelectedRequest(req);
   const handleCloseDetail = () => setSelectedRequest(null);
-
+  
   const handleActionClick = (
     req: ExtensionData,
     type: "approve" | "reject"
@@ -265,7 +304,7 @@ export default function ExtensionPage() {
 
       setConfirmActionOpen(false);
       setSelectedRequest(null);
-      await fetchData();
+      await fetchData(filterStatus);
     } catch {
       setAlert({
         open: true,
@@ -287,14 +326,40 @@ export default function ExtensionPage() {
     (req) => handleActionClick(req, "reject")
   );
 
-  // Base URL untuk gambar proof
   const baseURL = API;
 
   return (
     <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
-      <h1 className="text-2xl font-bold mb-4 text-black">
-        Permintaan Ekstensi
-      </h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-black">
+          Permintaan Perpanjangan
+        </h1>
+
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setFilterStatus("pending")}
+            variant={filterStatus === "pending" ? "default" : "outline"}
+            className={
+              filterStatus === "pending"
+                ? "bg-custom-orange text-white hover:bg-orange-600"
+                : "bg-white text-gray-800"
+            }
+          >
+            Pending
+          </Button>
+          <Button
+            onClick={() => setFilterStatus("history")}
+            variant={filterStatus === "history" ? "default" : "outline"}
+            className={
+              filterStatus === "history"
+                ? "bg-custom-orange text-white hover:bg-orange-600"
+                : "bg-white text-gray-800"
+            }
+          >
+            Riwayat
+          </Button>
+        </div>
+      </div>
 
       <DataTable columns={actionColumns} data={filtered} loading={loading} />
 

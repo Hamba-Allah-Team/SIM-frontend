@@ -8,6 +8,8 @@ export type Mosque = {
 };
 
 export type User = {
+  created_at: string | null;
+  expired_at: string | null;
   user_id: any;
   role: "admin" | "superadmin";
   name: string;
@@ -27,40 +29,58 @@ export const columns = (
   {
     accessorKey: "username",
     header: "Username",
+    meta: {
+      className: "w-1/4 font-medium",
+    },
+    cell: ({ row }) => {
+      return <div className="truncate">{row.original.username}</div>;
+    },
   },
   {
     id: "masjid",
     header: "Masjid",
     accessorFn: (row) => row.mosque?.name || "-",
+    meta: {
+      className: "w-1/4",
+    },
+    cell: ({ row }) => {
+      return <div className="truncate">{row.original.mosque?.name || "-"}</div>;
+    },
   },
   {
-  accessorKey: "status",
-  header: "Status",
-  cell: ({ row }) => {
-    const status = row.original.status;
-    const isActive = status === "active";
+    accessorKey: "status",
+    header: "Status",
+    meta: {
+      className: "w-1/4 text-left justify-start",
+    },
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const isActive = status === "active";
+      const statusClasses = isActive
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800";
 
-    // Tentukan kelas CSS berdasarkan status
-    const statusClasses = isActive
-      ? "bg-green-100 text-green-800 dark:bg-green-100 dark:text-green-800" 
-      : "bg-red-100 text-red-800 dark:bg-red-100 dark:text-red-800"; 
-
-    return (
-      <span
-        className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
-      >
-        {isActive ? "Aktif" : "Nonaktif"}
-      </span>
-    );
+      return (
+        <div className="flex justify-start">
+          <span
+            className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
+          >
+            {isActive ? "Aktif" : "Nonaktif"}
+          </span>
+        </div>
+      );
+    },
   },
-},
   {
     id: "actions",
     header: "Aksi",
+    meta: {
+      className: "w-1/4 text-left justify-start",
+    },
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="flex gap-2">
+        <div className="flex justify-start gap-2">
           <Button
             size="sm"
             variant="ghost"
@@ -70,10 +90,10 @@ export const columns = (
             <Eye size={16} />
             <span>Detail</span>
           </Button>
-          {/* <Button
+          <Button
             size="sm"
             variant="ghost"
-            className="flex items-center gap-1 p-1"
+            className="flex items-center gap-1 p-1 text-yellow-500"
             onClick={() => handleShowEdit?.(user)}
           >
             <CircleEllipsis size={16} />
@@ -82,12 +102,12 @@ export const columns = (
           <Button
             size="sm"
             variant="ghost"
-            className="flex items-center gap-1 p-1"
+            className="flex items-center gap-1 p-1 text-red-500"
             onClick={() => handleConfirmDelete?.(user)}
           >
             <Trash2 size={16} />
             <span>Hapus</span>
-          </Button> */}
+          </Button>
         </div>
       );
     },
