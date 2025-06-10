@@ -49,8 +49,12 @@ export default function ActivationNavbar() {
                 break;
             }
         }
-        setActiveSection(currentSection);
-    }, []);
+
+        if (currentSection !== activeSection) {
+            setActiveSection(currentSection);
+        }
+
+    }, [activeSection]);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
