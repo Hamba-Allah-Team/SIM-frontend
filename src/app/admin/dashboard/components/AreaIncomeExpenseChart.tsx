@@ -3,12 +3,10 @@
 'use client';
 
 import * as React from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import {
     ChartConfig,
     ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
     ChartLegend,
     ChartLegendContent,
 } from '@/components/ui/chart';
@@ -26,6 +24,17 @@ interface ChartData {
 interface Props {
     data: ChartData[];
     range: '7d' | '1m' | '1y'; // 👈 1. Menerima prop 'range'
+}
+
+interface CustomTooltipProps {
+    active?: boolean;
+    payload?: Array<{
+        dataKey: string;
+        name: string;
+        value: number;
+        color: string;
+    }>;
+    label?: string;
 }
 
 const chartConfig = {
@@ -72,6 +81,29 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
         }
     }
 
+    const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+        if (active && payload && payload.length && label) {
+            const formattedLabel = tooltipLabelFormatter(label);
+
+            return (
+                <div className="p-3 bg-white/80 border border-slate-200 rounded-lg shadow-lg">
+                    <p className="font-bold text-slate-800 mb-2">{formattedLabel}</p>
+                    {payload.map((pld) => (
+                        <div key={pld.dataKey} className="flex items-center gap-2 text-sm">
+                            <div
+                                className="w-2.5 h-2.5 rounded-full"
+                                style={{ backgroundColor: pld.color }}
+                            />
+                            <span className="font-semibold text-slate-800">
+                                {formatCurrency(pld.value)}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <ChartContainer config={chartConfig} className="min-h-[350px] w-full">
@@ -104,17 +136,8 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
                         return String(value);
                     }}
                 />
-                <ChartTooltip
-                    cursor={false}
-                    content={
-                        <ChartTooltipContent
-                            labelFormatter={tooltipLabelFormatter} // 👈 Menggunakan formatter label yang informatif
-                            indicator="dot"
-                            formatter={(value) => formatCurrency(value as number)}
-                        />
-                    }
-                />
-                <ChartLegend content={<ChartLegendContent />} className='text-slate-500'/>
+                <Tooltip cursor={false} content={<CustomTooltip />} />
+                <ChartLegend content={<ChartLegendContent />} className='text-slate-500' />
                 <defs>
                     <linearGradient id="fillIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--color-income)" stopOpacity={0.8} />
@@ -131,7 +154,6 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
                     fill="url(#fillIncome)"
                     fillOpacity={0.4}
                     stroke="var(--color-income)"
-                    stackId="a"
                     name="Pemasukan"
                 />
                 <Area
@@ -140,7 +162,6 @@ export default function AreaIncomeExpenseChart({ data, range }: Props) {
                     fill="url(#fillExpense)"
                     fillOpacity={0.4}
                     stroke="var(--color-expense)"
-                    stackId="a"
                     name="Pengeluaran"
                 />
             </AreaChart>
