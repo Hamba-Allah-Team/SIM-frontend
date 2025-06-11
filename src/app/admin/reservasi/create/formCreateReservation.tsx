@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 const formSchema = z.object({
+    title: z.string().min(1, { message: "Judul harus diisi" }),
     name: z.string().min(1, { message: "Nama harus diisi" }),
     phone_number: z.string().min(1, { message: "Nomor telepon harus diisi" }),
     room_id: z.coerce.number().min(1, { message: "Ruangan harus diisi" }),
@@ -95,6 +96,7 @@ export function FormCreateReservation() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: "",
       name: "",
       phone_number: "",
       room_id: undefined,
@@ -108,6 +110,7 @@ export function FormCreateReservation() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
       const formData = new FormData();
+      formData.append("title", values.title);
       formData.append("name", values.name);
       formData.append("phone_number", values.phone_number);
       formData.append("room_id", values.room_id.toString());
@@ -159,6 +162,35 @@ export function FormCreateReservation() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Title */}
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Judul Reservasi
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={fieldState.error ? fieldState.error.message : "Isi Judul Reservasi"}
+                  {...field}
+                  className={`
+                    bg-white
+                    text-black
+                    ${ fieldState.error 
+                      ? "border-red-500 placeholder-red-50" 
+                      : "border-gray-300 placeholder-gray-400" 
+                    }
+                    pr-10
+                  `}
+                  aria-invalid={fieldState.error ? "true" : "false"}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* Reservator Name */}
         <FormField
           control={form.control}

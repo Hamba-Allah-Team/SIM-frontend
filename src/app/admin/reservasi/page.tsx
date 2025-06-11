@@ -132,7 +132,7 @@ export default function ReservationPage() {
                         const reservation = row.original;
 
                         return (
-                            <div className="flex gap-2 justify-center">
+                            <div className="flex gap-1 md:gap-1 lg:gap-2 justify-center">
                                 {/* Tombol Setujui */}
                                 {reservation.status === "pending" && (
                                     <button

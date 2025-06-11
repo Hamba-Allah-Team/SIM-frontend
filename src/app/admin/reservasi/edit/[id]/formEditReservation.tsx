@@ -74,7 +74,10 @@ const RoomField = ({ field }: any) => {
                 <FormItem>
                     <FormLabel className="text-[16px] font-semibold font-poppins text-black">Ruangan</FormLabel>
                     <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue="" {...field}>
+                        <Select
+                            onValueChange={(val) => field.onChange(val ? Number(val) : undefined)}
+                            defaultValue={field.value ? field.value.toString() : ""}
+                        >
                             <SelectTrigger className="w-full bg-white text-black">
                                 <SelectValue placeholder="Pilih Ruangan" />
                             </SelectTrigger>

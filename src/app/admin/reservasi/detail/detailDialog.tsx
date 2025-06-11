@@ -10,6 +10,7 @@ import {
 
 type Reservation = {
     reservation_id: number;
+    title: string;
     name: string;
     phone_number: string;
     room_id: number;
@@ -82,6 +83,15 @@ export function DetailDialog({ open, onOpenChange, reservationId }: DetailDialog
                         </div>
                     ) : reservation ? (
                         <div className="mt-4 space-y-4">
+                            <div>
+                                <label className="text-[16px] font-semibold font-poppins text-black">Judul Reservasi</label>
+                                <input
+                                    type="text"
+                                    value={reservation.title}
+                                    readOnly
+                                    className="w-full bg-gray-100 text-gray-700 rounded-md border border-gray-300 px-3 py-2"
+                                />
+                            </div>
                             <div>
                                 <label className="text-[16px] font-semibold font-poppins text-black">Nama Pemesan</label>
                                 <input 
