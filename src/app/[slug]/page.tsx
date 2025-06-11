@@ -27,7 +27,6 @@ async function getJadwalSholatPage(slug: string) {
     }
 }
 
-// 👈 Fungsi ini diperbarui untuk memanggil endpoint baru
 async function getLaporanKeuanganPage(slug: string) {
     try {
         const response = await api.get(`/api/public/financial-summary/${slug}`);
@@ -58,7 +57,8 @@ async function getKegiatanPage(slug: string) {
     }
 }
 
-export default async function MasjidPage({ params }: { params: { slug: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function MasjidPage({ params }: { params: any }) {
     const { slug } = await params;
 
     const masjidData = await getMasjidDataPage(slug);

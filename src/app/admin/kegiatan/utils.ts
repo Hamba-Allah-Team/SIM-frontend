@@ -2,7 +2,7 @@ import { apiClient as api } from '@/lib/api-client'; // Pastikan path ini benar
 import { Activity } from "./types";
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 // Fungsi untuk mendapatkan URL gambar yang lengkap
 export const getFullImageUrl = (imagePath: string | null | undefined): string | null => {

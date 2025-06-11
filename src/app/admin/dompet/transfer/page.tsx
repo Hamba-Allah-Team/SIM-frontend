@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient as api } from '@/lib/api-client';
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,8 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { WalletApiResponse } from "../types";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Wallet } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 export default function TransferWalletPage() {
     const [wallets, setWallets] = useState<WalletApiResponse[]>([]);
@@ -43,6 +44,10 @@ export default function TransferWalletPage() {
         };
         fetchWallets();
     }, [profile?.mosque_id]);
+
+    const selectedFromWallet = useMemo(() => {
+        return wallets.find(w => w.wallet_id.toString() === fromWalletId);
+    }, [fromWalletId, wallets]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -107,14 +112,22 @@ export default function TransferWalletPage() {
                                 <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet sumber" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-700">
                                     {wallets.map((wallet) => (
                                         <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
-                                            {wallet.wallet_name} (Rp{wallet.balance.toLocaleString('id-ID')})
+                                            {wallet.wallet_name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
+                            {selectedFromWallet && (
+                                <div className="mt-2 flex items-center gap-2 rounded-lg bg-slate-100 p-2 text-slate-600">
+                                    <Wallet size={16} />
+                                    <p className="text-xs">
+                                        Saldo tersedia: <span className="font-semibold text-slate-800">{formatCurrency(selectedFromWallet.balance)}</span>
+                                    </p>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <Label htmlFor="toWallet" className="block text-sm font-semibold text-[#1C143D] mb-1">
@@ -124,7 +137,7 @@ export default function TransferWalletPage() {
                                 <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet tujuan" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-700">
                                     {wallets
                                         .filter((wallet) => wallet.wallet_id.toString() !== fromWalletId)
                                         .map((wallet) => (

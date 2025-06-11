@@ -17,7 +17,7 @@ import axios from "axios";
 export default function EditKegiatanPage() {
     const router = useRouter();
     const params = useParams();
-    const activityId = Number(params.id);
+    const activityId = Number(params.id);   
 
     const [eventName, setEventName] = useState("");
     const [eventDescription, setEventDescription] = useState("");
@@ -82,23 +82,13 @@ export default function EditKegiatanPage() {
         }
     };
 
-    const removeImagePreview = () => {
-        setActivityImageFile(null);
-        setImagePreview(currentImage);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-    };
-
-    const clearCurrentImageAndSelection = () => {
+    const removeImage = () => {
         setActivityImageFile(null);
         setImagePreview(null);
-        setCurrentImage(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
     };
-
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -122,6 +112,7 @@ export default function EditKegiatanPage() {
             formData.append("activityImage", activityImageFile);
         } else if (!imagePreview && currentImage) {
             // Backend perlu di-handle untuk menghapus gambar jika field 'activityImage' tidak ada
+            formData.append("deleteImage", "true");
         }
 
 
@@ -262,11 +253,7 @@ export default function EditKegiatanPage() {
                                             variant="destructive"
                                             size="icon"
                                             className="absolute top-1 right-1 h-7 w-7 opacity-70 group-hover:opacity-100 transition-opacity"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (activityImageFile) removeImagePreview();
-                                                else clearCurrentImageAndSelection();
-                                            }}
+                                            onClick={removeImage}
                                             aria-label="Hapus gambar terpilih atau gambar saat ini"
                                         >
                                             <XCircle size={16} />
