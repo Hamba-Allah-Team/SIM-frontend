@@ -1,19 +1,13 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
+import { CalendarDays } from "lucide-react"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { CalendarDays, Link } from "lucide-react"
-import { X } from "lucide-react"
-import { DialogClose } from "@/components/ui/dialog"
-
 
 type Content = {
   contents_id: number
@@ -41,6 +35,8 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchContent = async () => {
       if (open && contentId !== null) {
         setLoading(true)
@@ -55,24 +51,39 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
           if (!res.ok) throw new Error("Gagal mengambil detail konten")
 
           const json = await res.json()
-          setContent(json.data || null)
+          if (isMounted) {
+            setContent(json.data || null)
+          }
         } catch (error) {
           console.error("Error saat mengambil konten:", error)
-          setContent(null)
+          if (isMounted) {
+            setContent(null)
+          }
         } finally {
-          setLoading(false)
+          if (isMounted) setLoading(false)
         }
       }
     }
 
     fetchContent()
+
+    return () => {
+      isMounted = false
+    }
   }, [open, contentId])
+
+  useEffect(() => {
+    if (!open) {
+      setContent(null)
+      setLoading(false)
+    }
+  }, [open])
 
   if (!open) return null
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto bg-white text-black">
         <DialogHeader>
           <DialogTitle>
             <label className="text-[28px] font-bold font-poppins text-black">Detail Konten</label>
@@ -80,10 +91,9 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
         </DialogHeader>
 
         {loading ? (
-          <div className="py-8 text-center text-sm">Memuat data...</div>
+          <p className="text-gray-500 font-poppins">Memuat data...</p>
         ) : content ? (
           <div className="mt-4 space-y-4">
-            {/* Judul */}
             <div>
               <label className="text-[16px] font-semibold font-poppins text-black">Judul Konten</label>
               <input
@@ -94,7 +104,6 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
               />
             </div>
 
-            {/* Deskripsi */}
             <div>
               <label className="text-[16px] font-semibold font-poppins text-black">Isi Konten</label>
               <textarea
@@ -105,7 +114,6 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
               />
             </div>
 
-            {/* Jenis Konten */}
             <div>
               <label className="text-[16px] font-semibold font-poppins text-black">Jenis Konten</label>
               <input
@@ -116,7 +124,6 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
               />
             </div>
 
-            {/* Tanggal Rilis */}
             <div>
               <label className="text-[16px] font-semibold font-poppins text-black">Tanggal Rilis</label>
               <div className="relative">
@@ -136,7 +143,6 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
               </div>
             </div>
 
-            {/* Gambar */}
             {content.image && (
               <div>
                 <label className="text-[16px] font-semibold font-poppins text-black">Foto Cover Konten</label>
@@ -158,9 +164,8 @@ export function DetailDialog({ open, onOpenChange, contentId }: DetailDialogProp
               </div>
             )}
           </div>
-        ) 
-        : (
-          <div className="py-8 text-center text-sm text-red-600">Konten tidak ditemukan.</div>
+        ) : (
+          <p className="text-gray-500 font-poppins">Data tidak ditemukan.</p>
         )}
       </DialogContent>
     </Dialog>

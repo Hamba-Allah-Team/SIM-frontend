@@ -11,11 +11,11 @@ import {
   Building,
   MapPin,
   Phone,
-  Facebook,
-  Instagram,
   Upload,
   Landmark,
   Lock,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 export default function ActivationRegisterForm() {
@@ -23,6 +23,9 @@ export default function ActivationRegisterForm() {
   const [selectedFile, setSelectedFile] = useState("Maksimal 2 MB");
   const [preview, setPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -31,78 +34,22 @@ export default function ActivationRegisterForm() {
   }, []);
 
   const inputWrapperClass = "relative w-full";
-  const iconClass =
-    "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none";
   const inputWithIconClass =
-    "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-gray-400 placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
+    "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-black placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
+
+  const getIconClass = (name: string) =>
+    `absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300 ${
+      formValues[name]?.trim() ? "text-black" : "text-gray-400"
+    }`;
 
   const inputs = [
-    {
-      name: "username",
-      icon: <User size={20} className={iconClass} />,
-      placeholder: "Username",
-      required: true,
-    },
-    {
-      name: "email",
-      icon: <Mail size={20} className={iconClass} />,
-      placeholder: "Email",
-      required: true,
-    },
-    {
-      name: "password",
-      icon: <Lock size={20} className={iconClass} />,
-      placeholder: "Password",
-      required: true,
-    },
-    {
-      name: "confirm_password",
-      icon: <Lock size={20} className={iconClass} />,
-      placeholder: "Konfirmasi Password",
-      required: true,
-    },
-    {
-      name: "proof_number",
-      icon: <Hash size={20} className={iconClass} />,
-      placeholder: "Nomor Bukti Transfer",
-      required: true,
-    },
-    {
-      name: "mosque_name",
-      icon: <Building size={20} className={iconClass} />,
-      placeholder: "Nama Masjid",
-      required: true,
-    },
-    {
-      name: "mosque_address",
-      icon: <MapPin size={20} className={iconClass} />,
-      placeholder: "Alamat Masjid",
-      required: true,
-    },
-    {
-      name: "mosque_email",
-      icon: <Mail size={20} className={iconClass} />,
-      placeholder: "Email Masjid (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_phone_whatsapp",
-      icon: <Phone size={20} className={iconClass} />,
-      placeholder: "No. WhatsApp (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_facebook",
-      icon: <Facebook size={20} className={iconClass} />,
-      placeholder: "Tautan Facebook (opsional)",
-      required: false,
-    },
-    {
-      name: "mosque_instagram",
-      icon: <Instagram size={20} className={iconClass} />,
-      placeholder: "Tautan Instagram (opsional)",
-      required: false,
-    },
+    { name: "username", placeholder: "Username", required: true },
+    { name: "email", placeholder: "Email", required: true },
+    { name: "password", placeholder: "Password", required: true },
+    { name: "confirm_password", placeholder: "Konfirmasi Password", required: true },
+    { name: "mosque_name", placeholder: "Nama Masjid", required: true },
+    { name: "proof_number", placeholder: "Nomor Bukti Transfer", required: true },
+    { name: "mosque_address", placeholder: "Alamat Masjid", required: true },
   ];
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -121,16 +68,18 @@ export default function ActivationRegisterForm() {
     const requiredFields = [
       "username",
       "email",
-      "password", 
-      "confirm_password", 
+      "password",
+      "confirm_password",
       "proof_number",
       "mosque_name",
       "mosque_address",
     ];
 
     for (const fieldName of requiredFields) {
-      const inputConfig = inputs.find(input => input.name === fieldName);
-      const placeholderText = inputConfig ? inputConfig.placeholder.replace(" (opsional)","") : fieldName.replace(/_/g, " ");
+      const inputConfig = inputs.find((input) => input.name === fieldName);
+      const placeholderText = inputConfig
+        ? inputConfig.placeholder.replace(" (opsional)", "")
+        : fieldName.replace(/_/g, " ");
 
       if (!formData.get(fieldName) || String(formData.get(fieldName)).trim() === "") {
         alert(`Field "${placeholderText}" wajib diisi!`);
@@ -153,7 +102,6 @@ export default function ActivationRegisterForm() {
     }
     formData.delete("confirm_password");
 
-
     try {
       const response = await fetch(`${API}/api/activations/submit`, {
         method: "POST",
@@ -165,6 +113,7 @@ export default function ActivationRegisterForm() {
         alert(`Gagal mengirim permintaan. Server jawab: ${text}`);
       } else {
         form.reset();
+        setFormValues({});
         setPreview(null);
         setSelectedFile("Unggah Gambar");
         window.location.href = "/activation/register/success";
@@ -185,9 +134,7 @@ export default function ActivationRegisterForm() {
         }`}
       >
         <CardHeader className="pb-4 flex flex-col items-center text-center bg-custom-orange rounded-t-3xl">
-          <CardTitle className="text-3xl pt-2 text-white">
-            Form Aktivasi Akun
-          </CardTitle>
+          <CardTitle className="text-3xl pt-2 text-white">Form Aktivasi Akun</CardTitle>
           <div className="bg-white text-black w-full mt-6 p-4 rounded-2xl border border-custom-orange max-w-3xl mx-auto">
             <div className="flex flex-col items-center gap-3 text-center">
               <p className="text-black font-bold">Rekening BCA</p>
@@ -205,24 +152,74 @@ export default function ActivationRegisterForm() {
             onSubmit={handleSubmit}
             encType="multipart/form-data"
           >
-            {inputs.map(({ name, icon, placeholder, required }) => (
+            {inputs.map(({ name, placeholder, required }) => (
               <div key={name}>
                 <label className="block mb-1 font-medium text-white capitalize">
                   {placeholder}
                 </label>
                 <div className={inputWrapperClass}>
-                  {icon}
-                  <Input
-                    type={
-                      name.includes("email") ? "email" :
-                      name.includes("password") ? "password" : "text"
-                    }
-                    name={name}
-                    placeholder={placeholder}
-                    required={required}
-                    className={inputWithIconClass}
-                    disabled={submitting}
-                  />
+                  {["password", "confirm_password"].includes(name) ? (
+                    <>
+                      <Lock size={20} className={getIconClass(name)} />
+                      <Input
+                        type={
+                          name === "password"
+                            ? showPassword ? "text" : "password"
+                            : showConfirmPassword ? "text" : "password"
+                        }
+                        name={name}
+                        placeholder={placeholder}
+                        required={required}
+                        value={formValues[name] || ""}
+                        onChange={(e) =>
+                          setFormValues({ ...formValues, [name]: e.target.value })
+                        }
+                        className={`${inputWithIconClass} pr-10`}
+                        disabled={submitting}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          name === "password"
+                            ? setShowPassword((prev) => !prev)
+                            : setShowConfirmPassword((prev) => !prev)
+                        }
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                        tabIndex={-1}
+                      >
+                        {((name === "password" && showPassword) ||
+                        (name === "confirm_password" && showConfirmPassword)) ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {
+                        {
+                          username: <User size={20} className={getIconClass("username")} />,
+                          email: <Mail size={20} className={getIconClass("email")} />,
+                          mosque_name: <Building size={20} className={getIconClass("mosque_name")} />,
+                          proof_number: <Hash size={20} className={getIconClass("proof_number")} />,
+                          mosque_address: <MapPin size={20} className={getIconClass("mosque_address")} />,
+                        }[name]
+                      }
+                      <Input
+                        type={name.includes("email") ? "email" : "text"}
+                        name={name}
+                        placeholder={placeholder}
+                        required={required}
+                        value={formValues[name] || ""}
+                        onChange={(e) =>
+                          setFormValues({ ...formValues, [name]: e.target.value })
+                        }
+                        className={inputWithIconClass}
+                        disabled={submitting}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             ))}
@@ -248,7 +245,7 @@ export default function ActivationRegisterForm() {
                       if (file.size > maxSize) {
                         alert("Ukuran file tidak boleh lebih dari 2MB.");
                         e.target.value = "";
-                        setSelectedFile("Unggah gambar"); 
+                        setSelectedFile("Unggah gambar");
                         setPreview(null);
                         return;
                       }
@@ -266,17 +263,11 @@ export default function ActivationRegisterForm() {
                   disabled={submitting}
                 />
                 {preview ? (
-                  <img
-                    src={preview}
-                    alt="Preview" 
-                    className="object-contain w-full h-full"
-                  />
+                  <img src={preview} alt="Preview" className="object-contain w-full h-full" />
                 ) : (
                   <div className="text-center z-0">
                     <Upload size={28} className="mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm text-gray-400">
-                      Klik atau seret gambar ke sini
-                    </p>
+                    <p className="text-sm text-gray-400">Klik atau seret gambar ke sini</p>
                     <p className="text-xs text-gray-400 mt-1">{selectedFile}</p>
                   </div>
                 )}

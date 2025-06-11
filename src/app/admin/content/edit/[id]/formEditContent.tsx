@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useState, useEffect } from "react"
 import { useRouter, useParams} from "next/navigation" // useParams ambil id dari route
-
+import { toast } from "sonner"
 import {
   Form,
   FormControl,
@@ -31,9 +31,6 @@ const formSchema = z.object({
   contents_type: z.enum(["artikel", "berita"], { required_error: "Jenis konten harus dipilih" }),
 })
 
-// type Props = {
-//   id: string 
-// }
 
 export default function ContentEditForm() {
   const params = useParams()
@@ -44,6 +41,7 @@ export default function ContentEditForm() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [fileName, setFileName] = useState("")
   const [loading, setLoading] = useState(true)
+  const [deleteImage, setDeleteImage] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -106,6 +104,7 @@ export default function ContentEditForm() {
     form.setValue("image", file)
     setPreviewUrl(URL.createObjectURL(file))
     setFileName(file.name)
+    setDeleteImage(false)
   }
 
   // Handle delete image preview dan reset field
@@ -113,6 +112,7 @@ export default function ContentEditForm() {
     form.setValue("image", null)
     setPreviewUrl(null)
     setFileName("")
+    setDeleteImage(true)
   }
 
   // Cleanup preview URL ketika komponen unmount atau previewUrl berubah
@@ -130,6 +130,10 @@ export default function ContentEditForm() {
     formData.append("content_description", values.content_description)
     formData.append("published_date", values.published_date)
     formData.append("contents_type", values.contents_type)
+
+    if (deleteImage) {
+      formData.append("deleteImage", "true")
+    }
 
     if (values.image && typeof values.image !== "string") {
       formData.append("image", values.image)
@@ -150,10 +154,22 @@ export default function ContentEditForm() {
         const error = await res.json()
         throw new Error(error.message || "Gagal update data")
       }
-
+      toast.success("Konten berhasil diubah", {
+                style: {
+                  background: "white",
+                  color: "black",
+                  border: "2px solid #22c55e", // border hijau
+                },
+              });
       router.push("/admin/content")
     } catch (error: any) {
-      alert("Gagal menyimpan konten: " + error.message)
+       toast.error("Gagal menyimpan konten: " + error.message, {
+                style: {
+                  background: "#white", 
+                  color: "black",
+                  border: "2px solid #ef4444"
+                },
+              });
     }
   }
 
@@ -168,7 +184,9 @@ export default function ContentEditForm() {
           name="title"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Judul Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Judul Konten
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder={fieldState.error ? fieldState.error.message : "Judul konten di sini"}
@@ -189,7 +207,9 @@ export default function ContentEditForm() {
           name="content_description"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Isi Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Isi Konten
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder={fieldState.error ? fieldState.error.message : "Penjelasan tentang konten di sini"}
@@ -210,7 +230,9 @@ export default function ContentEditForm() {
           name="contents_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Jenis Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Jenis Konten
+              </FormLabel>
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-full bg-white text-black">
@@ -240,7 +262,9 @@ export default function ContentEditForm() {
 
             return (
               <FormItem>
-                <FormLabel>Tanggal Rilis</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Tanggal Rilis
+              </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
@@ -266,7 +290,9 @@ export default function ContentEditForm() {
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Foto Cover Konten</FormLabel>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black ">
+                Foto Cover Konten
+              </FormLabel>
               <FormControl>
                 {previewUrl ? (
                   <div className="flex flex-col gap-3">
@@ -276,7 +302,7 @@ export default function ContentEditForm() {
                         value={fileName}
                         readOnly
                         placeholder="Nama foto"
-                        className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed"
+                        className="w-full border rounded-md py-2 pl-9 pr-9 text-sm bg-gray-100 cursor-not-allowed text-gray-600 "
                       />
                       <button
                         type="button"

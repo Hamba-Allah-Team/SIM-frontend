@@ -16,7 +16,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -37,19 +43,25 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10, 
+  })
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
+      pagination,
     },
   })
 
@@ -117,7 +129,30 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end space-x-1 py-4 flex-wrap gap-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 flex-wrap">
+        {/* Select jumlah baris */}
+        <div className="flex items-center gap-2 text-sm text-slate-600">
+          <span>Tampilkan</span>
+          <Select
+            value={String(table.getState().pagination.pageSize)}
+            onValueChange={(value) => table.setPageSize(Number(value))}
+          >
+            <SelectTrigger className="w-[80px] h-8 bg-white border-slate-300">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-white text-slate-800/80 border border-slate-200">
+              {[5, 10, 20, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={String(pageSize)}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span>baris</span>
+        </div>
+
+        {/* Navigasi halaman */}
+        <div className="flex items-center space-x-1 flex-wrap gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -128,7 +163,7 @@ export function DataTable<TData, TValue>({
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
-  
+
           {Array.from({ length: table.getPageCount() }).map((_, i) => {
             const isActive = i === table.getState().pagination.pageIndex;
             return (
@@ -146,7 +181,7 @@ export function DataTable<TData, TValue>({
               </Button>
             );
           })}
-  
+
           <Button
             variant="outline"
             size="sm"
@@ -158,6 +193,7 @@ export function DataTable<TData, TValue>({
             <ChevronRightIcon className="h-4 w-4" />
           </Button>
         </div>
+      </div>
 
     </div>
   )

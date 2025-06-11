@@ -289,35 +289,70 @@ export default function UserPage() {
   );
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 text-black">User Admin</h1>
+    <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
+      <h1 className="text-2xl font-bold mb-4 text-black">User</h1>
 
       <DataTable columns={columns} data={filtered} loading={loading} />
 
       {/* Modal Detail */}
-      <Dialog open={!!selectedUser} onOpenChange={handleCloseDetail}>
-        <DialogContent className="bg-white text-black max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Detail User</DialogTitle>
-          </DialogHeader>
-          {selectedUser && (
-            <div className="space-y-4 mt-4 text-sm">
-              <InfoRow label="Nama" value={selectedUser.name} />
-              <InfoRow label="Username" value={selectedUser.username} />
-              <InfoRow label="Email" value={selectedUser.email} />
-              {selectedUser.mosque && (
-                <>
-                  <InfoRow
-                    label="Nama Masjid"
-                    value={selectedUser.mosque.name}
-                  />
-                  <InfoRow label="Alamat" value={selectedUser.mosque.address} />
-                </>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+        <Dialog open={!!selectedUser} onOpenChange={handleCloseDetail}>
+          <DialogContent className="bg-white text-black max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Detail User</DialogTitle>
+            </DialogHeader>
+            {selectedUser && (
+              <div className="space-y-4 mt-4 text-sm">
+                <InfoRow label="Username" value={selectedUser.username} />
+                <InfoRow label="Nama" value={selectedUser.name} />
+                <InfoRow label="Email" value={selectedUser.email} />
+
+                <InfoRow
+                  label="Waktu Aktivasi"
+                    value={
+                      selectedUser.created_at
+                        ? new Intl.DateTimeFormat('sv-SE', { 
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: 'Asia/Jakarta',
+                          })
+                          .format(new Date(selectedUser.created_at))
+                          .replace(' ', ' ') 
+                        : '-'
+                    }
+                />
+                <InfoRow
+                  label="Aktif Hingga"
+                    value={
+                      selectedUser.expired_at
+                        ? new Intl.DateTimeFormat('sv-SE', { 
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: 'Asia/Jakarta',
+                          })
+                          .format(new Date(selectedUser.expired_at))
+                          .replace(' ', ' ') 
+                        : '-'
+                    }
+                />            
+                {selectedUser.mosque && (
+                  <>
+                    <InfoRow
+                      label="Nama Masjid"
+                      value={selectedUser.mosque.name}
+                    />
+                    <InfoRow label="Alamat" value={selectedUser.mosque.address} />
+                  </>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
       {/* Modal Edit */}
       <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
@@ -393,7 +428,7 @@ export default function UserPage() {
             <DialogTitle className="text-center">Konfirmasi Hapus User</DialogTitle>
           </DialogHeader>
           <div className="py-4 text-center flex flex-col items-center gap-3">
-            <AlertTriangle className="w-12 h-12 text-custom-orange" />
+            <AlertTriangle className="w-12 h-12 text-red-500" />
             <p>
               Apakah Anda yakin ingin menghapus user{" "}
               <strong>{confirmDeleteUser?.username}</strong>?

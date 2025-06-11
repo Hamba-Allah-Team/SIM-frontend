@@ -63,10 +63,16 @@ export default function ExtensionForm() {
   }
 
   const inputWrapperClass = "relative w-full";
-  const iconClass =
-    "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none";
-  const inputWithIconClass =
-    "pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full text-gray-400 placeholder:text-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500";
+
+  const getIconClass = (hasValue: boolean) =>
+    `absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+      hasValue ? "text-black" : "text-gray-400"
+    }`;
+
+  const getInputClass = (hasValue: boolean) =>
+    `pl-10 bg-white hover:bg-gray-100 border-none rounded-2xl w-full placeholder:text-gray-400 transition-colors ${
+      hasValue ? "text-black" : "text-gray-400"
+    } focus:border-orange-500 focus:ring-1 focus:ring-orange-500`;
 
   return (
     <div className="w-full min-h-screen bg-custom-orange flex items-center justify-center px-4 py-6">
@@ -79,7 +85,6 @@ export default function ExtensionForm() {
           <CardTitle className="text-3xl pt-2 text-white">
             Form Perpanjangan Akun
           </CardTitle>
-          {/* Card rekening */}
           <div className="bg-white text-black w-full mt-6 p-4 rounded-2xl border border-custom-orange max-w-3xl mx-auto">
             <div className="flex flex-col items-center gap-3 text-center">
               <p className="text-black font-bold">Rekening BCA</p>
@@ -99,7 +104,7 @@ export default function ExtensionForm() {
                 Username
               </label>
               <div className={inputWrapperClass}>
-                <User size={20} className={iconClass} />
+                <User size={20} className={getIconClass(!!username)} />
                 <Input
                   type="text"
                   name="username"
@@ -107,7 +112,7 @@ export default function ExtensionForm() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className={inputWithIconClass}
+                  className={getInputClass(!!username)}
                 />
               </div>
             </div>
@@ -116,7 +121,7 @@ export default function ExtensionForm() {
             <div>
               <label className="block mb-1 font-medium text-white">Email</label>
               <div className={inputWrapperClass}>
-                <Mail size={20} className={iconClass} />
+                <Mail size={20} className={getIconClass(!!email)} />
                 <Input
                   type="email"
                   name="email"
@@ -124,7 +129,7 @@ export default function ExtensionForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={inputWithIconClass}
+                  className={getInputClass(!!email)}
                 />
               </div>
             </div>
@@ -135,7 +140,7 @@ export default function ExtensionForm() {
                 Nomor Bukti Transfer
               </label>
               <div className={inputWrapperClass}>
-                <Hash size={20} className={iconClass} />
+                <Hash size={20} className={getIconClass(!!proofNumber)} />
                 <Input
                   type="text"
                   name="proof_number"
@@ -143,15 +148,14 @@ export default function ExtensionForm() {
                   required
                   value={proofNumber}
                   onChange={(e) => setProofNumber(e.target.value)}
-                  className={inputWithIconClass}
+                  className={getInputClass(!!proofNumber)}
                 />
               </div>
             </div>
 
-            {/* Hidden Type */}
             <input type="hidden" name="type" value="extension" />
 
-            {/* Upload Bukti */}
+            {/* Upload Bukti Transfer */}
             <div>
               <label className="block mb-1 font-medium text-white">
                 Upload Bukti Transfer
@@ -207,7 +211,6 @@ export default function ExtensionForm() {
               </div>
             </div>
 
-            {/* Tombol Submit */}
             <Button
               type="submit"
               disabled={submitting}

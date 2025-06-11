@@ -1,50 +1,78 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { Keuangan } from "./types";
-import { Button } from "@/components/ui/button"
+"use client";
 
-export const columns: ColumnDef<Keuangan>[] = [
+import { ColumnDef } from "@tanstack/react-table";
+import { Keuangan } from "./types";
+import TransactionActions from "@/components/finance/FinanceAction";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+export const columns = (onDeleted: () => void): ColumnDef<Keuangan>[] => [
     {
         accessorKey: "tanggal",
-        header: () => <div className="min-w-[120px]">Tanggal</div>,
-        cell: ({ row }) =>
-            new Date(row.getValue("tanggal")).toLocaleDateString("id-ID"),
+        header: "Tanggal",
     },
     {
         accessorKey: "jenis",
-        header: () => <div className="min-w-[100px]">Jenis</div>,
+        header: "Jenis",
+        cell: ({ row }) => {
+            // 👈 PERBAIKAN 1: Logika diperbarui untuk menangani semua jenis transaksi
+            const jenis = row.original.jenis;
+            const isIncome = jenis === "Pemasukan";
+            const isExpense = jenis === "Pengeluaran";
+            const isTransfer = jenis.includes("Transfer");
+
+            return (
+                <Badge
+                    variant="outline"
+                    className={cn(
+                        "font-semibold",
+                        isIncome && "bg-green-100 text-green-800 border-green-200",
+                        isExpense && "bg-red-100 text-red-800 border-red-200",
+                        isTransfer && "bg-blue-100 text-blue-800 border-blue-200",
+                        !isIncome && !isExpense && !isTransfer && "bg-slate-100 text-slate-800 border-slate-200"
+                    )}
+                >
+                    {jenis}
+                </Badge>
+            )
+        }
+    },
+    {
+        accessorKey: "kategori",
+        header: "Kategori",
     },
     {
         accessorKey: "dompet",
-        header: () => <div className="min-w-[100px]">Dompet</div>,
-        cell: ({ row }) => row.getValue("dompet") ?? "-",
+        header: "Dompet",
     },
     {
         accessorKey: "amount",
-        header: () => <div className="min-w-[140px]">Nominal</div>,
+        header: () => <div className="text-right">Jumlah</div>,
         cell: ({ row }) => {
-            const value = row.getValue("amount") as number;
-            return `Rp ${value.toLocaleString("id-ID")}`;
+            // 👈 PERBAIKAN 2: Logika diperbarui untuk mencakup semua jenis pemasukan
+            const isPositive = ["Pemasukan", "Transfer Masuk", "Saldo Awal"].includes(row.original.jenis);
+            const isNegative = ["Pengeluaran", "Transfer Keluar"].includes(row.original.jenis);
+
+            return (
+                <div className={cn(
+                    "text-right font-medium",
+                    isPositive && "text-green-600",
+                    isNegative && "text-red-600"
+                )}>
+                    {isPositive && '+'}
+                    {isNegative && '-'}
+                    Rp {row.original.amount.toLocaleString("id-ID")}
+                </div>
+            );
         },
     },
     {
         id: "actions",
-        header: () => <div className="min-w-[200px]">Aksi</div>,
-        cell: ({ row }) => {
-            const transaksi = row.original
-
-            return (
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => alert(`Detail ID ${transaksi.id}`)}>
-                        Detail
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => alert(`Edit ID ${transaksi.id}`)}>
-                        Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => alert(`Hapus ID ${transaksi.id}`)}>
-                        Hapus
-                    </Button>
-                </div>
-            )
-        },
+        header: () => <div className="text-center">Aksi</div>,
+        cell: ({ row }) => (
+            <div className="flex justify-center items-center">
+                <TransactionActions transaction={row.original} onDeleted={onDeleted} />
+            </div>
+        ),
     },
-]
+];

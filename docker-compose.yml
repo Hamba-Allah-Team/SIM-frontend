@@ -1,6 +1,8 @@
 services:
   nextjs-app:
-    image: ${USERNAME}/simasjid-frontend:${TAG:-main}  # Gunakan image hasil build
+    image: ${USERNAME}/simasjid-frontend:${TAG:-main}
+    env_file:
+      - ./.env
     container_name: nextjs-app
     restart: unless-stopped
     expose:
