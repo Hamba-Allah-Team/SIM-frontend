@@ -13,7 +13,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useUserProfile } from "@/hooks/useUserProfile"
-import { mapTransactionTypeToBackend, mapTransactionTypeToFrontend } from "../../utils"
+import { mapTransactionTypeToBackend, mapFullTransactionTypeToFrontend } from "../../utils"
 import { AxiosError } from "axios"
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react"
@@ -64,7 +64,7 @@ export default function EditTransactionPage() {
                 const tx = txRes.data
                 setWalletId(tx.wallet_id.toString())
                 setAmount(tx.amount.toString())
-                setTransactionType(mapTransactionTypeToFrontend(tx.transaction_type))
+                setTransactionType(mapFullTransactionTypeToFrontend(tx.transaction_type) as "Pemasukan" | "Pengeluaran")
                 setSelectedCategoryId(tx.category_id.toString())
                 setDescription(tx.source_or_usage || "")
                 setTransactionDate(tx.transaction_date.slice(0, 10))

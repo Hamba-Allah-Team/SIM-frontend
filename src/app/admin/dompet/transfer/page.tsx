@@ -107,7 +107,7 @@ export default function TransferWalletPage() {
                                 <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet sumber" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-700">
                                     {wallets.map((wallet) => (
                                         <SelectItem key={wallet.wallet_id} value={wallet.wallet_id.toString()}>
                                             {wallet.wallet_name} (Rp{wallet.balance.toLocaleString('id-ID')})
@@ -124,7 +124,7 @@ export default function TransferWalletPage() {
                                 <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                     <SelectValue placeholder="Pilih dompet tujuan" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white">
+                                <SelectContent className="bg-white text-slate-700">
                                     {wallets
                                         .filter((wallet) => wallet.wallet_id.toString() !== fromWalletId)
                                         .map((wallet) => (

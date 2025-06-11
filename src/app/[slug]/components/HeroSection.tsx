@@ -14,7 +14,7 @@ export default function HeroSection({ masjid }: { masjid: MasjidData }) {
                     <div className="w-full md:w-3/5 lg:w-1/2 text-center md:text-left">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0A1E4A] leading-[1.1] mb-4">
                             Selamat Datang di <br /> 
-                            Masjid <span className="text-[#FF9357] break-words">{masjid.name}</span>
+                            <span className="text-[#FF9357] break-words">{masjid.name}</span>
                         </h1>
                         <p className="text-base md:text-lg text-slate-600 max-w-lg mx-auto md:mx-0 leading-relaxed">
                             Tempat sholat, belajar, dan beribadah bersama.

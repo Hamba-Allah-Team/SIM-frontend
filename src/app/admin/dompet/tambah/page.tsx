@@ -110,7 +110,7 @@ export default function CreateWalletPage() {
                             <SelectTrigger className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-sm text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]">
                                 <SelectValue placeholder="Pilih jenis dompet" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-white text-slate-700">
                                 <SelectItem value="cash">Uang Tunai (Cash)</SelectItem>
                                 <SelectItem value="bank">Rekening Bank</SelectItem>
                                 <SelectItem value="ewallet">E-Wallet</SelectItem>
