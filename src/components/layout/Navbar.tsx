@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MobileMenu from "./components/MobileMenu"; // Impor menu mobile yang baru
-import NavLink from "./components/Navlink";
+import NavLink from "./components/NavLink";
 
 // Komponen ini sekarang adalah Server Component murni
 export default function Navbar({ slug }: { slug: string }) {
