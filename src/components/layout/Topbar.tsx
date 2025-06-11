@@ -40,7 +40,7 @@ export default function AdminTopbar() {
     // 1. Mengubah latar belakang menjadi bg-white secara eksplisit
     <header className="w-full bg-white rounded-xl p-4 mb-4 shadow-sm flex items-center justify-between gap-4 border border-slate-200/80">
       {/* Search Input */}
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md text-black">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
         <Input
           type="text"
