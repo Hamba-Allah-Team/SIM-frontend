@@ -123,19 +123,24 @@ const columns = (
     cell: ({ row }) => {
       const status = row.original.status.toLowerCase();
       let statusClasses = "";
+      let statusText = ""; 
 
       switch (status) {
-        case "approved": // Diubah dari 'accepted' menjadi 'approved'
+        case "approved":
           statusClasses = "bg-green-100 text-green-800";
+          statusText = "Diterima"; 
           break;
         case "pending":
           statusClasses = "bg-yellow-100 text-yellow-800";
+          statusText = "Menunggu"; 
           break;
         case "rejected":
           statusClasses = "bg-red-100 text-red-800";
+          statusText = "Ditolak"; 
           break;
         default:
           statusClasses = "bg-gray-100 text-gray-800";
+          statusText = row.original.status; 
           break;
       }
 
@@ -144,7 +149,7 @@ const columns = (
           <span
             className={`px-3 py-1 font-medium rounded-full text-xs capitalize ${statusClasses}`}
           >
-            {row.original.status}
+            {statusText}
           </span>
         </div>
       );
@@ -162,7 +167,7 @@ const columns = (
     cell: ({ row }) => (
       <div
         onClick={() => onDetail(row.original)}
-        className="flex items-center gap- cursor-pointer"
+        className="flex items-center gap-1 cursor-pointer"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
