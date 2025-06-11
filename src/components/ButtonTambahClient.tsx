@@ -1,6 +1,6 @@
 "use client"
 
-import { Grid2x2Plus } from "lucide-react"
+import { ListPlus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import React from "react"
 
@@ -19,13 +19,13 @@ export default function ButtonTambah({ href, label = "Tambah" }: ButtonTambahPro
   return (
     <button
       onClick={handleTambah}
-      className="flex items-center gap-2 px-4 py-2 rounded-xl transition"
-      style={{
-        backgroundColor: "rgba(255, 147, 87, 0.25)",
-        color: "var(--color-custom-orange)",
-      }}
+      className="flex items-center gap-2 bg-[#FF8A4C] hover:bg-[#ff7a38] text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out disabled:opacity-70"
+      // style={{
+      //   backgroundColor: "rgba(255, 147, 87, 0.25)",
+      //   color: "var(--color-custom-orange)",
+      // }}
     >
-      <Grid2x2Plus size={18} />
+      <ListPlus size={18} />
       {label}
     </button>
   )
