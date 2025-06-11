@@ -6,12 +6,16 @@ WORKDIR /app
 
 # Copy only built files and dependencies
 COPY package*.json ./
-COPY node_modules/ ./node_modules/
-COPY .next/ .next/
-COPY public/ ./public/
-COPY next.config.ts ./
-COPY tsconfig.json ./
 
+RUN npm install
+
+COPY . .
+# COPY node_modules/ ./node_modules/
+# COPY .next/ .next/
+# COPY public/ ./public/
+# COPY next.config.ts ./
+# COPY tsconfig.json ./
+# COPY .env ./
 # Gunakan port 3000
 EXPOSE 3000
 
