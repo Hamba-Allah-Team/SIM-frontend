@@ -164,8 +164,8 @@ export default function ContentPage() {
   }, [handleDelete, openDetail, selectedContentId, router]);
 
   return (
-    <div className="w-full max-w-screen-xl min-h-screen px-2 sm:px-4 py-4 mx-auto">
-      <div className="bg-white p-4 rounded-xl shadow-sm">
+    <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200/80">
+      <div className="bg-white p-4 rounded-xl">
         {/* Bagian atas: judul dan tombol tambah */}
         <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
           <h1 className="text-[28px] font-bold font-poppins text-black">Kelola Konten Masjid</h1>
