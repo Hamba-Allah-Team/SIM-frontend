@@ -71,7 +71,7 @@ export default function ResetPasswordCode() {
     setResending(true);
     try {
       const res = await fetch(
-        "http://localhost:8080/api/reset-password/send-reset-password",
+        `${API}/api/reset-password/send-reset-password`,
         {
           method: "POST",
           headers: {
