@@ -24,6 +24,8 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 
 const formSchema = z.object({ 
   place_name: z.string().min(1, { message: "Nama ruangan harus diisi" }),
+  capacity: z.coerce.number().min(1, { message: "Kapasitas harus lebih dari 0" }),
+  facilities: z.string().min(1, { message: "Fasilitas harus diisi" }),
   description: z.string().min(1, { message: "Deskripsi ruangan harus diisi" }),
   image: z.any().optional(),
 })
@@ -105,6 +107,8 @@ export function FormCreateRoom() {
     defaultValues: {
       place_name: "",
       description: "",
+      capacity: undefined,
+      facilities: "",
       image: "",
     }
   })
@@ -114,6 +118,8 @@ export function FormCreateRoom() {
   
       formData.append("place_name", values.place_name);
       formData.append("description", values.description);
+      formData.append("capacity", values.capacity.toString());
+      formData.append("facilities", values.facilities);
       if (values.image) {
         formData.append("image", values.image);
       }
@@ -183,6 +189,61 @@ export function FormCreateRoom() {
                     `}
                     aria-invalid={fieldState.error ? "true" : "false"}
                   />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {/* Capacity */}
+        <FormField
+          control={form.control}
+          name="capacity"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Kapasitas
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder={fieldState.error ? fieldState.error.message : "Kapasitas Ruangan"} 
+                  {...field}
+                  className={`
+                    bg-white
+                    text-black
+                    ${ fieldState.error 
+                      ? "border-red-500 placeholder-red-50" 
+                      : "border-gray-300 placeholder-gray-400" 
+                    }
+                  `}
+                  aria-invalid={fieldState.error ? "true" : "false"}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {/* Facilities */}
+        <FormField
+          control={form.control}
+          name="facilities"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel className="text-[16px] font-semibold font-poppins text-black">
+                Fasilitas
+              </FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder={fieldState.error ? fieldState.error.message : "Fasilitas Ruangan disini"} 
+                  {...field}
+                  className={`
+                    bg-white
+                    text-black
+                    ${ fieldState.error 
+                      ? "border-red-500 placeholder-red-50" 
+                      : "border-gray-300 placeholder-gray-400" 
+                    }
+                  `}
+                  aria-invalid={fieldState.error ? "true" : "false"}
+                />
               </FormControl>
             </FormItem>
           )}
