@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { apiClient as api } from '@/lib/api-client';
 import { Button } from "@/components/ui/button"
@@ -16,15 +16,16 @@ import { useUserProfile } from "@/hooks/useUserProfile"
 import { mapTransactionTypeToBackend } from "../utils"
 import { AxiosError } from "axios"
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Wallet } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-
+import { formatCurrency } from "@/lib/utils";
 
 interface WalletOption {
     wallet_id: number
     wallet_name: string
     wallet_type: "cash" | "bank" | "ewallet" | "other"
+    balance: number
 }
 
 interface CategoryOption {
@@ -83,6 +84,10 @@ export default function CreateTransactionPage() {
 
         fetchWalletsAndCategories()
     }, [profile?.mosque_id])
+
+    const selectedWallet = useMemo(() => {
+        return wallets.find(w => w.wallet_id.toString() === walletId);
+    }, [walletId, wallets]);
 
     const filteredCategories = transactionType
         ? categories.filter(
@@ -186,6 +191,14 @@ export default function CreateTransactionPage() {
                                     ))}
                                 </SelectContent>
                             </Select>
+                            {selectedWallet && (
+                                <div className="mt-2 flex items-center gap-2 rounded-lg bg-slate-100 p-2 text-slate-600">
+                                    <Wallet size={16} />
+                                    <p className="text-xs">
+                                        Saldo tersedia: <span className="font-semibold text-slate-800">{formatCurrency(selectedWallet.balance)}</span>
+                                    </p>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <Label htmlFor="amount" className="block text-sm font-semibold text-[#1C143D] mb-1">Nominal <span className="text-red-500">*</span></Label>

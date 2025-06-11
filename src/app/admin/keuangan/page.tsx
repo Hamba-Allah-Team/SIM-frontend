@@ -100,8 +100,8 @@ export default function KeuanganPage() {
                     </Button>
                     <Button
                         onClick={() => setOpenExportModal(true)}
-                        variant="outline"
-                        className="flex items-center gap-2"
+                        variant="secondary"
+                        className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
                     >
                         <ScrollText size={16} />
                         Cetak
