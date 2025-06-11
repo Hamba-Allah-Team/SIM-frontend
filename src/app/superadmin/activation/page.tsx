@@ -339,31 +339,29 @@ export default function ActivationPage() {
 
   return (
     <div className="p-6 rounded-xl border border-slate-200/80 bg-white shadow-sm overflow-x-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-black">
-          Permintaan Aktivasi
-        </h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
+        <h1 className="text-2xl font-bold text-black">Permintaan Aktivasi</h1>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <Button
             onClick={() => setFilterStatus("pending")}
             variant={filterStatus === "pending" ? "default" : "outline"}
-            className={
+            className={`flex-1 sm:flex-none min-w-[100px] ${
               filterStatus === "pending"
                 ? "bg-custom-orange text-white hover:bg-orange-600"
                 : "bg-white text-gray-800"
-            }
+            }`}
           >
             Pending
           </Button>
           <Button
             onClick={() => setFilterStatus("history")}
             variant={filterStatus === "history" ? "default" : "outline"}
-            className={
+            className={`flex-1 sm:flex-none min-w-[100px] ${
               filterStatus === "history"
                 ? "bg-custom-orange text-white hover:bg-orange-600"
                 : "bg-white text-gray-800"
-            }
+            }`}
           >
             Riwayat
           </Button>
