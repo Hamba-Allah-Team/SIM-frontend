@@ -3,7 +3,7 @@ import ActivationExtensionForm from "@/components/activation/ActivationExtendFor
 
 export default function ActivationExtensionFormPage() {
   return (
-    <main className="flex h-screen w-screen">
+    <main className="flex h-full w-full">
       <div className="flex w-full flex-col md:flex-row">
         <div className="flex-1 flex items-center justify-center">
           <ActivationSideImage />
