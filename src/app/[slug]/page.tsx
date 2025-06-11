@@ -5,6 +5,15 @@ import { BeritaTerbaru } from './components/BeritaTerbaru';
 import { LaporanKeuangan } from './components/LaporanKeuangan';
 import { KegiatanMendatang } from './components/KegiatanMendatang';
 import api from '@/lib/api';
+import { getFullImageUrl } from '@/lib/utils';
+
+interface NewsApiResponse {
+    id: number;
+    img: string | null;
+    title: string;
+    date: string;
+    excerpt: string;
+}
 
 // --- DATA FETCHING FUNCTIONS ---
 async function getMasjidDataPage(slug: string) {
@@ -40,10 +49,19 @@ async function getLaporanKeuanganPage(slug: string) {
 async function getBeritaPage(slug: string) {
     try {
         const response = await api.get(`/api/public/news/recent/${slug}`);
-        return response.data;
+        const newsData = response.data;
+
+        // 👈 PERBAIKAN: Gunakan utility function untuk memformat URL
+        const formattedData = newsData.map((item: NewsApiResponse) => ({
+            ...item,
+            img: getFullImageUrl(item.img)
+        }));
+
+        return formattedData;
+
     } catch (error) {
         console.error("Gagal mengambil data berita:", error);
-        return []; // Kembalikan array kosong jika gagal
+        return [];
     }
 }
 
