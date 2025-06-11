@@ -21,9 +21,9 @@ export default async function GuestLayout({ children, params }: { children: Reac
     return (
         <>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css" />
-            <div className="relative min-h-screen bg-[#F8F9FA]">
+            <div className="relative flex flex-col min-h-screen bg-[#F8F9FA]">
                 <Navbar slug={slug} />
-                <main>
+                <main className="flex-grow">
                     {children}
                 </main>
                 {masjidData && <Footer masjidData={masjidData} />}
