@@ -181,7 +181,7 @@ export default function RoomDetailPage() {
                         "https://placehold.co/400x300/E0E0E0/333333?text=No+Image"
                       }
                       alt={room.place_name}
-                      className="max-h-[400px] self-center rounded-2xl mt-4 mb-6"
+                      className="min-h-[10vh] md:min-h-[30vh] lg:min-h-[45vh] self-center rounded-2xl mt-4 mb-6"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.onerror = null;
