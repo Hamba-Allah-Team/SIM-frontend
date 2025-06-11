@@ -5,7 +5,7 @@ import ButtonTambahClient from "@/components/ButtonTambahClient";
 import { Content, columns as baseColumns } from "./columns";
 import { DataTable } from "./data-table";
 import { useEffect, useState, useMemo } from "react";
-import { CircleEllipsis, Pencil, Trash2 } from "lucide-react";
+import { CircleEllipsis, Pencil, Trash2, Eye, Edit } from "lucide-react";
 import { DeleteDialog } from "./delete/deleteDialog";
 import { DetailDialog } from "./detail/detailDialog";
 
@@ -100,7 +100,7 @@ export default function ContentPage() {
                   className="btn-view flex items-center gap-1"
                   onClick={() => handleShowDetail(content.contents_id)}
                 >
-                  <CircleEllipsis className="w-4 h-4" />
+                  <Eye className="w-4 h-4" />
                   Detail
                 </button>
 
@@ -111,15 +111,15 @@ export default function ContentPage() {
                 />
 
                 <button
-                  className="btn-edit flex items-center gap-1"
+                  className="btn-edit flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                   onClick={() => router.push(`/admin/content/edit/${content.contents_id}`)} // <-- pakai router dari level atas komponen
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Edit className="w-4 h-4 " />
                   Ubah
                 </button>
 
                 <button
-                  className="btn-delete flex items-center gap-1"
+                  className="btn-delete flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700"
                   onClick={() => setOpenDialog(true)}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -165,14 +165,19 @@ export default function ContentPage() {
 
   return (
     <div className="w-full max-w-screen-xl min-h-screen px-2 sm:px-4 py-4 mx-auto">
-      <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
-        <h1 className="text-[28px] font-bold font-poppins text-black">Konten Masjid</h1>
-        <ButtonTambahClient href="/admin/content/create" label="Tambah" />
-      </div>
+      <div className="bg-white p-4 rounded-xl shadow-sm">
+        {/* Bagian atas: judul dan tombol tambah */}
+        <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
+          <h1 className="text-[28px] font-bold font-poppins text-black">Kelola Konten Masjid</h1>
+          <ButtonTambahClient href="/admin/content/create" label="Tambah Konten" />
+        </div>
 
-      <div className="p-4 bg-white rounded-xl shadow-sm overflow-x-auto">
-        <DataTable columns={columns} data={filteredData} />
+        {/* Tabel */}
+        <div className="overflow-x-auto">
+          <DataTable columns={columns} data={filteredData} />
+        </div>
       </div>
     </div>
   );
+
 }
