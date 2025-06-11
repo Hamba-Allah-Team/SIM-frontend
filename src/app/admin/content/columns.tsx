@@ -44,9 +44,17 @@ export const columns: ColumnDef<Content>[] = [
         </Button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="text-center w-full">{row.getValue("contents_type")}</div>
-    ),
+    cell: ({ row }) => {
+      const rawType = row.getValue("contents_type");
+      const type = typeof rawType === "string" ? rawType : "";
+      
+      const mapType: Record<string, string> = {
+        artikel: "Artikel",
+        berita: "Berita",
+      };
+
+      return <div className="text-center w-full">{mapType[type] || type}</div>;
+    },
   },
   {
     accessorKey: "published_date",
