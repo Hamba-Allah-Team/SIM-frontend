@@ -25,7 +25,7 @@ const formSchema = z.object({
     name: z.string().min(1, { message: "Nama harus diisi" }),
     phone_number: z.string().min(1, { message: "Nomor telepon harus diisi" }),
     room_id: z.coerce.number().min(1, { message: "Ruangan harus diisi" }),
-    description: z.string().min(1, { message: "Deskripsi harus diisi" }),
+    description: z.string().optional(),
     reservation_date: z.string().min(1, { message: "Tanggal harus diisi" }),
     start_time: z.string().min(1, { message: "Waktu mulai harus diisi" }),
     end_time: z.string().min(1, { message: "Waktu selesai harus diisi" }),
@@ -111,7 +111,7 @@ export function FormCreateReservation() {
       formData.append("name", values.name);
       formData.append("phone_number", values.phone_number);
       formData.append("room_id", values.room_id.toString());
-      formData.append("description", values.description);
+      formData.append("description", values.description || "");
       formData.append("reservation_date", values.reservation_date);
       formData.append("start_time", values.start_time);
       formData.append("end_time", values.end_time);

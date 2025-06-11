@@ -22,10 +22,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 const formSchema = z.object({
+    title: z.string().min(1, { message: "Judul harus diisi" }),
     name: z.string().min(1, { message: "Nama harus diisi" }),  
     phone_number: z.string().min(1, { message: "Nomor telepon harus diisi" }),
     room_id: z.coerce.number().min(1, { message: "Pilih ruangan" }),
-    description: z.string().min(1, { message: "Deskripsi harus diisi" }),
+    description: z.string().optional(),
     reservation_date: z.string().min(1, { message: "Tanggal reservasi harus diisi" }),
     start_time: z.string().min(1, { message: "Waktu mulai harus diisi" }),
     end_time: z.string().min(1, { message: "Waktu selesai harus diisi" }),
@@ -104,6 +105,7 @@ export default function FormEditReservation() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            title: "",
             name: "",
             phone_number: "",
             room_id: undefined,
@@ -129,6 +131,7 @@ export default function FormEditReservation() {
 
             const json = await res.json();
             form.reset({
+                title: json.data.title,
                 name: json.data.name,
                 phone_number: json.data.phone_number,
                 room_id: json.data.room_id,
@@ -173,10 +176,11 @@ export default function FormEditReservation() {
         if (!id) return alert("ID reservasi tidak ditemukan");
 
         const formData = new FormData();
+        formData.append("title", values.title);
         formData.append("name", values.name);
         formData.append("phone_number", values.phone_number);
         formData.append("room_id", values.room_id.toString());
-        formData.append("description", values.description);
+        formData.append("description", values.description || "");
         formData.append("reservation_date", values.reservation_date);
         formData.append("start_time", values.start_time);
         formData.append("end_time", values.end_time);
@@ -235,6 +239,25 @@ export default function FormEditReservation() {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel className="text-[16px] font-semibold font-poppins text-black">Judul Reservasi</FormLabel>
+                            <FormControl>
+                                <Input 
+                                    placeholder={fieldState.error ? fieldState.error.message : "Judul Reservasi"} 
+                                    {...field} 
+                                    className={`bg-white text-black ${fieldState.error ? "border-red-500 placeholder-red-50" : "border-gray-300 placeholder-gray-400"} pr-10`}
+                                    aria-invalid={fieldState.error ? "true" : "false"}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                >
+                </FormField>
                 { /* Nama Pemesan */ }
                 <FormField
                     control={form.control}
