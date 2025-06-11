@@ -17,7 +17,7 @@ import axios from "axios";
 export default function EditKegiatanPage() {
     const router = useRouter();
     const params = useParams();
-    const activityId = Number(params.id);   
+    const activityId = Number(params.id);
 
     const [eventName, setEventName] = useState("");
     const [eventDescription, setEventDescription] = useState("");
@@ -96,6 +96,18 @@ export default function EditKegiatanPage() {
 
         if (!eventName || !startDate || !startTime) {
             sonnerToast.error("Input Tidak Lengkap", { description: "Nama kegiatan, tanggal mulai, dan waktu mulai wajib diisi." });
+            setIsLoading(false);
+            return;
+        }
+
+        if (endDate && startDate && new Date(endDate) < new Date(startDate)) {
+            sonnerToast.error("Tanggal Tidak Valid", { description: "Tanggal selesai tidak boleh sebelum tanggal mulai." });
+            setIsLoading(false);
+            return;
+        }
+
+        if (endDate === startDate && endTime && startTime && endTime <= startTime) {
+            sonnerToast.error("Waktu Tidak Valid", { description: "Jam selesai harus setelah jam mulai pada hari yang sama." });
             setIsLoading(false);
             return;
         }
@@ -213,11 +225,11 @@ export default function EditKegiatanPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <Label htmlFor="endDate" className="block text-sm font-semibold text-[#1C143D] mb-1">Tanggal Selesai (Opsional)</Label>
-                            <Input id="endDate" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate || undefined} className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]" style={{ colorScheme: 'light' }}/>
+                            <Input id="endDate" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate || undefined} className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]" style={{ colorScheme: 'light' }} />
                         </div>
                         <div>
                             <Label htmlFor="endTime" className="block text-sm font-semibold text-[#1C143D] mb-1">Jam Selesai (Opsional)</Label>
-                            <Input id="endTime" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]" style={{ colorScheme: 'light' }}/>
+                            <Input id="endTime" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-[#F7F8FA] h-12 rounded-lg px-4 text-gray-700 focus:border-[#FF8A4C] focus:ring-[#FF8A4C]" style={{ colorScheme: 'light' }} />
                         </div>
                     </div>
 

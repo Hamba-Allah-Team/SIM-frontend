@@ -20,10 +20,17 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
+const initialSummaryState: SummaryData = {
+    total_income: 0,
+    total_expense: 0,
+    net_balance: 0,
+    wallet_balances: []
+};
+
 export default function DashboardPage() {
   const { profile, loading: loadingProfile } = useUserProfile()
 
-  const [summary, setSummary] = useState<SummaryData | null>(null)
+  const [summary, setSummary] = useState<SummaryData>(initialSummaryState)
   const [recentTx, setRecentTx] = useState<Transaction[]>([])
   const [topIncome, setTopIncome] = useState<TopCategory[]>([])
   const [topExpense, setTopExpense] = useState<TopCategory[]>([])
