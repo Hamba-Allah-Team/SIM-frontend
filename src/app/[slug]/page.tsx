@@ -57,8 +57,9 @@ async function getKegiatanPage(slug: string) {
     }
 }
 
-export default async function MasjidPage({ params }: { params: { slug: string } }) {
-    const { slug } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function MasjidPage({ params }: { params: any }) {
+    const { slug } = await params;
 
     const masjidData = await getMasjidDataPage(slug);
 
