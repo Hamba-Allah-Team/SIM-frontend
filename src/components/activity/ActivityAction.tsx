@@ -70,7 +70,7 @@ export default function ActivityActions({ activity, onDeleted }: ActivityActions
 
     const handleDeleteConfirm = async () => {
         setIsDeleting(true);
-        try {
+        try {   
             await deleteActivity(activity.activities_id);
             toast.success("Kegiatan berhasil dihapus.");
             onDeleted();
