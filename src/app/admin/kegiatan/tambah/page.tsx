@@ -60,6 +60,18 @@ export default function TambahKegiatanPage() {
             return;
         }
 
+        if (endDate && startDate && new Date(endDate) < new Date(startDate)) {
+            sonnerToast.error("Tanggal Tidak Valid", { description: "Tanggal selesai tidak boleh sebelum tanggal mulai." });
+            setIsLoading(false);
+            return;
+        }
+
+        if (endDate === startDate && endTime && startTime && endTime <= startTime) {
+            sonnerToast.error("Waktu Tidak Valid", { description: "Jam selesai harus setelah jam mulai pada hari yang sama." });
+            setIsLoading(false);
+            return;
+        }
+
         const formData = new FormData();
         formData.append("event_name", eventName.trim());
         if (eventDescription.trim()) formData.append("event_description", eventDescription.trim());
