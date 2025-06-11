@@ -307,7 +307,7 @@ const formatXAxis = (date: string) => {
       {/* --- Stat Cards Section --- */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <StatCard
-          title="Admin Aktif"
+          title="User"
           value={stats?.activeAdmins ?? "..."}
           icon={<Users className="h-8 w-8 text-blue-600" />}
           isLoading={loading}
