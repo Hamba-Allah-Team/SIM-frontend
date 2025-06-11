@@ -138,7 +138,7 @@ const ProfilePage = () => {
   if (!userProfile) return <div className="p-10 text-center text-red-600">{message.text || "Tidak dapat memuat data profil."}</div>;
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg text-slate-900">
+    <div className="max-w-auto mx-auto p-6 bg-white rounded-lg text-slate-900">
       <h1 className="text-2xl font-bold mb-6">Profil Saya</h1>
       {message.text && (
         <div className={`p-3 rounded-md text-sm mb-4 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
