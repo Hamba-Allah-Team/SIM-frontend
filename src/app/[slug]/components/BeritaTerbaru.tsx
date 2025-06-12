@@ -33,7 +33,7 @@ export function BeritaTerbaru({ berita, slug }: { berita: Berita[], slug: string
         <section className="container mx-auto px-4 py-16 md:py-24">
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold text-[#0A1E4A]">Berita Terbaru</h2>
-                <Button variant="outline" asChild className="border-[#FF9357] text-[#FF9357] hover:bg-[#FF9357]/10 hover:text-[#FF9357]">
+                <Button variant="outline" asChild className="border-[#FF9357] text-[#FF9357] hover:bg-[#FF9357]/10 hover:text-[#FF9357] bg-orange-50">
                     <Link href={`/${slug}/berita`}>Berita Lainnya</Link>
                 </Button>
             </div>

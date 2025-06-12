@@ -18,10 +18,12 @@ Sistem Informasi Masjid adalah sebuah aplikasi berbasis web yang dirancang untuk
 ---
 ## Daftar Isi
 
-1.  [Teknologi dan Bahasa Pemograman](#tentang-proyek)
+1.  [Tentang Proyek](#tentang-proyek)
 2.  [Persyaratan Sistem](#persyaratan-sistem)
 3.  [Panduan Instalasi & Menjalankan Proyek](#panduan-instalasi--menjalankan-proyek)
     * [1. Persiapan Umum](#1-persiapan-umum)
+4. [Cloud](#cloud)
+5. [Project Architecture](#project-architecture)
 
 ---
 ## Tentang Proyek
@@ -80,6 +82,28 @@ Ikuti langkah-langkah di bawah ini untuk mengatur dan menjalankan proyek di ling
     ```bash
     npm run dev
     ```
-    Frontend React akan berjalan di `http://localhost:3000` (atau port lain yang ditunjukkan oleh Vite). Buka URL ini di browser web Anda.
+    Frontend React akan berjalan di `http://localhost:3000`
 
 ---
+## Cloud
+Menggunakan VM dan Docker
+
+Spesifikasi VM Frontend:
+- RAM: 1GB
+- CPU: 2
+
+Docker Container
+- next-js
+- nginx
+
+Domain frontend: https://simasjid.raihanproject.my.id
+
+Domain backend: https://simasjidbackend.raihanproject.my.id
+
+---
+## Project Architecture
+![alt text](/pictures/diagram.png)
+
+
+![alt text](/pictures/diagram_azure.png)
+

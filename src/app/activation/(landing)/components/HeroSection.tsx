@@ -15,7 +15,7 @@ export default function HeroSection() {
                     </p>
                     <div className="mt-8">
                         <Button asChild className="bg-[#FF9357] hover:bg-[#FF9357]/90 text-white font-semibold px-8 py-6 text-lg rounded-full">
-                            <Link href="/activation/register">Coba Sekarang Gratis</Link>
+                            <Link href="/activation/register">Coba Sekarang</Link>
                         </Button>
                     </div>
                 </div>
