@@ -76,7 +76,7 @@ export function KegiatanMendatang({ kegiatan, slug }: { kegiatan: KegiatanItem[]
                                     </div>
                                     <DialogFooter className="p-6 bg-slate-50 rounded-b-lg">
                                         <DialogClose asChild>
-                                            <Button type="button" variant="outline" className="w-full">
+                                            <Button type="button" variant="outline" className="w-full bg-white text-slate-600 hover:bg-slate-600/10 rounded-full">
                                                 Tutup
                                             </Button>
                                         </DialogClose>

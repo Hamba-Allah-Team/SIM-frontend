@@ -40,10 +40,11 @@ async function getLaporanKeuanganPage(slug: string) {
 async function getBeritaPage(slug: string) {
     try {
         const response = await api.get(`/api/public/news/recent/${slug}`);
+        // Data langsung digunakan tanpa memformat URL gambar lagi
         return response.data;
     } catch (error) {
         console.error("Gagal mengambil data berita:", error);
-        return []; // Kembalikan array kosong jika gagal
+        return [];
     }
 }
 
