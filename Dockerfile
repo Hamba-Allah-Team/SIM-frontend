@@ -1,21 +1,31 @@
-# Gunakan image Node.js resmi
-FROM node:18-alpine
+FROM node:22-alpine AS builder
 
-# Atur working directory
 WORKDIR /app
 
-# Salin package.json dan install dependencies
-COPY package*.json ./
+COPY package.json package-lock.json ./
+
 RUN npm install
 
-# Salin semua file ke dalam container
 COPY . .
 
-# Build Next.js app
-RUN npm run build
+ARG NEXT_PUBLIC_API_URL
 
-# Gunakan port 3000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+RUN NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} npm run build -- --no-lint
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
+
+COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/tsconfig.json ./ 
+
 EXPOSE 3000
 
-# Jalankan server Next.js
 CMD ["npm", "start"]
