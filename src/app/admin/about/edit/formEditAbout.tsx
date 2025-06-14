@@ -28,7 +28,6 @@ const formSchema = z.object({
   address: z.string().min(1, { message: "Alamat harus diisi" }),
   description: z.string().optional(),
   image: z.any().optional(),
-  phone_whatsapp: z.string().optional(),
 
   email: z
   .string()
@@ -81,6 +80,16 @@ const formSchema = z.object({
     }, {
       message: "Longitude harus berupa angka antara -180 sampai 180",
     }),
+
+    phone_whatsapp: z
+      .string()
+      .optional()
+      .refine((val = "") => {
+        if (val === "") return true; // jika kosong, tetap valid karena optional
+        return /^\d{10,}$/.test(val); // hanya angka dan minimal 10 digit
+      }, {
+        message: "Nomor WhatsApp harus berupa angka dan minimal 10 digit",
+      }),
   });
 
 
