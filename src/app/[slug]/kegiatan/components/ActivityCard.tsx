@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Clock, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { getFullImageUrl } from "@/lib/utils";
 
 interface KegiatanItem {
     id: number; day: string; month: string; title: string; location: string;
@@ -18,6 +19,8 @@ interface ActivityCardProps {
 }
 
 export default function ActivityCard({ item, type }: ActivityCardProps) {
+    const fullImageUrl = getFullImageUrl(item.image);
+
     return (
         <div className={`bg-white p-6 rounded-xl shadow-lg flex items-center gap-6 hover:shadow-xl transition-all duration-300 ${type === 'past' ? 'opacity-70 hover:opacity-100' : ''}`}>
             <div className="text-center border-r pr-6">
@@ -42,9 +45,9 @@ export default function ActivityCard({ item, type }: ActivityCardProps) {
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-lg bg-white p-0">
-                    {item.image && (
+                    {fullImageUrl && (
                         <div className="relative w-full h-56">
-                            <Image src={item.image} alt={item.title} layout="fill" objectFit="cover" className="rounded-t-lg" />
+                            <Image src={fullImageUrl} alt={item.title} layout="fill" objectFit="cover" className="rounded-t-lg" />
                         </div>
                     )}
                     <div className="p-6">
