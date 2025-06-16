@@ -1,34 +1,20 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation';
-import { apiClient as api } from '@/lib/api-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { CalendarX2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarX2, ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import ActivityCard from './ActivityCard';
-
-interface KegiatanItem {
-    id: number; day: string; month: string; title: string; location: string;
-    image: string | null; description: string | null; full_date: string; time: string;
-}
+import { KegiatanItem } from '../types';
+import { cn } from '@/lib/utils';
 
 interface ActivityListProps {
+    kegiatan: KegiatanItem[];
+    isLoading: boolean;
+    totalPages: number;
+    currentPage: number;
+    setCurrentPage: (page: number) => void;
     type: 'upcoming' | 'past';
 }
-
-// Fungsi untuk mengambil data dari backend dengan dinamis
-const fetchActivities = async (slug: string, type: 'upcoming' | 'past', page: number, limit: number): Promise<{ data: KegiatanItem[], totalPages: number }> => {
-    // Memilih endpoint API berdasarkan tipe yang diminta
-    const endpoint = type === 'upcoming' ? `/api/public/activities/all/${slug}` : `/api/public/activities/past/${slug}`;
-    try {
-        const response = await api.get(endpoint, { params: { page, limit } });
-        return response.data;
-    } catch (error) {
-        console.error(`Gagal mengambil data kegiatan (${type}):`, error);
-        return { data: [], totalPages: 0 };
-    }
-};
 
 function KegiatanPageSkeleton() {
     return (
@@ -40,39 +26,7 @@ function KegiatanPageSkeleton() {
     )
 }
 
-export default function ActivityList({ type }: ActivityListProps) {
-    const params = useParams();
-    const slug = params.slug as string;
-
-    const [kegiatan, setKegiatan] = useState<KegiatanItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const limit = 10;
-
-    const fetchData = useCallback(async (page: number) => {
-        setIsLoading(true);
-        const response = await fetchActivities(slug, type, page, limit);
-        setKegiatan(response.data);
-        setTotalPages(response.totalPages);
-        setIsLoading(false);
-    }, [slug, type]);
-
-    useEffect(() => {
-        // Efek ini akan berjalan setiap kali 'type' (tab) berubah
-        if (slug) {
-            setCurrentPage(1); // Selalu reset ke halaman 1 saat tab diganti
-            fetchData(1);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [slug, type]);
-
-    useEffect(() => {
-        // Efek ini berjalan saat halaman paginasi diubah
-        if (slug && currentPage > 1) {
-            fetchData(currentPage);
-        }
-    }, [currentPage, fetchData, slug]);
+export default function ActivityList({ kegiatan, isLoading, totalPages, currentPage, setCurrentPage, type }: ActivityListProps) {
 
     const handlePreviousPage = () => {
         if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -82,6 +36,33 @@ export default function ActivityList({ type }: ActivityListProps) {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
+    const getPaginationButtons = () => {
+        const pageNumbers = [];
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            pageNumbers.push(1);
+            if (currentPage > 3) {
+                pageNumbers.push('...');
+            }
+            if (currentPage > 2 && currentPage < totalPages - 1) {
+                pageNumbers.push(currentPage);
+            }
+            if (currentPage > 1 && currentPage < totalPages - 1 && currentPage + 1 < totalPages - 1) {
+                pageNumbers.push(currentPage + 1);
+            }
+
+            if (currentPage < totalPages - 2) {
+                pageNumbers.push('...');
+            }
+            if (totalPages > 1) pageNumbers.push(totalPages);
+        }
+        // Hapus duplikat elipsis jika ada
+        return [...new Set(pageNumbers)];
+    };
+
     if (isLoading) {
         return <KegiatanPageSkeleton />;
     }
@@ -89,26 +70,48 @@ export default function ActivityList({ type }: ActivityListProps) {
     return (
         <div className="space-y-4">
             {kegiatan.length > 0 ? (
-                // Meneruskan 'type' ke ActivityCard agar bisa dibedakan tampilannya
                 kegiatan.map(item => <ActivityCard key={item.id} item={item} type={type} />)
             ) : (
                 <div className="text-center py-20 border-2 border-dashed rounded-lg">
                     <CalendarX2 className="mx-auto w-16 h-16 text-slate-300 mb-4" />
                     <h3 className="text-lg font-semibold text-slate-600">Tidak Ada Kegiatan</h3>
                     <p className="text-sm text-slate-400">
-                        {type === 'upcoming' ? 'Belum ada kegiatan mendatang yang dijadwalkan.' : 'Tidak ada riwayat kegiatan yang ditemukan.'}
+                        {type === 'upcoming' ? 'Belum ada kegiatan yang dijadwalkan.' : 'Tidak ada riwayat kegiatan yang ditemukan.'}
                     </p>
                 </div>
             )}
 
             {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 mt-12">
-                    <Button variant="outline" size="icon" onClick={handlePreviousPage} disabled={currentPage === 1}>
-                        <ChevronLeft className="h-4 w-4" />
+                <div className="flex items-center justify-center gap-2 mt-12">
+                    <Button variant="outline" size="icon" onClick={handlePreviousPage} disabled={currentPage === 1} className="h-9 w-9 p-0 rounded-full">
+                        <ChevronLeft className="h-5 w-5" />
                     </Button>
-                    <span className="font-medium text-slate-700">Halaman {currentPage} dari {totalPages}</span>
-                    <Button variant="outline" size="icon" onClick={handleNextPage} disabled={currentPage === totalPages}>
-                        <ChevronRight className="h-4 w-4" />
+
+                    {getPaginationButtons().map((page, index) => {
+                        const isActive = page === currentPage;
+                        return typeof page === 'number' ? (
+                            <Button
+                                key={`${page}-${index}`}
+                                variant={isActive ? "default" : "ghost"}
+                                size="icon"
+                                onClick={() => setCurrentPage(page)}
+                                className={cn(
+                                    "h-9 w-9 p-0 rounded-full font-semibold transition-colors",
+                                    isActive && "bg-[#FF9357] hover:bg-[#FF9357]/90 text-white",
+                                    !isActive && "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                )}
+                            >
+                                {page}
+                            </Button>
+                        ) : (
+                            <span key={`ellipsis-${index}`} className="flex items-center justify-center h-9 w-9 text-slate-400">
+                                <MoreHorizontal className="h-5 w-5" />
+                            </span>
+                        );
+                    })}
+
+                    <Button variant="outline" size="icon" onClick={handleNextPage} disabled={currentPage === totalPages} className="h-9 w-9 p-0 rounded-full">
+                        <ChevronRight className="h-5 w-5" />
                     </Button>
                 </div>
             )}

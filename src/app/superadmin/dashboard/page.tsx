@@ -416,14 +416,18 @@ const formatXAxis = (date: string) => {
                       />
                       <ChartTooltip
                         cursor={{ stroke: "#a0a0a0", strokeWidth: 1, strokeDasharray: "3 3" }}
-                        content={
-                          <ChartTooltipContent
-                            className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-lg text-black"
-                            labelFormatter={formatXAxis}
-                            labelStyle={{ color: '#111827', fontWeight: 'bold' }}
-                            indicator="line"
-                          />
-                        }
+                        content={({ label, payload }) => (
+                          <div className="bg-white/90 backdrop-blur-sm border border-gray-200 shadow-lg rounded-lg p-2 text-black">
+                            <p className="text-sm font-bold text-black">
+                              {formatXAxis(label)}
+                            </p>
+                            {payload?.map((entry, index) => (
+                              <p key={index} className="text-sm text-black">
+                                {entry.name}: {entry.value}
+                              </p>
+                            ))}
+                          </div>
+                        )}
                       />
                       <Legend
                         verticalAlign="top"
