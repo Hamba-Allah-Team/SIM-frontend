@@ -27,7 +27,7 @@ export function getFullImageUrl(imagePath: string | null | undefined): string {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
     
     // Pastikan selalu ada '/' di antara base URL dan path gambar
-    const finalPath = imagePath.startsWith('/') ? imagePath : `/uploads/${imagePath}`;
+    const finalPath = imagePath.startsWith('/uploads/') ? imagePath : `/uploads/${imagePath}`;
     
     return `${apiBaseUrl}${finalPath}`;
 }
