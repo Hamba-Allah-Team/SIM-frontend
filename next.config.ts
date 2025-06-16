@@ -26,6 +26,13 @@ const nextConfig: NextConfig = {
         port: '8080', // Sesuaikan dengan port backend Anda
         pathname: '/uploads/**',
       },
+      {
+        // 👈 TAMBAHKAN INI: Izinkan gambar dari backend produksi Anda
+        protocol: 'https',
+        hostname: 'simasjidbackend.raihanproject.my.id',
+        port: '', // Kosongkan jika menggunakan port standar (443 untuk https)
+        pathname: '/uploads/**',
+      },
       // Anda bisa menambahkan hostname lain di sini di masa depan
     ],
   },
